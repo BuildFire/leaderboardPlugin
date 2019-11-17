@@ -16,16 +16,71 @@
     <script src="js/shared/ui.js"></script>
     <script src="js/listView.js"></script>
 
-
+<!--
     <link rel="stylesheet" href="listView.css">
     <link rel="stylesheet" href="main.css">
+-->
+    <style>
+        .placement{
+            text-align: center;
+            display: none;
+            margin-top: 1em;
+        }
+        #firstPlaceCard > img{
+            border-radius: 50%;
+            width: 128px;
+            height: 128px;
+            border: 5px gold solid;
+        }
+
+        #secondPlaceCard > img{
+            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            border: 5px silver solid;
+
+        }
+
+        #thirdPlaceCard > img{
+            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            border: 5px #8a6d3b solid;
+
+        }
+
+        .animate{
+            animation: fadein 1s ease-in;
+            display: block;
+        }
+        @keyframes fadein {
+            0%{opacity: 0;}
+            100%{opacity: 1;}
+        }
+    </style>
+
 </head>
 <body>
-<span>Score</span><input id="score" type="number" value="100"><button onclick="save()">Set</button>
+
+<div id="top3">
+    <div id="firstPlaceCard" class="placement">
+        <img id="fpImg" src="https://media.salon.com/2019/04/suprised-man.jpg">
+        <h1 id="fpName" class="title" >John Doe <br/>Score:123</h1>
+    </div>
+    <div id="secondPlaceCard" class="placement">
+        <img id="spImg" src="https://media.salon.com/2019/04/suprised-man.jpg">
+        <h2 id="spName" class="title">John Doe <br/>Score:123</h2>
+    </div>
+    <div id="thirdPlaceCard" class="placement">
+        <img id="tpImg" src="https://media.salon.com/2019/04/suprised-man.jpg">
+        <h3 id="tpName" class="title">John Doe <br/>Score:123</h3>
+    </div>
+
+</div>
 <div id="listViewContainer">
 
 </div>
-
+<span>Score</span><input id="score" type="number" value="100"><button onclick="save()">Set</button>
 <script>
 
 	let lv = new ListView("listViewContainer",{enableAddButton:true,Title:"Leader Board"});
@@ -40,8 +95,6 @@
 
 		lv.addItem(item);
 	};
-
-
 
 
 
@@ -65,32 +118,88 @@
 
     }
 
-    function loadBoard(){
-		listViewContainer.innerHTML='';
-		let i=0;
-		let list=[];
+    function loadCache(cacheId) {
+		let s = localStorage.getItem('_leaderboard' + cacheId);
+		if(s) {
+			renderBoard( JSON.parse(s));
+			return true;
+		}
+		else
+			return false;
+
+	}
+
+    function loadBoard(cacheId){
 		sb.getScoreboard((err,records)=>{
-			records.topScores.forEach(r=>{
-				i++;
-				let url = buildfire.auth.getUserPictureUrl({userId:r.user.id});
-				//url=buildfire.imageLib.cropImage(url,{width:64,height:64});
-				list.push({
-					title:r.user.displayName
-					,imageUrl:url
-					,description:r.score
-					,toolbar:[{
-						key:"btnBadge"
-						,class:"toolbarBadge"
-						,text:i<4?i:""
-					}]
-				});
-            });
-
-			lv.loadListViewItems(list);
-
+			renderBoard(records);
+			if(cacheId) localStorage.setItem('_leaderboard' + cacheId,JSON.stringify(records));
         });
     }
-	loadBoard();
+
+	buildfire.getContext((e,c)=>{
+		if(loadCache(c.instanceId))
+		    setTimeout( ()=>loadBoard(c.instanceId) ,2000); // see old result then change it
+		else
+			loadBoard(c.instanceId)
+	});
+
+
+    function renderBoard(records){
+		listViewContainer.innerHTML='';
+    	let i=0;
+		let list=[];
+		let top3=[];
+    	records.topScores.forEach(r=>{
+			i++;
+			let url = buildfire.auth.getUserPictureUrl({userId:r.user.id});
+
+			let obj = {
+				userId:r.user.id
+				,title:r.user.displayName
+				,imageUrl:url
+				,description:r.score
+				,toolbar:[{
+					key:"btnBadge"
+					,class:"toolbarBadge"
+					,text:i<4?i:""
+				}]
+			};
+
+			if(i<4)
+				top3.push(obj);
+			else
+				list.push(obj);
+		});
+
+		loadTop3(top3);
+		lv.loadListViewItems(list);
+    }
+
+    function loadTop3(top3){
+
+    	function setCard(card,record,rank){
+
+			card.querySelector('.title').innerHTML = `#${rank} ${record.title} </br> score: ${record.description}`;
+
+			if(record.userId == card.getAttribute("userId") )return;
+
+    		let img = card.querySelector('img');
+
+            img.src = buildfire.imageLib.cropImage(record.imageUrl,{width:128,height:128});
+			card.classList.remove('animate');
+			window.requestAnimationFrame(()=>{card.classList.add('animate');});
+
+			card.setAttribute("userId",record.userId);
+        }
+
+
+    	if(top3.length >0) setCard(firstPlaceCard,top3[0],1);
+		if(top3.length >1) setCard(secondPlaceCard,top3[1],2);
+		if(top3.length >2) setCard(thirdPlaceCard,top3[2],3);
+
+    }
+
+
 </script>
 </body>
 </html>
