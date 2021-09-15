@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Load helper.css to use our helper classes.
+	<link href="../../../../styles/helper.css" rel="stylesheet">
+	-->
+
+    <!-- JS -->
+    <script src="../../../../scripts/buildfire.min.js"></script>
+    <script src="../../widget/js/shared/scoreboard.js""></script>
+    <script src=" ../../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
+    <script src="../../widget/js/dataAccess/Scores.js"></script>
+    <script src="../../widget/js/shared/authManager.js"></script>
+    <script src="../../widget/js/dataAccess/UserSettings.js"></script>
+    <script src="../../widget/js/data/UserSetting.js"></script>
+    <script src="../../widget/js/shared/analyticKeys.js"></script>
+    <!--
+    <script src="../../../../scripts/angular/angular.min.js"></script>
+    <script src="../../../../scripts/angular/ui-bootstrap.min.js"></script>
+
+    <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+    -->
+</head>
+
+<body>
+    <h1>Reset Boards</h1>
+    <button onclick="reset()">Reset</button>
+</body>
+
+<script>
+    //Register push notifications event
+    const load = () => {
+        for (let propName in analyticKeys) {
+            buildfire.analytics.registerEvent(
+                analyticKeys[propName],
+                {
+                    silentNotification: true
+                }
+            );
+        }
+    }
+
+    //reset all leaderboards
+    const reset = () => {
+        UserSettings.get((err, settings) => {
+            if (err) return console.log(err)
+            if (settings && settings.isSubscribedToPN) {
+                Scores.reset({ isSubscribedToPN: settings.isSubscribedToPN }, (err, res) => {
+                    if (err) return console.log(err)
+                    console.log("res", res)
+                })
+            }
+        })
+    }
+
+    load()
+</script>
+
+</html>

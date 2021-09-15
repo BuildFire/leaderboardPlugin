@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!--
+		NOTE:
+		1. You can reference the file in SDK via relative path
+		2. The Control and Widget Should NOT share resources. Only the Widget folder will make it to the device
+		3. You may include any JS framework you want with your Widget and Control folders. However, keep in mind
+		    to keep you plugin as light weight as possible for performance and transport reasons
+	-->
+
+	<!-- You can load helper.css to use our helper classes.
+	<link href="../../../../styles/helper.css" rel="stylesheet">
+	-->
+
+	<!-- JS -->
+	<script src="../../../scripts/buildfire.min.js"></script>
+	<script src="./js/shared/scoreboard.js""></script>
+	<script src=" ../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
+	<script src="./js/shared/authManager.js"></script>
+	<script src="./js/data/UserSetting.js"></script>
+	<script src="./js/dataAccess/UserSettings.js"></script>
+	<script src="./js/data/Score.js"></script>
+	<script src="./js/dataAccess/Scores.js"></script>
+	<script src="./js/data/Keys.js"></script>
+	<script src="./js/shared/analyticKeys.js"></script>
+
+	<!--
+   <script src="../../../../scripts/angular/angular.min.js"></script>
+   <script src="../../../../scripts/angular/ui-bootstrap.min.js"></script>
+
+   <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+   -->
+
+	<style>
+		body {
+			padding: 1em;
+		}
+
+		h1 {
+			text-align: center;
+			color: #00A1F1;
+		}
+
+		.invisible {
+			display: none;
+		}
+
+		ul {
+			list-style-type: number;
+		}
+	</style>
+</head>
+
+<body>
+	<button onclick="addScore(50)" id="addScore-50">Add score 50</button>
+	<button onclick="addScore(100)" id="addScore-100">Add score 100</button>
+	<button onclick="addScore(150)" id="addScore-150">Add score 150</button>
+	<button onclick="getScores('daily')">Get Daily Scores</button>
+	<button onclick="getScores('weekly')">Get Weekly Scores</button>
+	<button onclick="getScores('monthly')">Get monthly Scores</button>
+	<button onclick="getScores('yearly')">Get yearly Scores</button>
+	<label>Edit score</label>
+	<input type="number" id="editScoreInput" />
+	<button onclick="editScore()">Edit score</button>
+	<ul id="score"></ul>
+
+	</ul>
+</body>
+
+<script>
+	var isSubscribedToPN = true;
+
+	const addScore = (score) => {
+		Scores.addScore({ score: score, settings: { isSubscribedToPN: isSubscribedToPN } }, (err, data) => {
+			if (err == 'User not logged in') {
+				authManager.enforceLogin();
+			}
+			if (data) {
+				console.log("From callback")
+			}
+		});
+	}
+
+	const getScores = (leaderboardType) => {
+		score.innerHTML = '';
+		Scores.getScores({ leaderboardType: leaderboardType, settings: { isSubscribedToPN: isSubscribedToPN } }, (err, scores) => {
+			scores.forEach(element => {
+				ui("li", score, `${element.displayName}: ${element.currentScore}`)
+			});
+		})
+	}
+
+	const editScore = () => {
+		Scores.editDailyScore({ score: parseInt(editScoreInput.value), settings: { isSubscribedToPN: isSubscribedToPN } }, (err, data) => {
+			if (err == 'User not logged in') {
+				authManager.enforceLogin();
+				return
+			}
+			if (err) console.error(err);
+		});
+	}
+
+	const load = () => {
+		authManager.getCurrentUserNew()
+		UserSettings.get((err, settings) => {
+			if (err) console.log(err)
+			if (settings && settings.isSubscribedToPN) {
+				isSubscribedToPN = settings.isSubscribedToPN;
+			}
+		})
+	}
+
+	const ui = (elementType, appendTo, innerHTML, classNameArray) => {
+		let e = document.createElement(elementType);
+		if (innerHTML) e.innerHTML = innerHTML;
+		if (Array.isArray(classNameArray)) {
+			classNameArray.forEach(c => e.classList.add(c));
+		}
+		if (appendTo) appendTo.appendChild(e);
+		return e
+	}
+
+	load()
+</script>
+
+</html>

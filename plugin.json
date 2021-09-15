@@ -1,0 +1,28 @@
+{
+  "author": "BuildFire",
+  "pluginName": "Leaderboard",
+  "pluginDescription": "Keeps track of leaders",
+  "supportEmail": "support@buildfire.com",
+  "control": {
+    "content": {
+      "enabled": true
+    },
+    "design": {
+      "enabled": false
+    },
+    "settings": {
+      "enabled": true
+    },
+    "customTabs": [
+      {
+        "title": "Tests",
+        "url": "tests/index.html"
+      }
+    ]
+  },
+  "widget": {},
+  "features": [],
+  "languages": [
+    "en"
+  ]
+}
