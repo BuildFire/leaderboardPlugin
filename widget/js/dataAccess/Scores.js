@@ -43,7 +43,7 @@ class Scores {
             tag = this.getMonthlyTag(date)
         }
 
-        else {
+        else if (data.leaderboardType === Keys.overall) {
             tag = this.getYearlyTag(date)
         }
 
@@ -138,7 +138,6 @@ class Scores {
     static addScore = (data, callback) => {
         if (!authManager.currentUser) return callback("User not logged in");
         let user = authManager.currentUser;
-
         //Check for errors in settings
         if (typeof data.settings == 'undefined') return callback("Settings is undefined")
         if (data.settings.isSubscribedToPN === null) return callback("isSubscribedToPN is null")
@@ -162,12 +161,12 @@ class Scores {
 
         // Get the boards using their tags
         // TODO make the size config
+        
         let dailyBoard = new buildfire.gamify.Scoreboard(dailyTag, 100, {
             autoSubscribeToPushNotification: data.settings.isSubscribedToPN
             , overrideRecords: true
             , sortAscending: false
         });
-
         let weeklyBoard = new buildfire.gamify.Scoreboard(weeklyTag, 100, {
             autoSubscribeToPushNotification: data.settings.isSubscribedToPN
             , overrideRecords: true

@@ -3,20 +3,12 @@
 
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="buildfire" content="enableMDTheme" />
+	<link href="../../../scripts/owlCarousel/owlCarousel.css" rel="stylesheet" />
+	<link href="./css/index.css" rel="stylesheet" />
+	<link href="../../../styles/materialDesign/material-components-web@4.0.0.min.css" rel="stylesheet" />
 
-	<!--
-		NOTE:
-		1. You can reference the file in SDK via relative path
-		2. The Control and Widget Should NOT share resources. Only the Widget folder will make it to the device
-		3. You may include any JS framework you want with your Widget and Control folders. However, keep in mind
-		    to keep you plugin as light weight as possible for performance and transport reasons
-	-->
 
-	<!-- You can load helper.css to use our helper classes.
-	<link href="../../../../styles/helper.css" rel="stylesheet">
-	-->
-
-	<!-- JS -->
 	<script src="../../../scripts/buildfire.min.js"></script>
 	<script src="./js/shared/scoreboard.js""></script>
 	<script src=" ../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
@@ -27,104 +19,105 @@
 	<script src="./js/dataAccess/Scores.js"></script>
 	<script src="./js/data/Keys.js"></script>
 	<script src="./js/shared/analyticKeys.js"></script>
+	<script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="../../../scripts/owlCarousel/owlCarousel.js"></script>
+	<script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
+	<script src="js/UI/widgetUI.js" defer></script>
+	<script src="js/shared/strings.js"></script>
+	<script src="js/shared/stringsConfig.js"></script>
+	<script src="../../../scripts/materialDesign/material-components-web@4.0.0.min.js" type="text/javascript"></script>
 
-	<!--
-   <script src="../../../../scripts/angular/angular.min.js"></script>
-   <script src="../../../../scripts/angular/ui-bootstrap.min.js"></script>
+	<script>
+		let strings;
+		function loadLanguage(lang) {
+			strings = new buildfire.services.Strings(lang, stringsConfig);
+			strings.init().then(() => {
+				strings.inject();
+				inject();
+			});
+		}
+		loadLanguage("en-us");
 
-   <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
-   -->
-
-	<style>
-		body {
-			padding: 1em;
+		function inject() {
+			document.getElementById("my-dialog-title").innerHTML = strings.get('score.add')
+			document.getElementById("my-dialog-subtitle").innerHTML = strings.get('score.addSubtitle')
 		}
 
-		h1 {
-			text-align: center;
-			color: #00A1F1;
-		}
-
-		.invisible {
-			display: none;
-		}
-
-		ul {
-			list-style-type: number;
-		}
-	</style>
+	</script>
 </head>
 
 <body>
-	<button onclick="addScore(50)" id="addScore-50">Add score 50</button>
-	<button onclick="addScore(100)" id="addScore-100">Add score 100</button>
-	<button onclick="addScore(150)" id="addScore-150">Add score 150</button>
-	<button onclick="getScores('daily')">Get Daily Scores</button>
-	<button onclick="getScores('weekly')">Get Weekly Scores</button>
-	<button onclick="getScores('monthly')">Get monthly Scores</button>
-	<button onclick="getScores('yearly')">Get yearly Scores</button>
-	<label>Edit score</label>
-	<input type="number" id="editScoreInput" />
-	<button onclick="editScore()">Edit score</button>
-	<ul id="score"></ul>
+	<div id="main_container">
+		<button onclick="showAddScoreView()" class="add_btn btn-primary" id="add_btn">+</button>
+		<div id="carousel"></div>
+		<div id="my_container_div"></div>
+		<div id="contentElement">
+			<div class="mdc-dialog" id="add_score_dialog">
+				<div class="mdc-dialog__container">
+					<div class="mdc-dialog__surface" role="alertdialog" aria-modal="true"
+						aria-labelledby="my-dialog-title" aria-describedby="my-dialog-content">
+						<!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+						<h2 class="mdc-dialog__title" id="my-dialog-title">
+							<!--
+			   -->Add Score
+							<!--
+			 -->
+						</h2>
+						<div class="mdc-dialog__content" id="my-dialog-content">
+							<p id="my-dialog-subtitle">Input your score here. Please add one score day!</p>
+							<div class="inline-text-field-container">
+								<div class="mdc-text-field mdc-ripple-upgraded"
+									style="--mdc-ripple-fg-size:128px; --mdc-ripple-fg-scale:1.8063; --mdc-ripple-fg-translate-start:27px, -35px; --mdc-ripple-fg-translate-end:43px, -36px;">
+									<input class="mdc-text-field__input" autocorrect="off" autocomplete="off"
+										spellcheck="false" id="demo-mdc-text-field" maxlength="524288">
+									<div class="mdc-line-ripple" style="transform-origin: 91px center;"></div>
+									<label for="demo-mdc-text-field" class="mdc-floating-label">
+										<!---->Your Score
+										<!---->
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="mdc-dialog__actions">
+							<button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+								<div class="mdc-button__ripple"></div>
+								<span class="mdc-button__label">Cancel</span>
+							</button>
+							<button onclick="addScore()" type="button" class="mdc-button mdc-dialog__button"
+								data-mdc-dialog-action="accept">
+								<div class="mdc-button__ripple"></div>
+								<span class="mdc-button__label">Save</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="mdc-dialog__scrim"></div>
+			</div>
+		</div>
+		<div id="leaderboard_drawer" class="">
+			<div class="drag-indicator"></div>
+			<div class="drawer-header">
+				<div onclick="switchTab('Overall')" class="drawer-header-title active-header" id="overallHeader">
+					<p>Overall</p>
+				</div>
+				<div onclick="switchTab('Month')" class="drawer-header-title" id="monthHeader">
+					<p>Month</p>
+				</div>
+				<div class="drawer-header-title" id="weekHeader">
+					<p >Week</p>
+				</div>
+				<div class="drawer-header-title" id="dayHeader">
+					<p>Day</p>
+				</div>
+			</div>
+			<div class="drawer-content">
+				<div id="drawerScoresContainer" class="score-container">
+				</div>
+			</div>
+		</div>
+	</div>
 
-	</ul>
+
 </body>
-
-<script>
-	var isSubscribedToPN = true;
-
-	const addScore = (score) => {
-		Scores.addScore({ score: score, settings: { isSubscribedToPN: isSubscribedToPN } }, (err, data) => {
-			if (err == 'User not logged in') {
-				authManager.enforceLogin();
-			}
-			if (data) {
-				console.log("From callback")
-			}
-		});
-	}
-
-	const getScores = (leaderboardType) => {
-		score.innerHTML = '';
-		Scores.getScores({ leaderboardType: leaderboardType, settings: { isSubscribedToPN: isSubscribedToPN } }, (err, scores) => {
-			scores.forEach(element => {
-				ui("li", score, `${element.displayName}: ${element.currentScore}`)
-			});
-		})
-	}
-
-	const editScore = () => {
-		Scores.editDailyScore({ score: parseInt(editScoreInput.value), settings: { isSubscribedToPN: isSubscribedToPN } }, (err, data) => {
-			if (err == 'User not logged in') {
-				authManager.enforceLogin();
-				return
-			}
-			if (err) console.error(err);
-		});
-	}
-
-	const load = () => {
-		authManager.getCurrentUserNew()
-		UserSettings.get((err, settings) => {
-			if (err) console.log(err)
-			if (settings && settings.isSubscribedToPN) {
-				isSubscribedToPN = settings.isSubscribedToPN;
-			}
-		})
-	}
-
-	const ui = (elementType, appendTo, innerHTML, classNameArray) => {
-		let e = document.createElement(elementType);
-		if (innerHTML) e.innerHTML = innerHTML;
-		if (Array.isArray(classNameArray)) {
-			classNameArray.forEach(c => e.classList.add(c));
-		}
-		if (appendTo) appendTo.appendChild(e);
-		return e
-	}
-
-	load()
-</script>
 
 </html>

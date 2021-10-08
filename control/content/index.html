@@ -3,82 +3,116 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!--
-		NOTE:
-		1. You can reference the file in SDK via relative path
-		2. The Control and Widget Should NOT share resources. They will be separated in production.
-		3. You may include any JS framework you want with your Widget and Control folders. However, keep in mind
-		    to keep you plugin as light weight as possible for performance and transport reasons
-	-->
-
-    <!-- You can load helper.css to use our helper classes.
-    <link href="../../../../styles/helper.css" rel="stylesheet">
-    -->
+    <link href="../../../../styles/helper.css" rel="stylesheet" />
+    <link href="../../../../styles/siteIcons.css" rel="stylesheet" />
+    <link href="../../widget/css/index.css" rel="stylesheet" />
 
     <!-- JS -->
     <script src="../../../../scripts/buildfire.min.js"></script>
-    <script src="../../widget/scoreboard.min.js""></script>
+    <script src="../../widget/js/shared/scoreboard.js""></script>
     <script src=" ../../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
     <script src="../../widget/js/shared/analyticKeys.js"></script>
+    <script src="../../../../scripts/tinymce/tinymce.min.js"></script>
+    <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+    <script src="../../../../scripts/sortable.min.js"></script>
+    <script src="../../../../scripts/buildfire/components/carousel/carousel.js"></script>
+    <script src="../../widget/js/UI/controlUI.js"></script>
+    
     <!--
     <script src="../../../../scripts/angular/angular.min.js"></script>
     <script src="../../../../scripts/angular/ui-bootstrap.min.js"></script>
 
    <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
    -->
-    <style>
-        body {
-            text-align: center;
-        }
-
-        button {
-            border-radius: 25px;
-            padding: 5px 10px;
-            color: white;
-            background-color: #00A1F1;
-        }
-    </style>
 </head>
 
 <body>
-</body>
-<script>
-    // let leaderboardLB = null
+    <div id="carousel"></div>
+    <textarea id="wysiwygContent" name="content"></textarea>
 
-    //Register push notifications event
-    const load = () => {
-        for (let propName in analyticKeys) {
-            buildfire.analytics.registerEvent(
-                analyticKeys[propName],
-                {
-                    silentNotification: true
-                }
-            );
+    <script>
+        /// create a new instance of the buildfire carousel editor
+        var editor = new buildfire.components.carousel.editor("#carousel");
+
+        /// handle the loading
+        function loadItems(carouselItems) {
+            // create an instance and pass it the items if you don't have items yet just pass []
+            editor.loadItems(carouselItems);
         }
-    }
 
-    // function createLeaderboard() {
-    //     let sb = new buildfire.gamify.Scoreboard("Scoreboard", 100, true);
-    //     leaderboardLB = new leaderboard(sb);
-    //     console.log("Created a new Scoreboard")
-    //     console.log(leaderboardLB.getSize())
-    // }
+        /// call buildfire datastore to see if there are any previously saved items
+        buildfire.datastore.get(function (err, obj) {
+            if (err)
+                alert('error');
+            else
+                loadItems(obj.data.carouselItems)
+        });
 
-    // function changeSize() {
-    //     let size = lbSize.value
-    //     if (isNaN(size)) {
-    //         console.log("Must input numbers");
-    //         return false;
-    //     }
-    //     else {
-    //         leaderboardLB.setSize(parseInt(size))
-    //         console.log(leaderboardLB.getSize())
-    //     }
-    // }
+        /// save any changes in items
+        function save(items) {
+            console.log('saving...');
+            buildfire.datastore.save({ carouselItems: items }, function (e) {
+                if (e)
+                    alert("error");
+                else
+                    console.log('saved.');
+            });
+        }
 
-    load()
-</script>
 
+        // this method will be called when a new item added to the list
+        editor.onAddItems = function (items) {
+            save(editor.items);
+        };
+        // this method will be called when an item deleted from the list
+        editor.onDeleteItem = function (item, index) {
+            save(editor.items);
+        };
+        // this method will be called when you edit item details
+        editor.onItemChange = function (item) {
+            save(editor.items);
+        };
+        // this method will be called when you change the order of items
+        editor.onOrderChange = function (item, oldIndex, newIndex) {
+            save(editor.items);
+        };
+
+        //Register push notifications event
+        const load = () => {
+            for (let propName in analyticKeys) {
+                buildfire.analytics.registerEvent(
+                    analyticKeys[propName],
+                    {
+                        silentNotification: true
+                    }
+                );
+            }
+        }
+
+
+
+
+        // function createLeaderboard() {
+        //     let sb = new buildfire.gamify.Scoreboard("Scoreboard", 100, true);
+        //     leaderboardLB = new leaderboard(sb);
+        //     console.log("Created a new Scoreboard")
+        //     console.log(leaderboardLB.getSize())
+        // }
+
+        // function changeSize() {
+        //     let size = lbSize.value
+        //     if (isNaN(size)) {
+        //         console.log("Must input numbers");
+        //         return false;
+        //     }
+        //     else {
+        //         leaderboardLB.setSize(parseInt(size))
+        //         console.log(leaderboardLB.getSize())
+        //     }
+        // }
+
+        load()
+    </script>
+</body>
 
 </html>

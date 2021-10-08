@@ -4,7 +4,7 @@ class Score {
         this.userId = data.userId || null;
         this.displayName = data.displayName || null;
         this.currentScore = data.currentScore || null;
-        this.displayPictureUrl = data.displayPictureUrl || null;
+        this.displayPictureUrl = data.displayPictureUrl || "https://via.placeholder.com/50";
         this._buildfire = data._buildfire || {};
         this.isActive = (typeof data.isActive === 'undefined') ? true : data.isActive;
         this.createdOn = data.createdOn || undefined;

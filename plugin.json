@@ -17,6 +17,10 @@
       {
         "title": "Tests",
         "url": "tests/index.html"
+      },
+      {
+        "title": "Language",
+        "url": "strings/index.html"
       }
     ]
   },
