@@ -46,9 +46,6 @@ buildfire.services.Strings = class{
 		let segmentKey = s[0];
 		let labelKey = s[1];
 
-		console.log('data', this._data);
-		console.log('segmentKey', segmentKey);
-		console.log('labelKey', labelKey);
 		let v
 		let l = this._data[segmentKey][labelKey];
 		if(l.value || (l.value ==="" && !l.required))

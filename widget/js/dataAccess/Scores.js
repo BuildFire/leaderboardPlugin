@@ -5,7 +5,7 @@ class Scores {
      * @param {String} userID id of the user
      * @param {Object} scoreBoard the scoreboard to search in
     */
-    static getUserPreviousScore = (userId, scoreBoard) => {
+    static _getUserPreviousScore = (userId, scoreBoard) => {
         let prevScore = 0;
 
         if (scoreBoard.length == 0) return prevScore;
@@ -16,6 +16,91 @@ class Scores {
             }
         })
         return prevScore;
+    }
+
+    static _getUserRank = (userId, scoreBoard) => {
+        let score = 0;
+        let rank = -1;
+        if (scoreBoard.length == 0) return { rank: rank, score: score };
+        // let x = scoreBoard.findIndex(s => s.userId == userId);
+        for (let i = 0; i < scoreBoard.length; i++) {
+            const element = scoreBoard[i];
+            if (element.user._id === userId) {
+                score = element.score;
+                rank = i + 1;
+                return { rank: rank, score: score };
+            }
+        }
+        return { rank: rank, score: score };
+    }
+
+
+    static getCurrentUserRank = (scoreBoard, callback) => {
+        if (!authManager.currentUser) return callback("User not logged in");
+        let user = authManager.currentUser;
+        //Check if user participated in the current board
+        let tag = ''
+
+        //Set a standard date for the leaderboard to avoid timezone conflicts
+        let date = this.getStandardDate(new Date(), "America/Los_Angeles")
+
+        //Get the tag of the leaderboard
+        if (scoreBoard === Keys.daily) {
+            tag = this.getDailyTag(date)
+        }
+
+        else if (scoreBoard === Keys.weekly) {
+            tag = this.getWeeklyTag(date)
+        }
+
+        else if (scoreBoard === Keys.monthly) {
+            tag = this.getMonthlyTag(date)
+        }
+
+        else if (scoreBoard === Keys.overall) {
+            tag = this.getYearlyTag(date)
+        }
+
+        // Get the user's rank
+        let sb = new buildfire.gamify.Scoreboard(tag, 100, {
+            autoSubscribeToPushNotification: true
+            , overrideRecords: true
+            , sortAscending: false
+        });
+
+        // Fetch the top scorers
+        sb.getScoreboard((err, scoreboard) => {
+            if (err) return callback("Error fetching scoreboard");
+            if (scoreboard.topScores.length > 0) {
+                return callback(null, this._getUserRank(user._id, scoreboard.topScores))
+            }
+
+            else {
+                return callback("Scoreboard is empty", null)
+            }
+        })
+    }
+
+    static checkIfAllEmpty = (callback) => {
+        //If yearly board is empty then all boards are
+        let date = this.getStandardDate(new Date(), "America/Los_Angeles")
+        let yearlyTag = this.getYearlyTag(date)
+
+        let sb = new buildfire.gamify.Scoreboard(yearlyTag, 100, {
+            autoSubscribeToPushNotification: true
+            , overrideRecords: true
+            , sortAscending: false
+        });
+
+        sb.getScoreboard((error, scoreboard) => {
+            if (error) return callback(error);
+            if (scoreboard.topScores.length > 0) {
+                return callback(false);
+            }
+            else {
+                return callback(true);
+            }
+        });
     }
 
     /**
@@ -58,15 +143,33 @@ class Scores {
         sb.getScoreboard((err, scoreboard) => {
             if (err) return callback("Error fetching scoreboard");
             if (scoreboard.topScores.length > 0) {
-                console.log(scoreboard.topScores)
-                scoreboard.topScores.forEach(element => {
-                    // console.log(element)
+                scoreboard.topScores.forEach((element, index) => {
+                    let width = 40;
+                    let height = 40;
+
+                    if (index == 0) {
+                        width = 80;
+                        height = 80;
+                    }
+
+                    if (index == 1) {
+                        width = 64;
+                        height = 64;
+                    }
+
+                    if (index == 2) {
+                        width = 64;
+                        height = 64;
+                    }
+                    let imgURL = buildfire.imageLib.cropImage(buildfire.auth.getUserPictureUrl({userId: element.user._id}) ,{width:width,height:height})
+                    
                     scores.push(new Score({
                         createdOn: element.createdOn,
                         lastUpdatedOn: element.user.lastUpdated,
                         userId: element.user._id,
-                        displayName: element.user.displayName || element.user.firstName + element.user.lastName || element.user.username || 'Anonymous',
-                        currentScore: element.score
+                        displayName: element.user.displayName || element.user.firstName + element.user.lastName || element.user.firstName || 'someone',
+                        currentScore: element.score,
+                        displayPictureUrl: imgURL
                     }))
                 });
 
@@ -158,10 +261,11 @@ class Scores {
         let weeklyTag = this.getWeeklyTag(date)
         let monthlyTag = this.getMonthlyTag(date)
         let yearlyTag = this.getYearlyTag(date)
+        let rankedAt = -1;
 
         // Get the boards using their tags
         // TODO make the size config
-        
+
         let dailyBoard = new buildfire.gamify.Scoreboard(dailyTag, 100, {
             autoSubscribeToPushNotification: data.settings.isSubscribedToPN
             , overrideRecords: true
@@ -193,10 +297,12 @@ class Scores {
             if (scoreboard.topScores.length > 0) {
                 sb = scoreboard.topScores;
             }
-            let previousScore = this.getUserPreviousScore(user._id, sb)
-            dailyBoard.logScore(user, parseInt(data.score) + previousScore, (err, result) => {
-                console.log("Logged to daily")
+            let previousScore = this._getUserPreviousScore(user._id, sb)
+            dailyBoard.logScore(user, parseInt(data.score) + previousScore, 'Daily', (err, result) => {
                 if (err) return callback(err);
+                if (result && result.rankedAt >= 0) {
+                    rankedAt = result.rankedAt;
+                }
             })
         });
 
@@ -207,10 +313,12 @@ class Scores {
             if (scoreboard.topScores.length > 0) {
                 sb = scoreboard.topScores;
             }
-            let previousScore = this.getUserPreviousScore(user._id, sb)
-            weeklyBoard.logScore(user, parseInt(data.score) + previousScore, (err, result) => {
-                console.log("Logged to weekly")
+            let previousScore = this._getUserPreviousScore(user._id, sb)
+            weeklyBoard.logScore(user, parseInt(data.score) + previousScore,'Weekly', (err, result) => {
                 if (err) return callback(err);
+                if (result && result.rankedAt >= 0) {
+                    rankedAt = result.rankedAt;
+                }
             })
         });
 
@@ -221,10 +329,12 @@ class Scores {
             if (scoreboard.topScores.length > 0) {
                 sb = scoreboard.topScores;
             }
-            let previousScore = this.getUserPreviousScore(user._id, sb)
-            monthlyBoard.logScore(user, parseInt(data.score) + previousScore, (err, result) => {
-                console.log("Logged to monthly")
+            let previousScore = this._getUserPreviousScore(user._id, sb)
+            monthlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Monthly',  (err, result) => {
                 if (err) return callback(err);
+                if (result && result.rankedAt >= 0) {
+                    rankedAt = result.rankedAt;
+                }
             })
         });
 
@@ -235,13 +345,18 @@ class Scores {
             if (scoreboard.topScores.length > 0) {
                 sb = scoreboard.topScores;
             }
-            let previousScore = this.getUserPreviousScore(user._id, sb)
-            yearlyBoard.logScore(user, parseInt(data.score) + previousScore, (err, result) => {
-                console.log("Logged to yearly")
+            let previousScore = this._getUserPreviousScore(user._id, sb)
+            yearlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Yearly', (err, result) => {
                 if (err) return callback(err);
                 // Trigger analytics event
                 buildfire.analytics.trackAction(analyticKeys.SCORE_LOGGED.key);
-                return callback(null, "Successfully added " + data.score + " to user score")
+                if (result && result.rankedAt >= 0) {
+                    return callback(null, { rank: result.rankedAt, board: Keys.overall })
+                }
+
+                else {
+                    return callback(null, { rank: rankedAt, board: Keys.overall })
+                }
             })
         });
     }
@@ -304,10 +419,9 @@ class Scores {
 
         // Get user's last daily score
         dailyBoard.getScoreboard((error, scoreboard) => {
-            userLastDailyScore = this.getUserPreviousScore(user._id, scoreboard.topScores)
+            userLastDailyScore = this._getUserPreviousScore(user._id, scoreboard.topScores)
             // Apply changes to rest of boards
-            dailyBoard.logScore(user, parseInt(data.score), (err, result) => {
-                console.log("Edited daily")
+            dailyBoard.logScore(user, parseInt(data.score), 'Daily', (err, result) => {
                 if (err) return callback(err);
                 // Edit weekly board
                 weeklyBoard.getScoreboard((error, scoreboard) => {
@@ -316,36 +430,34 @@ class Scores {
                     if (scoreboard.topScores.length > 0) {
                         sb = scoreboard.topScores;
                     }
-                    let weeklyPreviousScore = this.getUserPreviousScore(user._id, sb)
-                    weeklyBoard.logScore(user, weeklyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), (err, result) => {
-                        console.log("Edited weekly")
+                    let weeklyPreviousScore = this._getUserPreviousScore(user._id, sb)
+                    weeklyBoard.logScore(user, weeklyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Weekly', (err, result) => {
                         if (err) return callback(err);
-                    })
-                });
-                // Edit monthly board
-                monthlyBoard.getScoreboard((error, scoreboard) => {
-                    let sb = []
-                    if (error) return callback(error);
-                    if (scoreboard.topScores.length > 0) {
-                        sb = scoreboard.topScores;
-                    }
-                    let monthlyPreviousScore = this.getUserPreviousScore(user._id, sb)
-                    monthlyBoard.logScore(user, monthlyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), (err, result) => {
-                        console.log("Edited monthly")
-                        if (err) return callback(err);
-                    })
-                });
-                //Edit yearly board
-                yearlyBoard.getScoreboard((error, scoreboard) => {
-                    let sb = []
-                    if (error) return callback(error);
-                    if (scoreboard.topScores.length > 0) {
-                        sb = scoreboard.topScores;
-                    }
-                    let yearlyPreviousScore = this.getUserPreviousScore(user._id, sb)
-                    yearlyBoard.logScore(user, yearlyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), (err, result) => {
-                        console.log("Edited yearly")
-                        if (err) return callback(err);
+                        // Edit monthly board
+                        monthlyBoard.getScoreboard((error, scoreboard) => {
+                            let sb = []
+                            if (error) return callback(error);
+                            if (scoreboard.topScores.length > 0) {
+                                sb = scoreboard.topScores;
+                            }
+                            let monthlyPreviousScore = this._getUserPreviousScore(user._id, sb)
+                            monthlyBoard.logScore(user, monthlyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Monthly', (err, result) => {
+                                if (err) return callback(err);
+                                //Edit yearly board
+                                yearlyBoard.getScoreboard((error, scoreboard) => {
+                                    let sb = []
+                                    if (error) return callback(error);
+                                    if (scoreboard.topScores.length > 0) {
+                                        sb = scoreboard.topScores;
+                                    }
+                                    let yearlyPreviousScore = this._getUserPreviousScore(user._id, sb)
+                                    yearlyBoard.logScore(user, yearlyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Yearly', (err, result) => {
+                                        if (err) return callback(err);
+                                        return callback(null, "Success")
+                                    })
+                                });
+                            })
+                        });
                     })
                 });
             })
@@ -392,24 +504,25 @@ class Scores {
         // Reset daily board
 
         dailyBoard.reset((error, result) => {
-            if (error) return callback("Error Resetting the boards");
-            if (result)
-                // Reset weekly board
-                weeklyBoard.reset((error, result) => {
+            if (error) return callback("Error Resetting the boards")
+            // Reset weekly board
+            console.log("Reset daily board")
+            weeklyBoard.reset((error, result) => {
+                if (error) return callback("Error Resetting the boards");
+                console.log("Reset weekly board")
+                // Reset monthly board
+                monthlyBoard.reset((error, result) => {
                     if (error) return callback("Error Resetting the boards");
-                    if (result)
-                        // Reset monthly board
-                        monthlyBoard.reset((error, result) => {
-                            if (error) return callback("Error Resetting the boards");
-                            if (result)
-                                // Reset yearly board
-                                yearlyBoard.reset((error, result) => {
-                                    if (error) return callback("Error Resetting the boards");
-                                    return callback(null, "Successfully reset all boards");
-                                })
-                        })
-
+                    console.log("Reset monthly board")
+                    // Reset yearly board
+                    yearlyBoard.reset((error, result) => {
+                        if (error) return callback("Error Resetting the boards");
+                        console.log("Reset yearly board")
+                        return callback(null, "Successfully reset all boards");
+                    })
                 })
+
+            })
         })
     }
 }

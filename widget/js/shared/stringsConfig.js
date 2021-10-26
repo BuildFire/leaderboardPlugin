@@ -6,22 +6,22 @@ const stringsConfig = {
             add: {
                 title: "Enter Score Title",
                 defaultValue: "Add Score",
-                maxLength: 50
+                maxLength: 30
             },
             addSubtitle: {
-                title: "Enter Score Tubtitle",
-                defaultValue: "Input your score here. Please add just one score pre day!",
-                maxLength: 250,
+                title: "Enter Score Subtitle",
+                defaultValue: "Add Score Enter your score here. You may add more than one score in a day!",
+                maxLength: 100,
             }
             , edit: {
                 title: "Edit Score Title"
                 , defaultValue: "Edit Score"
-                , maxLength: 50
+                , maxLength: 30
             }
             , editSubtitle: {
                 title: "Edit Score Subtitle"
-                , defaultValue: "Input your score here. Please add just one score pre day!"
-                , maxLength: 250
+                , defaultValue: "Enter your score here. You may edit only today's score!"
+                , maxLength: 60
             }
         }
     }

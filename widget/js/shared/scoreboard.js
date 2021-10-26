@@ -67,8 +67,7 @@ buildfire.gamify.Scoreboard.prototype = {
         } else
             return false;
     }
-    , logScore: function (user, score, callback) {
-
+    , logScore: function (user, score, boardName, callback) {
         if (!user.id && user._id) user.id = user._id;
 
         if (this.options.autoSubscribeToPushNotification) {
@@ -81,6 +80,18 @@ buildfire.gamify.Scoreboard.prototype = {
         var ts = new Date();
         buildfire.publicData.get(this.tagName, function (err, result) {
 
+            let previousTopThree = [];
+            if (result.data.topScores) {
+                if (result.data.topScores?.length > 3) {
+                    previousTopThree = [result.data.topScores[0], result.data.topScores[1], result.data.topScores[2]];
+                }
+
+                else {
+                    previousTopThree = [...result.data.topScores];
+                }
+            }
+
+            console.log("previousTopThree", previousTopThree);
 
             var newRec = { user: user, score: score, createdOn: ts };
 
@@ -91,7 +102,6 @@ buildfire.gamify.Scoreboard.prototype = {
             if (err)
                 return callback(err);
             else if (result) {
-
                 if (!Array.isArray(result.data.topScores)) {
                     data.gamesPlayed++;
                     buildfire.publicData.save(data, t.tagName, err => {
@@ -102,7 +112,6 @@ buildfire.gamify.Scoreboard.prototype = {
                     });
                 }
                 else {
-
 
                     /// check if your score is greater than the lowest one
                     if (result.data.topScores.length > t.size) {
@@ -140,8 +149,91 @@ buildfire.gamify.Scoreboard.prototype = {
                     }
 
                     var bumpedOff;
-                    if (data.topScores.length > t.size)
-                        bumpedOff = data.topScores.pop();
+
+
+
+                    if (data.topScores.length > 3) {
+                        var newTopThree = [data.topScores[0], data.topScores[1], data.topScores[2]];
+                    }
+                    else {
+                        var newTopThree = data.topScores;
+                    }
+
+                    console.log("previousTopThree", previousTopThree);
+                    console.log("newTopThree", newTopThree);
+
+                    // Check if the new score is in top 3
+                    if (user.id == newTopThree[0].user.id || user.id == newTopThree[1].user.id || user.id == newTopThree[2].user.id) {
+                        // Check if it is a different rank
+                        // Check if user score is in previous
+                        let userPreviousRank = null;
+                        for (let i = 0; i < previousTopThree.length; i++) {
+                            if (previousTopThree[i].user.id == user.id) {
+                                userPreviousRank = i;
+                                break;
+                            }
+                        }
+
+                        if (userPreviousRank != null) {
+                            // Check if user score is in new
+                            let userNewRank = null;
+                            for (let i = 0; i < newTopThree.length; i++) {
+                                if (newTopThree[i].user.id == user.id) {
+                                    userNewRank = i;
+                                    break;
+                                }
+                            }
+
+                            if (userNewRank != null) {
+                                if (userNewRank != userPreviousRank) {
+                                    // a user is bumped off
+                                    bumpedOff = previousTopThree[userNewRank];
+                                    if (bumpedOff) {
+                                        if (userNewRank == 0) {
+                                            bumpedOff["position"] = "first";
+                                        }
+
+                                        else if (userNewRank == 1) {
+                                            bumpedOff["position"] = "second";
+                                        }
+
+                                        else if (userNewRank == 2) {
+                                            bumpedOff["position"] = "third";
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+
+                        else {
+                            // user is new to top 3
+                            let userNewRank = null;
+                            for (let i = 0; i < newTopThree.length; i++) {
+                                if (newTopThree[i].user.id == user.id) {
+                                    userNewRank = i;
+                                    bumpedOff = previousTopThree[userNewRank];
+                                    if (bumpedOff) {
+
+                                        if (userNewRank == 0) {
+                                            bumpedOff["position"] = "first";
+                                        }
+
+                                        else if (userNewRank == 1) {
+                                            bumpedOff["position"] = "second";
+                                        }
+
+                                        else if (userNewRank == 2) {
+                                            bumpedOff["position"] = "third";
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        console.log("bumpedOff", bumpedOff);
+                    }
 
                     data.gamesPlayed++;
                     buildfire.publicData.update(result.id, data, t.tagName, err => {
@@ -155,44 +247,36 @@ buildfire.gamify.Scoreboard.prototype = {
                                 break;
                             }
                         }
-                        var obj = { bumpedOff: bumpedOff, rankedAt: rankedAt };
+                        var obj = {
+                            bumpedOff: bumpedOff,
+                            rankedAt: rankedAt,
+                            userDisplayName: user.displayName || user.firstName + user.lastName || user.firstName || 'someone',
+                            bumpedDisplayName: bumpedOff ? bumpedOff.user.displayName || bumpedOff.user.firstName + bumpedOff.user.lastName || bumpedOff.user.firstName || 'someone' : null,
+                        };
 
                         if (t._PNEnabled()) {
 
-                            if (obj.bumpedOff && obj.bumpedOff.user.email != user.email) {
-
-                                //send notification
-                                buildfire.notifications.pushNotification.schedule({
-                                    title: "You got kicked off !!!"
-                                    , text: "Your old score is no longer on the top 10. " + user.displayName + " has taken your spot. Honestly, I dont know how you sleep at night."
-                                    //,at: new Date()
-                                    , users: [obj.bumpedOff.user.id]
-                                }, e => { if (e) console.error(e) });
-                            }
-
                             if (rankedAt == 0) {
+                                console.log("send message", obj.userDisplayName + " is now at first place in the " + boardName + " board! Can you take over?")
                                 buildfire.notifications.pushNotification.schedule({
-                                    title: "There is a new champion!"
-                                    , text: user.displayName + " has taken the lead at the new undisputed champion with a score of " + score
+                                    title: "New HighScore!"
+                                    , text: obj.userDisplayName + " is now at first place in the " + boardName + " board! Can you take over?"
                                     , groupName: t.pushGroupName
                                 }, e => { if (e) console.error(e) });
                             }
 
-                            if (rankedAt == 1) {
+                            else if (obj.bumpedOff && obj.bumpedOff.user.email != user.email) {
+                                console.log("sent message", obj.userDisplayName + " took over " + bumpedOff.position + " place from " + obj.bumpedDisplayName);
+                                // send notification
                                 buildfire.notifications.pushNotification.schedule({
-                                    title: "There is a challenger to the champion"
-                                    , text: user.displayName + " has taken 2nd place with a score of " + score + ". Watch out " + data.topScores[0].user.displayName
+                                    title: "Things are heating at the top!"
+                                    , text: obj.userDisplayName + " took over " + bumpedOff.position + " place from " + obj.bumpedDisplayName + " In the " + boardName + " board!"
+                                    // , at: new Date()
                                     , groupName: t.pushGroupName
                                 }, e => { if (e) console.error(e) });
                             }
 
-                            if (rankedAt == 2) {
-                                buildfire.notifications.pushNotification.schedule({
-                                    title: "There is a kid in town!"
-                                    , text: user.displayName + " has taken 3rd place. Keep an eye on this one"
-                                    , groupName: t.pushGroupName
-                                }, e => { if (e) console.error(e) });
-                            }
+
 
                         }
 

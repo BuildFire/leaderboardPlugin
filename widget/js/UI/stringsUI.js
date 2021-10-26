@@ -60,8 +60,9 @@ const stringsUI = {
 
 	, buildSection(container, sectionProp, sectionObj) {
 		let sec = this.createAndAppend("section", "", [], container);
-
-		this.createIfNotEmpty("h3", sectionObj.title, [], sec);
+		let titleDiv = this.createAndAppend("div","",[],sec);
+		this.createAndAppend("div", "", ["header", "overline"], titleDiv);
+		this.createIfNotEmpty("h3", sectionObj.title, ["lead"], titleDiv);
 		this.createIfNotEmpty("div", sectionObj.subtitle, ["subTitle"], sec);
 		for (let key in sectionObj.labels) this.buildLabel(sec, sectionProp + "." + key, sectionObj.labels[key]);
 		container.appendChild(sec);
@@ -69,6 +70,7 @@ const stringsUI = {
 	, buildLabel(container, prop, labelObj) {
 
     let div = this.createAndAppend('div', '', ["form-group"], container);
+	let labelContainer = this.createAndAppend('div','',["label-container"],div)
     let tooltipValue = null;
     let tooltipPosition = 'right';
     switch (prop) {
@@ -98,7 +100,8 @@ const stringsUI = {
         tooltipValue = 'The status of an entity after it\'s been submitted, reviewed, and needs to be archived';
         break;
     }
-		this.createAndAppend('label', labelObj.title, [], div, tooltipValue, tooltipPosition);
+		this.createAndAppend('label', labelObj.title, [], labelContainer, tooltipValue, tooltipPosition);
+		let inputContainer = this.createAndAppend('div','',["input-container"],div)
 		let inputElement;
 		let id= prop ;
 		let inputType= labelObj.inputType?labelObj.inputType.toLowerCase():"";
@@ -107,9 +110,9 @@ const stringsUI = {
 			labelObj.inputType &&
 			["textarea","wysiwyg"].indexOf(inputType)>=0
 		)
-			inputElement = this.createAndAppend('textarea', '', ["form-control","bf" + inputType], div);
+			inputElement = this.createAndAppend('textarea', '', ["form-control","bf" + inputType], inputContainer);
 		else {
-			inputElement = this.createAndAppend('input', '', ["form-control"], div);
+			inputElement = this.createAndAppend('input', '', ["form-control"], inputContainer);
 			inputElement.type = labelObj.inputType || "text";
 		}
 

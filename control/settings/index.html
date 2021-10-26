@@ -3,10 +3,10 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <!-- Load helper.css to use our helper classes.
 	<link href="../../../../styles/helper.css" rel="stylesheet">
 	-->
+    <link href="../../widget/css/index.css" rel="stylesheet">
 
     <!-- JS -->
     <script src="../../../../scripts/buildfire.min.js"></script>
@@ -26,8 +26,30 @@
 </head>
 
 <body>
-    <h1>Reset Boards</h1>
-    <button onclick="reset()">Reset</button>
+    <div>
+        <div class="header overline"></div>
+        <h3 class="lead">Reset Leaderboard</h3>
+    </div>
+    <p class="infoText">This option will delete all entries and scores in the leaderboard!</p>
+    <div class="settings-row">
+        <p>Reset Leaderboard</p>
+        <button class="btn btn-danger" onclick="toggleResetModal()">Reset</button>
+    </div>
+    <div id="resetModal" class="settings-modal">
+        <div class="modal-header">
+            <h4>Reset Leaderboard</h4>
+            <span onclick="toggleResetModal()" class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to reset leaderboard? This will delete all
+                entries and scores in the leaderboard!</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" onclick="reset()">Reset</button>
+            <button style="margin-right: 10px;" class="btn btn-cancel" onclick="toggleResetModal()">Cancel</button>
+        </div>
+    </div>
+    <div id="snackbar">Leaderboard has been successfully reset!</div>
 </body>
 
 <script>
@@ -43,14 +65,22 @@
         }
     }
 
+    const toggleResetModal = () => {
+        if (resetModal.classList.contains("show")) resetModal.classList.remove("show")
+        else resetModal.classList.add("show")
+    }
+
     //reset all leaderboards
     const reset = () => {
+        toggleResetModal();
         UserSettings.get((err, settings) => {
             if (err) return console.log(err)
             if (settings && settings.isSubscribedToPN) {
                 Scores.reset({ isSubscribedToPN: settings.isSubscribedToPN }, (err, res) => {
                     if (err) return console.log(err)
-                    console.log("res", res)
+                    buildfire.messaging.sendMessageToWidget("Reset");
+                    snackbar.className = "show";
+                    setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 5000);
                 })
             }
         })

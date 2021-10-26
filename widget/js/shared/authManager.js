@@ -10,7 +10,7 @@ const authManager = {
     },
 
 
-    getCurrentUserNew() {
+    getCurrentUser() {
         buildfire.auth.getCurrentUser((err, user) => {
             if (user)
                 authManager.currentUser = user;
@@ -56,6 +56,4 @@ const authManager = {
         // authManager.currentUser = user;
     }
 };
-buildfire.auth.onLogout(() => {
-    authManager.currentUser = null;
-});
+

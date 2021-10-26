@@ -1,25 +1,73 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="../../../../scripts/buildfire.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="./style.css">
+    <script src="../../../../scripts/buildfire.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./style.css">
 
     <style>
-        .subTitle{
+        .subTitle {
             margin-bottom: 25px;
             font-style: italic;
         }
-        textarea:invalid,input:invalid{
-            background-color:lightpink;
+
+        textarea:invalid,
+        input:invalid {
+            background-color: lightpink;
         }
-        .hidden{
+
+        .hidden {
             display: none;
         }
-        #deleteButton{
+
+        #deleteButton {
             padding-right: 25px;
             margin-top: 5px;
+        }
+
+        .header {
+            min-width: 60px;
+            color: #000;
+        }
+
+        .overline {
+            height: 5px;
+            background-color: #000;
+            width: 20px;
+        }
+
+        .inline-block {
+            display: inline-block;
+        }
+
+        .lead {
+            font-weight: 700 !important;
+            font-size: 20px !important;
+            margin-top: 5px !important;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .label-container {
+            flex: 0.2;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-container {
+            flex: 0.8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .label {
+            width: 100%;
         }
     </style>
 
@@ -43,61 +91,64 @@
 
 
 </head>
+
 <body>
     <div id="stringsContainer" class="hidden">
         loading...
     </div>
     <a id="saveButton" class="btn btn-success pull-right hidden" onclick="save()">Save</a>
-    <a id="deleteButton" style="display: none" class="text-danger pull-right hidden" onclick="deleteLanguage(strings.id)">Delete</a>
+    <a id="deleteButton" style="display: none" class="text-danger pull-right hidden"
+        onclick="deleteLanguage(strings.id)">Delete</a>
 
     <script>
-		let strings;
-		function loadLanguage(lang){
-			stringsContainer.classList.add("hidden");
-            strings = new buildfire.services.Strings(lang,stringsConfig);
-			stringsUI.init("stringsContainer",strings,stringsConfig);            
-			strings.init().then(()=>{
-				showNewLanguageState( strings.id );
-				strings.inject();
-			});
-		}
-		loadLanguage("en-us");
-		function showNewLanguageState(show){
-			if(show) {
-				saveButton.classList.remove("hidden");
-				stringsContainer.classList.remove("hidden");
-			}
-			else{
-				saveButton.classList.add("hidden");
-				stringsContainer.classList.add("hidden");
+        let strings;
+        function loadLanguage(lang) {
+            stringsContainer.classList.add("hidden");
+            strings = new buildfire.services.Strings(lang, stringsConfig);
+            stringsUI.init("stringsContainer", strings, stringsConfig);
+            strings.init().then(() => {
+                showNewLanguageState(strings.id);
+                strings.inject();
+            });
+        }
+        loadLanguage("en-us");
+        function showNewLanguageState(show) {
+            if (show) {
+                saveButton.classList.remove("hidden");
+                stringsContainer.classList.remove("hidden");
+            }
+            else {
+                saveButton.classList.add("hidden");
+                stringsContainer.classList.add("hidden");
                 createLanguage("en-us");
             }
         }
-		function createLanguage(language){
-			stringsContainer.disabled=true;
-			strings.createLanguage(language,()=>{
-				stringsContainer.disabled=false;
+        function createLanguage(language) {
+            stringsContainer.disabled = true;
+            strings.createLanguage(language, () => {
+                stringsContainer.disabled = false;
             });
-			showNewLanguageState(true);
-			return false;
+            showNewLanguageState(true);
+            return false;
         }
-		function deleteLanguage(){
-			buildfire.notifications.confirm({message:"Are you sure you want to remove support fo this language?",confirmButton:{type:"danger"}},(e,r)=>{
-				if(r.selectedButton.key =="confirm") {
-					strings.deleteLanguage(() => {
+        function deleteLanguage() {
+            buildfire.notifications.confirm({ message: "Are you sure you want to remove support fo this language?", confirmButton: { type: "danger" } }, (e, r) => {
+                if (r.selectedButton.key == "confirm") {
+                    strings.deleteLanguage(() => {
                         // loadLanguage(langOptions.value);
                         showNewLanguageState();
                     });
-				}
+                }
             })
         }
-        function save(){
-			strings.save(()=>{
-				buildfire.messaging.sendMessageToWidget({cmd:"refresh"})
+        function save() {
+            strings.save(() => {
+                buildfire.messaging.sendMessageToWidget({ cmd: "refresh" })
             });
         }
     </script>
 
 
 </body>
+
 </html>
