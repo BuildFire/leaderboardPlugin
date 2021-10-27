@@ -108,108 +108,6 @@ let currentSize = 'small';
 buildfire.appearance.titlebar.show(null, (err) => { });
 
 
-//SWIPE INITIALIZATION
-let swipeIndicator = document.getElementById("swipeIndicator");
-const swipe = new Swipe(swipeIndicator, {
-    corners: false,
-    minDistance: 5
-});
-
-let afterEvent = swipe.addEventListener("after", direction => {
-    if (direction === "up") {
-        enlargeBoard();
-    }
-
-    else if (direction == "down") {
-        minfifyBoard();
-    }
-});
-
-let leaderboardDrawer = document.getElementById("leaderboardDrawer");
-
-
-swipeIndicator.addEventListener('touchstart', handleTouchStart, false);
-swipeIndicator.addEventListener('touchmove', handleTouchMove, false);
-
-if (currentSize == 'small') {
-    drawerScoresContainer.addEventListener('touchstart', handleTouchStart, false);
-    drawerScoresContainer.addEventListener('touchmove', handleTouchMove, false);
-}
-
-var xDown = null;
-var yDown = null;
-
-function getTouches(evt) {
-    return evt.touches ||             // browser API
-        evt.originalEvent.touches; // jQuery
-}
-
-function handleTouchStart(evt) {
-    const firstTouch = getTouches(evt)[0];
-    xDown = firstTouch.clientX;
-    yDown = firstTouch.clientY;
-};
-
-function handleTouchMove(evt) {
-    if (!xDown || !yDown) {
-        return;
-    }
-
-    var xUp = evt.touches[0].clientX;
-    var yUp = evt.touches[0].clientY;
-
-    var xDiff = xDown - xUp;
-    var yDiff = yDown - yUp;
-
-    if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
-        if (xDiff > 0) {
-            /* right swipe */
-        } else {
-            /* left swipe */
-        }
-    } else {
-        if (yDiff > 0) {
-            enlargeBoard();
-        } else {
-            minfifyBoard();
-        }
-    }
-    /* reset values */
-    xDown = null;
-    yDown = null;
-};
-
-
-function handleTouchMoveScores(evt) {
-    if (!xDown || !yDown) {
-        return;
-    }
-
-    var xUp = evt.touches[0].clientX;
-    var yUp = evt.touches[0].clientY;
-
-    var xDiff = xDown - xUp;
-    var yDiff = yDown - yUp;
-
-    if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
-        if (xDiff > 0) {
-            /* right swipe */
-        } else {
-            /* left swipe */
-        }
-    } else {
-        if (yDiff > 0) {
-            enlargeBoard();
-        } else {
-            /* down swipe */
-        }
-    }
-    /* reset values */
-    xDown = null;
-    yDown = null;
-};
-
-
 ///create new instance of buildfire carousel viewer
 var view = new buildfire.components.carousel.view("#carousel", []);
 const addScoreDialog = new mdc.dialog.MDCDialog(document.getElementById('add_score_dialog'));
@@ -449,7 +347,7 @@ const switchTab = (activeTab) => {
     renderLoading();
     // Turn on active tab
     switch (activeTab) {
-        case 'Overall':
+        case Keys.overall:
             // Render User rank toast
             if (authManager.currentUser) {
                 Scores.getCurrentUserRank(Keys.overall, (err, res) => {
@@ -473,7 +371,7 @@ const switchTab = (activeTab) => {
             weekHeader.classList.remove('active-header');
             monthHeader.classList.remove('active-header');
             break;
-        case 'Day':
+        case Keys.daily:
             if (authManager.currentUser) {
                 Scores.getCurrentUserRank(Keys.daily, (err, res) => {
                     if (err) {
@@ -500,7 +398,7 @@ const switchTab = (activeTab) => {
             weekHeader.classList.remove('active-header');
             monthHeader.classList.remove('active-header');
             break;
-        case 'Month':
+        case Keys.monthly:
             if (authManager.currentUser) {
                 Scores.getCurrentUserRank(Keys.monthly, (err, res) => {
                     if (!err) {
@@ -525,7 +423,7 @@ const switchTab = (activeTab) => {
             weekHeader.classList.remove('active-header');
             overallHeader.classList.remove('active-header');
             break;
-        case 'Week':
+        case Keys.weekly:
             if (authManager.currentUser) {
                 Scores.getCurrentUserRank(Keys.weekly, (err, res) => {
                     if (!err) {
@@ -725,8 +623,6 @@ const renderLoading = () => {
 const enlargeBoard = () => {
     currentSize = 'large';
     renderLeaderboard(shownScores);
-    drawerScoresContainer.removeEventListener('touchstart', handleTouchStart, false);
-    drawerScoresContainer.removeEventListener('touchmove', handleTouchMove, false);
 }
 
 // decrease size and render again
@@ -734,8 +630,6 @@ const minfifyBoard = () => {
     drawerScoresContainer.scrollTop = 0;
     currentSize = 'small';
     renderLeaderboard(shownScores);
-    drawerScoresContainer.addEventListener('touchstart', handleTouchStart, false);
-    drawerScoresContainer.addEventListener('touchmove', handleTouchMove, false);
 }
 
 //Toggle the view where the user adds the score
@@ -793,7 +687,8 @@ const load = () => {
     getScores(Keys.overall, (scores) => {
         if (scores) {
             authManager.getCurrentUser();
-            switchTab("Overall");
+            switchTab(Keys.overall);
+            // renderLeaderboard(testData);
         }
         else
             leaderboardDrawer.classList.add("hide");
@@ -850,5 +745,3 @@ editScoreDialog.listen('MDCDialog:closing', function (event) {
     contentElement.removeAttribute('aria-hidden');
     leaderboardDrawer.classList.remove("hide");
 });
-
-

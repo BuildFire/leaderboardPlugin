@@ -10,7 +10,6 @@
 
 
 	<script src="../../../scripts/buildfire.min.js"></script>
-	<script src="js/shared/Swipe.js"></script>
 	<script src="./js/shared/scoreboard.js""></script>
 	<script src=" ../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
 	<script src="./js/shared/authManager.js"></script>
@@ -28,7 +27,7 @@
 	<script src="js/shared/stringsConfig.js"></script>
 	<link href="../../../styles/materialDesign/material-components-web@4.0.0.min.css" rel="stylesheet" />
 	<script src="../../../scripts/materialDesign/material-components-web@4.0.0.min.js" type="text/javascript"></script>
-
+	<script src="js/UI/swipehandler.js"></script>
 </head>
 
 <body>
@@ -129,16 +128,16 @@
 		<div id="leaderboardDrawer" class="hide">
 			<div id="swipeIndicator" class="drag-indicator"></div>
 			<div class="drawer-header">
-				<div onclick="switchTab('Overall')" class="drawer-header-title active-header" id="overallHeader">
+				<div onclick="switchTab(Keys.overall)" class="drawer-header-title active-header" id="overallHeader">
 					<p>Overall</p>
 				</div>
-				<div onclick="switchTab('Month')" class="drawer-header-title" id="monthHeader">
+				<div onclick="switchTab(Keys.monthly)" class="drawer-header-title" id="monthHeader">
 					<p>Month</p>
 				</div>
-				<div onclick="switchTab('Week')" class="drawer-header-title" id="weekHeader">
+				<div onclick="switchTab(Keys.weekly)" class="drawer-header-title" id="weekHeader">
 					<p>Week</p>
 				</div>
-				<div onclick="switchTab('Day')" class="drawer-header-title" id="dayHeader">
+				<div onclick="switchTab(Keys.daily)" class="drawer-header-title" id="dayHeader">
 					<p>Day</p>
 				</div>
 			</div>
