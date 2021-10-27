@@ -46,7 +46,7 @@ buildfire.services.Strings = class{
 		let segmentKey = s[0];
 		let labelKey = s[1];
 
-		let v;
+		let v
 		let l = this._data[segmentKey][labelKey];
 		if(l.value || (l.value ==="" && !l.required))
 			v= l.value;
@@ -143,4 +143,3 @@ buildfire.services.Strings = class{
 		buildfire.datastore.save(this._data,this.collectionName, callback);
 	}
 };
-

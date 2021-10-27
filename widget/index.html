@@ -1,205 +1,154 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="buildfire" content="enableMDTheme" />
+	<link href="../../../scripts/owlCarousel/owlCarousel.css" rel="stylesheet" />
+	<link href="./css/index.css" rel="stylesheet" />
 
 
 
-  <!-- JS -->
-  <script src="../../../scripts/buildfire.js"></script>
-
-
-    <script src="js/scoreboard.js"></script>
-    <script src="../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
-
-
-    <script src="js/shared/ui.js"></script>
-    <script src="js/listView.js"></script>
-
-<!--
-    <link rel="stylesheet" href="listView.css">
-    <link rel="stylesheet" href="main.css">
--->
-    <style>
-        .placement{
-            text-align: center;
-            display: none;
-            margin-top: 1em;
-        }
-        #firstPlaceCard > img{
-            border-radius: 50%;
-            width: 128px;
-            height: 128px;
-            border: 5px gold solid;
-        }
-
-        #secondPlaceCard > img{
-            border-radius: 50%;
-            width: 64px;
-            height: 64px;
-            border: 5px silver solid;
-
-        }
-
-        #thirdPlaceCard > img{
-            border-radius: 50%;
-            width: 64px;
-            height: 64px;
-            border: 5px #8a6d3b solid;
-
-        }
-
-        .animate{
-            animation: fadein 1s ease-in;
-            display: block;
-        }
-        @keyframes fadein {
-            0%{opacity: 0;}
-            100%{opacity: 1;}
-        }
-    </style>
-
+	<script src="../../../scripts/buildfire.min.js"></script>
+	<script src="./js/shared/scoreboard.js""></script>
+	<script src=" ../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
+	<script src="./js/shared/authManager.js"></script>
+	<script src="./js/data/UserSetting.js"></script>
+	<script src="./js/dataAccess/UserSettings.js"></script>
+	<script src="./js/data/Score.js"></script>
+	<script src="./js/dataAccess/Scores.js"></script>
+	<script src="./js/data/Keys.js"></script>
+	<script src="./js/shared/analyticKeys.js"></script>
+	<script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="../../../scripts/owlCarousel/owlCarousel.js"></script>
+	<script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
+	<script src="js/UI/widgetUI.js" defer></script>
+	<script src="js/shared/strings.js"></script>
+	<script src="js/shared/stringsConfig.js"></script>
+	<link href="../../../styles/materialDesign/material-components-web@4.0.0.min.css" rel="stylesheet" />
+	<script src="../../../scripts/materialDesign/material-components-web@4.0.0.min.js" type="text/javascript"></script>
+	<script src="js/UI/swipehandler.js"></script>
 </head>
+
 <body>
+	<div id="main_container">
+		<button onclick="showAddScoreView()" class="add_btn mdc-theme--primary-bg mdc-button" id="add_btn"></button>
+		<div id="scoreSnackbar">
+			<div id="snackbarContent" class="snackbar-content">
+				<div id="snackbarLabel"></div>
+				<div id="editScoreContainer" class="edit">
+					<p onclick="showEditScoreView()">Edit Score</p>
+					<span onclick="hideToast()" class="snack-close">&times;</span>
+				</div>
+			</div>
+		</div>
+		<div class="content-container">
+			<div id="carousel"></div>
+			<div id="my_container_div"></div>
+		</div>
+		<div id="contentElement">
+			<div class="mdc-dialog" id="add_score_dialog">
+				<div class="mdc-dialog__container">
+					<div class="mdc-dialog__surface" role="alertdialog" aria-modal="true"
+						aria-labelledby="add-dialog-title" aria-describedby="my-dialog-content">
+						<!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+						<h2 class="mdc-dialog__title" id="add-dialog-title">
+							<!--
+			   -->Add Score
+							<!--
+			 -->
+						</h2>
+						<div class="mdc-dialog__content" id="my-dialog-content">
+							<p id="add-dialog-subtitle">Input your score here. Please add one score day!</p>
+							<div class="inline-text-field-container">
+								<div class="dialog-input-container">
+									<div class="dialog-input-wrapper">
+										<label id="addScoreLabel" for="score_input">Your Score</label>
+										<input inputmode="numeric" type="text" id="addScoreInput"
+											class="dialog-input-field" />
+									</div>
+									<p id="addScoreErrorMessage" class="dialog-input-error-message"></p>
+								</div>
+							</div>
+						</div>
+						<div class="mdc-dialog__actions">
+							<button onclick="closeAddDialog()" type="button" class="mdc-button mdc-dialog__button">
+								<div class="mdc-button__ripple"></div>
+								<span class="mdc-button__label">Cancel</span>
+							</button>
+							<button id="addScoreButton" onclick="addScore()" type="button" class="mdc-button mdc-dialog__button">
+								<div class="mdc-button__ripple"></div>
+								<span class="mdc-button__label">Save</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="mdc-dialog__scrim"></div>
+			</div>
 
-<div id="top3">
-    <div id="firstPlaceCard" class="placement">
-        <img id="fpImg" src="">
-        <h1 id="fpName" class="title" >John Doe <br/>Score:123</h1>
-    </div>
-    <div id="secondPlaceCard" class="placement">
-        <img id="spImg" src="">
-        <h2 id="spName" class="title">John Doe <br/>Score:123</h2>
-    </div>
-    <div id="thirdPlaceCard" class="placement">
-        <img id="tpImg" src="">
-        <h3 id="tpName" class="title">John Doe <br/>Score:123</h3>
-    </div>
-
-</div>
-<div id="listViewContainer">
-
-</div>
-<span>Score</span><input id="score" type="number" value="100"><button onclick="save()">Set</button>
-<script>
-
-	let lv = new ListView("listViewContainer",{enableAddButton:true,Title:"Leader Board"});
-	lv.onAddButtonClicked=()=>{
-
-		let item= new ListViewItem({
-			title:"Title 1"
-			, description:"Here is my really long description. Here is my really long description. Here is my really long description. "
-			,imageUrl:"https://img.icons8.com/officel/2x/worldwide-location.png"
-
-		});
-
-		lv.addItem(item);
-	};
-
-
-
-	let sb = new buildfire.gamify.Scoreboard("leaders",100,{
-		autoSubscribeToPushNotification:true
-		,overrideRecords:true
-        ,sortAscending:false
-	});
-    function save(){
-		buildfire.auth.getCurrentUser((e,user)=>{
-			if(!user)
-				buildfire.auth.login();
-			else {
-
-				sb.logScore(user, parseInt(score.value),(r,err)=>{
-					loadBoard();
-                });
-
-			}
-        });
-
-    }
-
-    function loadCache(cacheId) {
-		let s = localStorage.getItem('_leaderboard' + cacheId);
-		if(s) {
-			renderBoard( JSON.parse(s));
-			return true;
-		}
-		else
-			return false;
-
-	}
-
-    function loadBoard(cacheId){
-		sb.getScoreboard((err,records)=>{
-			renderBoard(records);
-			if(cacheId) localStorage.setItem('_leaderboard' + cacheId,JSON.stringify(records));
-        });
-    }
-
-	buildfire.getContext((e,c)=>{
-		if(loadCache(c.instanceId))
-		    setTimeout( ()=>loadBoard(c.instanceId) ,2000); // see old result then change it
-		else
-			loadBoard(c.instanceId)
-	});
-
-
-    function renderBoard(records){
-		listViewContainer.innerHTML='';
-    	let i=0;
-		let list=[];
-		let top3=[];
-    	records.topScores.forEach(r=>{
-			i++;
-			let url = buildfire.auth.getUserPictureUrl({userId:r.user.id});
-
-			let obj = {
-				userId:r.user.id
-				,title:r.user.displayName
-				,imageUrl:url
-				,description:r.score
-				,toolbar:[{
-					key:"btnBadge"
-					,class:"toolbarBadge"
-					,text:i<4?i:""
-				}]
-			};
-
-			if(i<4)
-				top3.push(obj);
-			else
-				list.push(obj);
-		});
-
-		loadTop3(top3);
-		lv.loadListViewItems(list);
-    }
-
-    function loadTop3(top3){
-
-    	function setCard(card,record,rank){
-
-			card.querySelector('.title').innerHTML = `#${rank} ${record.title} </br> score: ${record.description}`;
-
-			if(record.userId == card.getAttribute("userId") )return;
-
-    		let img = card.querySelector('img');
-
-            img.src = buildfire.imageLib.cropImage(record.imageUrl,{width:128,height:128});
-			card.classList.remove('animate');
-			window.requestAnimationFrame(()=>{card.classList.add('animate');});
-
-			card.setAttribute("userId",record.userId);
-        }
+			<div class="mdc-dialog" id="edit_score_dialog">
+				<div class="mdc-dialog__container">
+					<div class="mdc-dialog__surface" role="alertdialog" aria-modal="true"
+						aria-labelledby="edit-dialog-title" aria-describedby="my-dialog-content">
+						<!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+						<h2 class="mdc-dialog__title" id="edit-dialog-title">
+							<!--
+			   -->Edit Score
+							<!--
+			 -->
+						</h2>
+						<div class="mdc-dialog__content" id="my-dialog-content">
+							<p id="edit-dialog-subtitle"></p>
+							<div class="inline-text-field-container">
+								<div class="dialog-input-container">
+									<div class="dialog-input-wrapper">
+										<label id="editScoreLabel" for="score_input">Your Score</label>
+										<input inputmode="numeric" type="text" id="editScoreInput"
+											class="dialog-input-field" />
+									</div>
+									<p id="editScoreErrorMessage" class="dialog-input-error-message"></p>
+								</div>
+							</div>
+						</div>
+						<div class="mdc-dialog__actions">
+							<button onclick="closeEditDialog()" type="button" class="mdc-button mdc-dialog__button">
+								<div class="mdc-button__ripple"></div>
+								<span class="mdc-button__label">Cancel</span>
+							</button>
+							<button id="editScoreButton" onclick="editScore()" type="button" class="mdc-button mdc-dialog__button">
+								<div class="mdc-button__ripple"></div>
+								<span class="mdc-button__label">Save</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="mdc-dialog__scrim"></div>
+			</div>
+		</div>
+		<div id="leaderboardDrawer" class="hide">
+			<div id="swipeIndicator" class="drag-indicator"></div>
+			<div class="drawer-header">
+				<div onclick="switchTab(Keys.overall)" class="drawer-header-title active-header" id="overallHeader">
+					<p>Overall</p>
+				</div>
+				<div onclick="switchTab(Keys.monthly)" class="drawer-header-title" id="monthHeader">
+					<p>Month</p>
+				</div>
+				<div onclick="switchTab(Keys.weekly)" class="drawer-header-title" id="weekHeader">
+					<p>Week</p>
+				</div>
+				<div onclick="switchTab(Keys.daily)" class="drawer-header-title" id="dayHeader">
+					<p>Day</p>
+				</div>
+			</div>
+			<div class="drawer-content">
+				<div id="drawerScoresContainer" class="score-container">
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-    	if(top3.length >0) setCard(firstPlaceCard,top3[0],1);
-		if(top3.length >1) setCard(secondPlaceCard,top3[1],2);
-		if(top3.length >2) setCard(thirdPlaceCard,top3[2],3);
-
-    }
-
-
-</script>
 </body>
+
 </html>

@@ -1,26 +1,32 @@
 {
-  "author": "Buildfire",
-  "pluginName": "Scoreboard",
+  "author": "BuildFire",
+  "pluginName": "Leaderboard",
   "pluginDescription": "Keeps track of leaders",
-  "supportEmail": "devSupport@buildfire.com",
+  "supportEmail": "support@buildfire.com",
   "control": {
     "content": {
       "enabled": true
     },
-    "design":{
+    "design": {
       "enabled": false
     },
     "settings": {
-      "enabled": false
+      "enabled": true
     },
     "customTabs": [
-      { "title": "Language", "url": "/strings/index.html" }
-      ]
-
+      {
+        "title": "Tests",
+        "url": "tests/index.html"
+      },
+      {
+        "title": "Language",
+        "url": "strings/index.html"
+      }
+    ]
   },
-  "widget": {
-
-  },
+  "widget": {},
   "features": [],
-  "languages": ["en"]
+  "languages": [
+    "en"
+  ]
 }
