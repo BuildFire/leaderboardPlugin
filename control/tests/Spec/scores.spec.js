@@ -25,7 +25,9 @@ describe('Scores()', function () {
                     isSubscribedToPN: true
                 }
             }, (err, resp) => {
-                expect(resp).toEqual('Successfully added 100 to user score');
+                expect(resp).toEqual(jasmine.objectContaining({
+                    rank: 0,
+                }));
                 done();
             });
         });
@@ -38,7 +40,9 @@ describe('Scores()', function () {
                     isSubscribedToPN: false
                 }
             }, (err, resp) => {
-                expect(resp).toEqual('Successfully added 100 to user score');
+                expect(resp).toEqual(jasmine.objectContaining({
+                    rank: 0,
+                }));
                 done();
             });
         });
@@ -131,43 +135,6 @@ describe('Scores()', function () {
                 done();
             });
         });
-
-        //Beat first place in all boards
-        it('Beat first place', function (done) {
-            Scores.getScores({
-                leaderboardType: 'yearly', settings: {
-                    isSubscribedToPN: false
-                }
-            }, (err, resp) => {
-                let topScore = 0
-                if (resp.length > 0) {
-                    topScore = resp[0].currentScore
-                }
-                Scores.addScore({
-                    score: topScore + 1,
-                    settings: {
-                        isSubscribedToPN: false
-                    }
-                }, (err, resp) => {
-                    expect(resp).toEqual(`Successfully added ${topScore + 1} to user score`);
-                    console.log("Current user", authManager.currentUser)
-                    let userID = authManager.currentUser._id;
-                    Scores.getScores({
-                        leaderboardType: 'yearly',
-                        settings: {
-                            isSubscribedToPN: false
-                        }
-                    },
-                        (err, res) => {
-                            console.log("Response", res[0])
-                            expect(res[0]).toEqual(jasmine.objectContaining({
-                                userId: userID,
-                            }));
-                            done();
-                        });
-                })
-            })
-        });
     });
 
 
@@ -254,7 +221,7 @@ describe('Scores()', function () {
             }, 100);
         })
 
-        it('reset function should be deined', function (done) {
+        it('reset function should be defined', function (done) {
             expect(Scores.reset).toBeDefined('reset functionality not defined');
             done();
         })
