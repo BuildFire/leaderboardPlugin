@@ -143,26 +143,9 @@ class Scores {
         sb.getScoreboard((err, scoreboard) => {
             if (err) return callback("Error fetching scoreboard");
             if (scoreboard.topScores.length > 0) {
-                scoreboard.topScores.forEach((element, index) => {
-                    let width = 40;
-                    let height = 40;
-
-                    if (index == 0) {
-                        width = 80;
-                        height = 80;
-                    }
-
-                    if (index == 1) {
-                        width = 64;
-                        height = 64;
-                    }
-
-                    if (index == 2) {
-                        width = 64;
-                        height = 64;
-                    }
-                    let imgURL = buildfire.imageLib.cropImage(buildfire.auth.getUserPictureUrl({userId: element.user._id}) ,{width:width,height:height})
-                    
+                scoreboard.topScores.forEach((element, index) => {                    
+                    // let imgURL = buildfire.imageLib.cropImage(buildfire.auth.getUserPictureUrl({ userId: element.user._id }), { width: width, height: height });
+                    let imgURL = buildfire.auth.getUserPictureUrl({ userId: element.user._id });
                     scores.push(new Score({
                         createdOn: element.createdOn,
                         lastUpdatedOn: element.user.lastUpdated,
@@ -174,6 +157,7 @@ class Scores {
                 });
 
             }
+            console.log("scoressss", scores)
             callback(null, scores)
         });
     }
@@ -314,7 +298,7 @@ class Scores {
                 sb = scoreboard.topScores;
             }
             let previousScore = this._getUserPreviousScore(user._id, sb)
-            weeklyBoard.logScore(user, parseInt(data.score) + previousScore,'Weekly', (err, result) => {
+            weeklyBoard.logScore(user, parseInt(data.score) + previousScore, 'Weekly', (err, result) => {
                 if (err) return callback(err);
                 if (result && result.rankedAt >= 0) {
                     rankedAt = result.rankedAt;
@@ -330,7 +314,7 @@ class Scores {
                 sb = scoreboard.topScores;
             }
             let previousScore = this._getUserPreviousScore(user._id, sb)
-            monthlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Monthly',  (err, result) => {
+            monthlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Monthly', (err, result) => {
                 if (err) return callback(err);
                 if (result && result.rankedAt >= 0) {
                     rankedAt = result.rankedAt;

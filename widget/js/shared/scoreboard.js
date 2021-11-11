@@ -254,14 +254,14 @@ buildfire.gamify.Scoreboard.prototype = {
                             bumpedDisplayName: bumpedOff ? bumpedOff.user.displayName || bumpedOff.user.firstName + bumpedOff.user.lastName || bumpedOff.user.firstName || 'someone' : null,
                         };
 
-                        if (t._PNEnabled()) {
-
+                        if (t._PNEnabled()) {                         
                             if (rankedAt == 0) {
                                 console.log("send message", obj.userDisplayName + " is now at first place in the " + boardName + " board! Can you take over?")
                                 buildfire.notifications.pushNotification.schedule({
                                     title: "New HighScore!"
                                     , text: obj.userDisplayName + " is now at first place in the " + boardName + " board! Can you take over?"
                                     , groupName: t.pushGroupName
+                                    , sendToSelf: false
                                 }, e => { if (e) console.error(e) });
                             }
 
@@ -273,6 +273,7 @@ buildfire.gamify.Scoreboard.prototype = {
                                     , text: obj.userDisplayName + " took over " + bumpedOff.position + " place from " + obj.bumpedDisplayName + " In the " + boardName + " board!"
                                     // , at: new Date()
                                     , groupName: t.pushGroupName
+                                    , sendToSelf: false
                                 }, e => { if (e) console.error(e) });
                             }
 

@@ -25,7 +25,7 @@ document.getElementById('drawerScoresContainer').addEventListener('mouseup', fun
     handleScoreGesture();
 }, false);
 
-swipeIndicator.addEventListener('mousedown', function (event) {
+drawerHeader.addEventListener('mousedown', function (event) {
     indicatorTouchstartX = event.screenX;
     indicatorTouchstartY = event.screenY;
 }, false);
@@ -114,8 +114,8 @@ function handleScoreGesture() {
 // Handle mobile swipe gestures
 
 
-swipeIndicator.addEventListener('touchstart', handleTouchStart, false);
-swipeIndicator.addEventListener('touchmove', handleIndicatorTouchMove, false);
+drawerHeader.addEventListener('touchstart', handleTouchStart, false);
+drawerHeader.addEventListener('touchmove', handleIndicatorTouchMove, false);
 
 if (currentSize == 'small') {
     drawerScoresContainer.addEventListener('touchstart', handleTouchStart, false);

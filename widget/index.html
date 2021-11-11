@@ -76,7 +76,8 @@
 								<div class="mdc-button__ripple"></div>
 								<span class="mdc-button__label">Cancel</span>
 							</button>
-							<button id="addScoreButton" onclick="addScore()" type="button" class="mdc-button mdc-dialog__button">
+							<button id="addScoreButton" onclick="addScore()" type="button"
+								class="mdc-button mdc-dialog__button">
 								<div class="mdc-button__ripple"></div>
 								<span class="mdc-button__label">Save</span>
 							</button>
@@ -115,7 +116,8 @@
 								<div class="mdc-button__ripple"></div>
 								<span class="mdc-button__label">Cancel</span>
 							</button>
-							<button id="editScoreButton" onclick="editScore()" type="button" class="mdc-button mdc-dialog__button">
+							<button id="editScoreButton" onclick="editScore()" type="button"
+								class="mdc-button mdc-dialog__button">
 								<div class="mdc-button__ripple"></div>
 								<span class="mdc-button__label">Save</span>
 							</button>
@@ -126,19 +128,21 @@
 			</div>
 		</div>
 		<div id="leaderboardDrawer" class="hide">
-			<div id="swipeIndicator" class="drag-indicator"></div>
-			<div class="drawer-header">
-				<div onclick="switchTab(Keys.overall)" class="drawer-header-title active-header" id="overallHeader">
-					<p>Overall</p>
-				</div>
-				<div onclick="switchTab(Keys.monthly)" class="drawer-header-title" id="monthHeader">
-					<p>Month</p>
-				</div>
-				<div onclick="switchTab(Keys.weekly)" class="drawer-header-title" id="weekHeader">
-					<p>Week</p>
-				</div>
-				<div onclick="switchTab(Keys.daily)" class="drawer-header-title" id="dayHeader">
-					<p>Day</p>
+			<div id="drawerHeader">
+				<div id="swipeIndicator" class="drag-indicator"></div>
+				<div class="drawer-menu">
+					<div onclick="switchTab(Keys.overall)" class="drawer-header-title active-header" id="overallHeader">
+						<p>Overall</p>
+					</div>
+					<div onclick="switchTab(Keys.monthly)" class="drawer-header-title" id="monthHeader">
+						<p>Month</p>
+					</div>
+					<div onclick="switchTab(Keys.weekly)" class="drawer-header-title" id="weekHeader">
+						<p>Week</p>
+					</div>
+					<div onclick="switchTab(Keys.daily)" class="drawer-header-title" id="dayHeader">
+						<p>Day</p>
+					</div>
 				</div>
 			</div>
 			<div class="drawer-content">

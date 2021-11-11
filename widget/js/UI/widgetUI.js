@@ -273,10 +273,39 @@ const editScore = () => {
 
 
 //easily create a ui element
-const ui = (elementType, appendTo, innerHTML, classNameArray, imageSource) => {
+const ui = (elementType, appendTo, innerHTML, classNameArray, imageSource, imageType, rank) => {
     let e = document.createElement(elementType);
     if (innerHTML) e.innerHTML = innerHTML;
-    if (elementType == 'img') e.src = imageSource;
+    if (elementType == 'img') {
+        e.src = imageSource;
+        if (imageType == 'profile') {
+            let width = 40;
+            let height = 40;
+
+            if (rank == 0) {
+                width = 80;
+                height = 80;
+            }
+
+            if (rank == 1) {
+                width = 64;
+                height = 64;
+            }
+
+            if (rank == 2) {
+                width = 64;
+                height = 64;
+            }
+                e.onload = () => {
+                        if (e.src.indexOf('avatar.png') < 0) {
+                            e.src =  buildfire.imageLib.cropImage(imageSource, { width: height, height: height });
+                        }
+                    }
+                e.onerror = () => {
+                    e.src =  "./images/avatar.png"
+                };
+        }
+    }
     if (Array.isArray(classNameArray)) {
         classNameArray.forEach(c => e.classList.add(c));
     }
@@ -286,10 +315,12 @@ const ui = (elementType, appendTo, innerHTML, classNameArray, imageSource) => {
 
 // Fetches the scores of the active tab and passes to renderLeaderboard
 const displayScores = () => {
+    console.log("displaying scores");
     // Turn on active tab
     switch (currentActiveTab) {
         case Keys.overall:
             getScores(Keys.overall, (scores) => {
+                console.log("overall scores", scores);
                 if (scores.length > 0) {
                     overallScores = scores;
                     drawerScoresContainer.innerHTML = ""
@@ -502,7 +533,7 @@ const renderScoreRow = (score, index) => {
         rankContainer = ui('div', leftContainer, null, ['rank-container'], null);
         rank = ui('img', rankContainer, null, ['score-icon'], "./images/number-one.svg");
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image', 'first'], score.displayPictureUrl);
+        image = ui('img', imageContainer, null, ['score-image', 'first'], score.displayPictureUrl, 'profile', 0);
     }
     else if (index == 1) {
         row = ui('div', drawerScoresContainer, null, ['score-row', 'second'], null);
@@ -510,7 +541,7 @@ const renderScoreRow = (score, index) => {
         rankContainer = ui('div', leftContainer, null, ['rank-container'], null);
         rank = ui('img', rankContainer, null, ['score-icon'], "./images/number-two.svg");
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image', 'second'], score.displayPictureUrl);
+        image = ui('img', imageContainer, null, ['score-image', 'second'], score.displayPictureUrl, 'profile', 1);
     }
     else if (index == 2) {
         row = ui('div', drawerScoresContainer, null, ['score-row', 'third'], null);
@@ -518,7 +549,7 @@ const renderScoreRow = (score, index) => {
         rankContainer = ui('div', leftContainer, null, ['rank-container'], null);
         rank = ui('img', rankContainer, null, ['score-icon'], "./images/number-three.svg");
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image', 'third'], score.displayPictureUrl);
+        image = ui('img', imageContainer, null, ['score-image', 'third'], score.displayPictureUrl, 'profile', 2);
     }
     else {
         row = ui('div', drawerScoresContainer, null, ['score-row'], null);
@@ -526,7 +557,7 @@ const renderScoreRow = (score, index) => {
         rankContainer = ui('div', leftContainer, null, ['rank-container'], null);
         rank = ui('h5', rankContainer, "#" + (index + 1), ['score-rank']);
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image'], score.displayPictureUrl);
+        image = ui('img', imageContainer, null, ['score-image'], score.displayPictureUrl, 'profile');
     }
     let scoreDiv = ui('div', row, null, ['score-scoreDiv']);
     let name = ui('p', scoreDiv, score.displayName, ['score-name']);
@@ -570,21 +601,21 @@ const renderEmptyScoreRow = (score, index) => {
         leftContainer = ui('div', row, null, ['score-row-left'], null);
         rank = ui('img', leftContainer, null, ['score-icon'], "./images/number-one.svg");
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image', 'first'], score.displayPictureUrl);
+        image = ui('img', imageContainer, null, ['score-image', 'first'], score.displayPictureUrl, 'profile', 0);
     }
     else if (index == 1) {
         row = ui('div', drawerScoresContainer, null, ['score-row', 'second'], null);
         leftContainer = ui('div', row, null, ['score-row-left'], null);
         rank = ui('img', leftContainer, null, ['score-icon'], "./images/number-two.svg");
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image', 'second'], score.displayPictureUrl);
+        image = ui('img', imageContainer, null, ['score-image', 'second'], score.displayPictureUrl, 'profile', 1);
     }
     else if (index == 2) {
         row = ui('div', drawerScoresContainer, null, ['score-row', 'third'], null);
         leftContainer = ui('div', row, null, ['score-row-left'], null);
         rank = ui('img', leftContainer, null, ['score-icon'], "./images/number-three.svg");
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image', 'third'], score.displayPictureUrl);
+        image = ui('img', imageContainer, null, ['score-image', 'third'], score.displayPictureUrl, 'profile', 2);
     }
     else {
         row = ui('div', drawerScoresContainer, null, ['score-row'], null);
@@ -661,8 +692,8 @@ const showEditScoreView = () => {
 //get list of score of a leaderboard
 const getScores = (leaderboardType, cb) => {
     Scores.getScores({ leaderboardType: leaderboardType, settings: { isSubscribedToPN: isSubscribedToPN } }, (err, scores) => {
+        console.log(scores);
         if (err) console.error(err);
-        console.log("scores", scores)
         cb(scores);
     })
 }
@@ -671,27 +702,45 @@ const closeAddDialog = () => {
     addScoreDialog.close();
     addScoreButton.classList.remove("disabled");
     addScoreButton.disabled = false;
+    if (addScoreLabel.classList.contains("error")) addScoreLabel.classList.remove("error");
+    if (addScoreErrorMessage.classList.contains("show")) addScoreErrorMessage.classList.remove("show");
+    addScoreErrorMessage.innerHTML = "";
     addScoreInput.value = "";
+    getScores(Keys.overall, (scores) => {
+        if (scores.length != 0) {
+            leaderboardDrawer.classList.remove("hide");
+        }
+    })
 }
 
 const closeEditDialog = () => {
     editScoreDialog.close();
     editScoreButton.classList.remove("disabled");
     editScoreButton.disabled = false;
+    if (editScoreLabel.classList.contains("error")) editScoreLabel.classList.remove("error");
+    if (editScoreErrorMessage.classList.contains("show")) editScoreErrorMessage.classList.remove("show");
+    editScoreErrorMessage.innerHTML = "";
     editScoreInput.value = "";
+    getScores(Keys.overall, (scores) => {
+        if (scores.length != 0) {
+            leaderboardDrawer.classList.remove("hide");
+        }
+    })
 }
 
 //get previous user settings
 const load = () => {
     loadLanguage("en-us");
+    authManager.getCurrentUser();
     getScores(Keys.overall, (scores) => {
         if (scores) {
-            authManager.getCurrentUser();
             switchTab(Keys.overall);
             // renderLeaderboard(testData);
         }
-        else
+        else {
             leaderboardDrawer.classList.add("hide");
+        }
+
     })
 
 }
@@ -733,7 +782,6 @@ addScoreDialog.listen('MDCDialog:opened', function () {
 
 addScoreDialog.listen('MDCDialog:closing', function (event) {
     contentElement.removeAttribute('aria-hidden');
-    leaderboardDrawer.classList.remove("hide");
 });
 
 editScoreDialog.listen('MDCDialog:opened', function () {
@@ -743,5 +791,4 @@ editScoreDialog.listen('MDCDialog:opened', function () {
 
 editScoreDialog.listen('MDCDialog:closing', function (event) {
     contentElement.removeAttribute('aria-hidden');
-    leaderboardDrawer.classList.remove("hide");
 });
