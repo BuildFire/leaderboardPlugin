@@ -296,14 +296,14 @@ const ui = (elementType, appendTo, innerHTML, classNameArray, imageSource, image
                 width = 64;
                 height = 64;
             }
-                e.onload = () => {
-                        if (e.src.indexOf('avatar.png') < 0) {
-                            e.src =  buildfire.imageLib.cropImage(imageSource, { width: height, height: height });
-                        }
-                    }
-                e.onerror = () => {
-                    e.src =  "./images/avatar.png"
-                };
+            e.onload = () => {
+                if (e.src.indexOf('avatar.png') < 0) {
+                    e.src = buildfire.imageLib.cropImage(imageSource, { width: height, height: height });
+                }
+            }
+            e.onerror = () => {
+                e.src = "./images/avatar.png"
+            };
         }
     }
     if (Array.isArray(classNameArray)) {
@@ -382,8 +382,9 @@ const switchTab = (activeTab) => {
             // Render User rank toast
             if (authManager.currentUser) {
                 Scores.getCurrentUserRank(Keys.overall, (err, res) => {
-                    if (err) {
+                    if (err && err == "Scoreboard is empty") {
                         console.error(err);
+                        if (!leaderboardDrawer.classList.contains("hide")) leaderboardDrawer.classList.add("hide");
                     }
                     if (!err) {
                         currentActiveTab = Keys.overall;
@@ -728,14 +729,32 @@ const closeEditDialog = () => {
     })
 }
 
+const testScores = () => {
+    let testData = [];
+    for (let index = 0; index <= 100; index++) {
+        testData.push(
+            {
+                "createdOn": "2021-10-16T10:02:52.128Z",
+                "userId": "6132739cfe743405301f54cd",
+                "displayName": "Mohamad",
+                "currentScore": 300,
+                "displayPictureUrl": "https://picsum.photos/100/100",
+                "_buildfire": {},
+                "isActive": true,
+                "lastUpdatedOn": "2021-10-08T20:30:47.987Z"
+            })
+    }
+    renderLeaderboard(testData);
+}
+
 //get previous user settings
 const load = () => {
     loadLanguage("en-us");
     authManager.getCurrentUser();
     getScores(Keys.overall, (scores) => {
-        if (scores) {
+        if (scores && scores.length > 0) {
             switchTab(Keys.overall);
-            // renderLeaderboard(testData);
+            // testScores();
         }
         else {
             leaderboardDrawer.classList.add("hide");
