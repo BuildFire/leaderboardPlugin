@@ -1,7 +1,7 @@
 {
   "author": "BuildFire",
   "pluginName": "Leaderboard",
-  "pluginDescription": "Keeps track of leaders",
+  "pluginDescription": "Leaderboard, is a dynamic plugin that enables you to compete with team-members and your community for the highest score at the top of the board, it also enables you to create trackable challenges, and keep scores in a daily-weekly-monthly format, as well as staying up to date on current rankings via push notifications.",
   "supportEmail": "support@buildfire.com",
   "control": {
     "content": {
@@ -28,5 +28,6 @@
   "features": [],
   "languages": [
     "en"
-  ]
+  ],
+  "keywords": "leaderboard, compete, competititon, score, scoring, trackable, challenges, rankings, timeframe"
 }
