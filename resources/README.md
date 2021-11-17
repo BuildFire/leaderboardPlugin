@@ -7,3 +7,4 @@ The Resources is the default images which will be used for your widget .
 
  * **Note** :This folder is only meant for plugin configuration resource like default widget icon and widget hero image.** You can replace those two files if you need by overriding the default hero image and default icon image. **Don't add any other files in this folder, any dependencies in this folder WILL NOT be carried over to the app.**
 
+
