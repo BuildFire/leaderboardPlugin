@@ -136,9 +136,13 @@ p.infoText {
 }
 
 .content-container {
-    height: calc(100vh - 341px);
+    height: 100%;
     overflow-y: scroll;
     padding-bottom: 20px;
+}
+
+.content-container.small {
+    height: calc(100vh - 341px);
 }
 
 .row {

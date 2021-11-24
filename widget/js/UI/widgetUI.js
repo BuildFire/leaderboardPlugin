@@ -156,6 +156,7 @@ buildfire.messaging.onReceivedMessage = (message) => {
     if (message === "Reset") {
         overallScores = [];
         if (!leaderboardDrawer.classList.contains("hide")) leaderboardDrawer.classList.add("hide");
+        contentContainer.classList.remove("small");
     }
     else {
         if (message.cmd && message.cmd == "refresh") {
@@ -326,8 +327,11 @@ const displayScores = () => {
                     drawerScoresContainer.innerHTML = ""
                     renderLeaderboard(scores)
                 }
-                else
+                else {
                     if (!leaderboardDrawer.classList.contains("hide")) leaderboardDrawer.classList.add("hide");
+                    contentContainer.classList.remove("small");
+                }
+                    
             });
             break;
         case Keys.daily:
@@ -385,6 +389,7 @@ const switchTab = (activeTab) => {
                     if (err && err == "Scoreboard is empty") {
                         console.error(err);
                         if (!leaderboardDrawer.classList.contains("hide")) leaderboardDrawer.classList.add("hide");
+                        contentContainer.classList.remove("small");
                     }
                     if (!err) {
                         currentActiveTab = Keys.overall;
@@ -572,6 +577,7 @@ const renderLeaderboard = (scores) => {
             renderScoreRow(score, index);
         });
         if (leaderboardDrawer.classList.contains("hide")) leaderboardDrawer.classList.remove("hide");
+        contentContainer.classList.add("small");
         shownScores = scores;
     }
     if (currentSize === 'large') drawerScoresContainer.classList.add("big");
@@ -585,6 +591,7 @@ const renderEmptyLeaderboard = () => {
         renderEmptyScoreRow(score, index);
     });
     if (leaderboardDrawer.classList.contains("hide")) leaderboardDrawer.classList.remove("hide");
+    contentContainer.classList.add("small");
     shownScores = overallScores;
     if (currentSize === 'large') drawerScoresContainer.classList.add("big");
     if (currentSize === 'small' && drawerScoresContainer.classList.contains("big")) drawerScoresContainer.classList.remove("big")
@@ -647,6 +654,7 @@ const renderLoading = () => {
         renderLoadingRow();
     }
     if (leaderboardDrawer.classList.contains("hide")) leaderboardDrawer.classList.remove("hide");
+    contentContainer.classList.add("small");
     if (currentSize === 'large') drawerScoresContainer.classList.add("big");
     if (currentSize === 'small' && drawerScoresContainer.classList.contains("big")) drawerScoresContainer.classList.remove("big");
 }
@@ -669,6 +677,7 @@ const showAddScoreView = () => {
     if (authManager.currentUser) {
         user = authManager.currentUser;
         leaderboardDrawer.classList.add("hide");
+        contentContainer.classList.remove("small");
         addScoreDialog.open();
     }
 
@@ -682,6 +691,7 @@ const showEditScoreView = () => {
     if (authManager.currentUser && currentActiveTab == Keys.daily) {
         user = authManager.currentUser;
         leaderboardDrawer.classList.add("hide");
+        contentContainer.classList.remove("small");
         editScoreDialog.open();
     }
 
@@ -710,6 +720,7 @@ const closeAddDialog = () => {
     getScores(Keys.overall, (scores) => {
         if (scores.length != 0) {
             leaderboardDrawer.classList.remove("hide");
+            contentContainer.classList.add("small");
         }
     })
 }
@@ -725,6 +736,7 @@ const closeEditDialog = () => {
     getScores(Keys.overall, (scores) => {
         if (scores.length != 0) {
             leaderboardDrawer.classList.remove("hide");
+            contentContainer.classList.add("small");
         }
     })
 }
@@ -758,6 +770,7 @@ const load = () => {
         }
         else {
             leaderboardDrawer.classList.add("hide");
+            contentContainer.classList.remove("small");
         }
 
     })
