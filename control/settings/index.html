@@ -10,31 +10,90 @@
 
     <!-- JS -->
     <script src="../../../../scripts/buildfire.min.js"></script>
-    <script src="../../widget/js/shared/scoreboard.js""></script>
+    <script src="../../widget/js/shared/scoreboard.js"></script>
     <script src=" ../../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
     <script src="../../widget/js/dataAccess/Scores.js"></script>
     <script src="../../widget/js/shared/authManager.js"></script>
     <script src="../../widget/js/dataAccess/UserSettings.js"></script>
     <script src="../../widget/js/data/UserSetting.js"></script>
     <script src="../../widget/js/shared/analyticKeys.js"></script>
-    <!--
-    <script src="../../../../scripts/angular/angular.min.js"></script>
-    <script src="../../../../scripts/angular/ui-bootstrap.min.js"></script>
 
-    <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
-    -->
+    <link href="../../../../styles/control/bf-base.css" rel="stylesheet" />
+    <link href="../../../../styles/bootstrap.css" />
+        
+    <link href="../../../../styles/helper.css" rel="stylesheet" />
+    <link href="../../../../styles/siteIcons.css" rel="stylesheet" />
+
+    <script src="../../../../scripts/sortable.min.js"></script>
+    <script src="../../../../scripts/buildfire/components/actionItems/sortableList.js"></script>
 </head>
 
 <body>
-    <div>
-        <div class="header overline"></div>
-        <h3 class="lead">Reset Leaderboard</h3>
+   
+    <h1>General</h1>
+    <div class="row" style="align-items: start">
+        <div class="labels col-md-4 pull-left tooltip-container">
+                <span>Notifications Frequency </span>
+                <span class="tip btn-info-icon btn-primary"><span class="cp-tooltip">If this field is  blank, then “Points per Item” cannot be blank. If this field has a value greater than zero, then this item will show up as a reward to redeem on the Loyalty feature’s main screen</span>
+            
+        </div>
+        <div class="main col-md-8 pull-right">
+            <span class="row">
+                <div class="col-md-6 checkbox checkbox-primary">
+                    <input id="dailyChange" type="checkbox" value="dailyChange" >
+                    <label for="dailyChange">Daily Change</label>
+                </div>
+                <div class="col-md-6  checkbox checkbox-primary " >
+                    <input id="weeklyChange" type="checkbox" value="weeklyChange" >
+                    <label for="weeklyChange">Weekly Change</label>
+                </div>
+            </span>
+            <span class="row">
+                <div class="col-md-6 checkbox checkbox-primary" style="margin-top: 20px !important">
+                    <input id="monthlyChange" type="checkbox" value="monthlyChange" >
+                    <label for="monthlyChange">Monthly Change</label>
+                </div>
+                <div class="col-md-6 checkbox checkbox-primary" style="margin-top: 20px !important">
+                    <input id="allTimeChange" type="checkbox" value="allTimeChange" >
+                    <label for="allTimeChange">All-Time Change</label>
+                </div>
+            </span>
+        </div>
+
+      
     </div>
+    <div class="row" style="margin-top: 30px">
+        <div class="labels col-md-4 pull-left">
+          <span>Set How User Earns Points</span>
+        </div>
+        <div class="main col-md-8 pull-right">
+              <span class="row">
+                <div class="col-md-6 radio radio-primary radio-inline">
+                    <input id="honorSystem" type="radio" name="userEarnPoints"  value="HONOR_SYSTEM">
+                    <label class="subtitles-labels" for="honorSystem">Honor System</label>
+                </div>
+                <div class="col-md-6 radio radio-primary radio-inline">
+                    <input id="scoreFromFreeTextQuestionnaire" type="radio" name="userEarnPoints"  value='SCORE_FROM_FREE_TEXT_QUESTIONNAIRE'>
+                    <label class="subtitles-labels"  for="scoreFromFreeTextQuestionnaire">Score from Free Text Questionnaire</label>
+                </div>
+            </span>
+            
+        </div>
+      </div>
+      <div class="row" style="margin-top: 30px;align-items:start">
+        <div class="labels col-md-4 pull-left tooltip-container">
+            <span>Free Text Questionnaire</span>
+            <span class="tip btn-info-icon btn-primary"><span class="cp-tooltip">You must enable "Calculate score" and "Save Submissions to App Data" options on connected Free Text Questionnaire. Points will be calculated and updated after you enter Leaderboard plugin again.</span>
+        </div>
+        <div class="main col-md-8 pull-right">
+            <div class="ftqFeatures"></div>
+        </div>
+     </div>
+
+
+    <h1>Reset Leaderboard</h1>
     <p class="infoText">This option will delete all entries and scores in the leaderboard!</p>
-    <div class="settings-row">
-        <p>Reset Leaderboard</p>
-        <button class="btn btn-danger" onclick="toggleResetModal()">Reset</button>
-    </div>
+    <button style="float: right;min-width: 6rem;font-weight: 400;" class="btn btn-danger" onclick="toggleResetModal()">Reset</button>
     <div id="resetModal" class="settings-modal">
         <div class="modal-header">
             <h4>Reset Leaderboard</h4>
@@ -53,6 +112,19 @@
 </body>
 
 <script>
+
+
+    var settings = null;
+    var ftqFeautreItems = [];
+    var honorSystemRadioBtn = document.getElementById("honorSystem")
+    var scoreFromFreeTextQuestionnaireadioBtn = document.getElementById("scoreFromFreeTextQuestionnaire")
+
+    var dailyChange = document.getElementById("dailyChange")
+    var weeklyChange = document.getElementById("weeklyChange")
+    var monthlyChange = document.getElementById("monthlyChange")
+    var allTimeChange = document.getElementById("allTimeChange")
+
+    var ftqFeatures = null
     //Register push notifications event
     const load = () => {
         for (let propName in analyticKeys) {
@@ -63,7 +135,182 @@
                 }
             );
         }
+        initFeatureActions();
+        initNotificationFrequencyCheckboxes();
+        initUserEarnPointsRadioBtns();
+        initSettings();
     }
+
+
+    const initSettings = () => {
+        buildfire.datastore.get("Settings",function (err, result) {
+            if (err || !result) {
+            console.error(err, 'Error while getting datastore.');
+            buildfire.dialog.toast({
+                message: "Error while loading data. Retrying again in 2 seconds...",
+                duration: 1999
+            });
+            setTimeout(function() {
+                location.reload();
+            }, 2000);
+            return;
+            }
+            if(result && result.data){
+                settings = result.data
+
+                if(settings.userEarnPoints && settings.userEarnPoints == scoreFromFreeTextQuestionnaireadioBtn.value){
+                    scoreFromFreeTextQuestionnaireadioBtn.setAttribute("checked",true)
+                } else {
+                    honorSystemRadioBtn.setAttribute("checked",true)
+                }
+
+                if(settings.features && settings.features.length > 0){
+                    ftqFeatures.loadItems(settings.features);
+                } else {
+                    settings.features = []
+                }
+
+                if(settings.notificationsFrequency && settings.notificationsFrequency.length > 0){
+                    settings.notificationsFrequency.forEach(notificationFrequency => {
+                        if(notificationFrequency == dailyChange.value){
+                            dailyChange.checked = true
+                        } else if(notificationFrequency == weeklyChange.value){
+                            weeklyChange.checked = true
+                        } else if(notificationFrequency == monthlyChange.value){
+                            monthlyChange.checked = true
+                        } else if(notificationFrequency == allTimeChange.value){
+                            allTimeChange.checked = true
+                        }
+                    });
+                } else {
+                    settings.notificationsFrequency = []
+                }
+            }
+        })
+    }
+
+    const initUserEarnPointsRadioBtns = () => {
+        scoreFromFreeTextQuestionnaireadioBtn.addEventListener('input', function (evt) {
+            if(settings && settings.userEarnPoints != evt.target.value){
+                settings.userEarnPoints = evt.target.value;
+                save();
+            }
+        });
+        honorSystemRadioBtn.addEventListener('input', function (evt) {
+            if(settings && settings.userEarnPoints != evt.target.value){
+                settings.userEarnPoints = evt.target.value;
+                save();
+            }
+        });
+    }
+
+    const initNotificationFrequencyCheckboxes = () => {
+        dailyChange.addEventListener('input', function (evt) {
+            if(evt.target.checked){
+                settings.notificationsFrequency.push(evt.target.value)
+            } else {
+                settings.notificationsFrequency = settings.notificationsFrequency.filter(x => x != evt.target.value)
+            }
+            save();
+
+        });
+        weeklyChange.addEventListener('input', function (evt) {
+            if(evt.target.checked){
+                settings.notificationsFrequency.push(evt.target.value)
+            } else {
+                settings.notificationsFrequency = settings.notificationsFrequency.filter(x => x != evt.target.value)
+            }
+            save();
+
+        });
+        monthlyChange.addEventListener('input', function (evt) {
+            if(evt.target.checked){
+                settings.notificationsFrequency.push(evt.target.value)
+            } else {
+                settings.notificationsFrequency = settings.notificationsFrequency.filter(x => x != evt.target.value)
+            }
+            save();
+
+        });
+        allTimeChange.addEventListener('input', function (evt) {
+            if(evt.target.checked){
+                settings.notificationsFrequency.push(evt.target.value)
+            } else {
+                settings.notificationsFrequency = settings.notificationsFrequency.filter(x => x != evt.target.value)
+            }
+            save();
+        });
+    } 
+
+    const initFeatureActions = () => {
+        ftqFeatures = new buildfire.components.actionItems.sortableList(
+        ".ftqFeatures"
+        );
+        document.querySelector(".add-new-item").innerHTML = "Add Feature"
+
+        ftqFeatures.onAddItems = function (item) {
+            item.order = settings.features.length;
+            settings.features.push(item)
+            buildfire.datastore.save(settings,"Settings", function (err, result) {
+                if (err || !result) {
+                    console.error("Error saving the widget details: ", err);
+                }
+            });
+        };
+
+        ftqFeatures.onDeleteItem = function (item, index) {
+            settings.features.splice(index, 1);
+            save();
+        };
+
+        ftqFeatures.onOrderChange = function (item, oldIndex, newIndex) {
+            var items =  settings.features;
+
+            items[oldIndex].order = newIndex;
+
+            var tmp = items[oldIndex];
+
+            if (oldIndex < newIndex) {
+                for (var i = oldIndex + 1; i <= newIndex; i++) {
+                    items[i - 1] = items[i];
+                }
+            } else {
+                for (var i = oldIndex - 1; i >= newIndex; i--) {
+                    items[i + 1] = items[i];
+                }
+            }
+
+            items[newIndex] = tmp;
+
+            settings.features = items;
+            save();
+        };
+
+        ftqFeatures.onItemChange = (item, index) => {
+            settings.features[index]= item;
+            save();
+        };
+
+        let ftqContainer = ftqFeatures.selector.childNodes[0]
+        ftqContainer.removeChild(ftqContainer.childNodes[0])
+        ftqContainer.childNodes[0].classList.remove("col-md-9")
+        ftqContainer.childNodes[0].classList.add("col-md-12")
+
+        let ftqButton = ftqContainer.childNodes[0].childNodes[0]
+        ftqButton.childNodes[0].style.float = "right !important"
+        ftqButton.childNodes[0].classList.remove("pull-left")
+        ftqButton.childNodes[0].classList.add("pull-right")
+    }
+
+
+    const save = () => {
+        buildfire.datastore.save(settings,"Settings", function (err, result) {
+                if (err || !result) {
+                    console.error("Error saving the widget details: ", err);
+                }
+        });
+    }
+
 
     const toggleResetModal = () => {
         if (resetModal.classList.contains("show")) resetModal.classList.remove("show")

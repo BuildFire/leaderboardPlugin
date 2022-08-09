@@ -98,6 +98,7 @@ let testData = [
     },
 ];
 
+let settings = null;
 let strings;
 
 let shownScores = [];
@@ -119,7 +120,11 @@ function loadItems(carouselItems) {
     view.loadItems(carouselItems);
 }
 
-
+buildfire.datastore.get("Settings",(err, result)=>{
+    if(err) return;
+    settings = result.data;
+   
+})
 
 /// call buildfire datastore to see if there are any previously saved items
 buildfire.datastore.get(function (err, obj) {
@@ -146,7 +151,9 @@ buildfire.datastore.onUpdate(function (obj) {
     if (obj.tag == "wysContent") {
         loadData(null, obj)
     }
-
+    else if(obj.tag == "Settings"){
+        settings = obj.data
+    }
     else if (obj.data && obj.data.carouselItems) {
         loadItems(obj.data.carouselItems)
     }
@@ -203,10 +210,12 @@ const checkEditScore = () => {
 //add score for current user
 const addScore = () => {
     if (checkAddScore()) {
+        settings.isSubscribedToPN = isSubscribedToPN
+
         addScoreButton.classList.add("disabled");
         addScoreButton.disabled = true;
         let score = parseInt(addScoreInput.value);
-        Scores.addScore({ score: score, settings: { isSubscribedToPN: isSubscribedToPN } }, (err, data) => {
+        Scores.addScore({ score: score, settings }, (err, data) => {
             if (err == 'User not logged in') {
                 authManager.enforceLogin();
             }
@@ -239,13 +248,35 @@ const addScore = () => {
     }
 }
 
+buildfire.auth.getCurrentUser(function (err, user) {
+    if(user){
+        buildfire.appData.search(
+            {
+              filter: {
+                $or: [
+                  { "$json.userId": user._id },
+                ],
+              },
+            },
+            "userLoyaltyPoints1",
+            (err, result) => {
+                if(result && result.length > 0){
+                    let response = result[0].data
+                    editScoreInput.value = response.totalPoints
+                    editScore();
+                }
+             })
+    }
+})
+
 //Edit the score of the user
 const editScore = () => {
     editScoreButton.classList.add("disabled");
     editScoreButton.disabled = true;
     if (checkEditScore()) {
         let score = parseInt(editScoreInput.value);
-        Scores.editDailyScore({ score: score, settings: { isSubscribedToPN: isSubscribedToPN } }, (err, data) => {
+        settings.isSubscribedToPN = isSubscribedToPN
+        Scores.editDailyScore({ score: score, settings}, (err, data) => {
             if (err == 'User not logged in') {
                 authManager.enforceLogin();
             }
@@ -675,10 +706,36 @@ const minfifyBoard = () => {
 //Toggle the view where the user adds the score
 const showAddScoreView = () => {
     if (authManager.currentUser) {
-        user = authManager.currentUser;
-        leaderboardDrawer.classList.add("hide");
-        contentContainer.classList.remove("small");
-        addScoreDialog.open();
+        if(settings != null &&  settings.userEarnPoints && settings.userEarnPoints === "SCORE_FROM_FREE_TEXT_QUESTIONNAIRE"){
+            let items = [];
+            settings.features.forEach(element => {
+              items.push({
+                text: element.title,
+                instanceId: element.instanceId,
+                iconUrl: element.iconUrl
+              })
+            });
+            buildfire.components.drawer.open(
+              {
+                listItems: items
+              },
+              (err, result) => {
+                if (err) return console.error(err);
+                buildfire.components.drawer.closeDrawer();
+                buildfire.localStorage.setItem("selectedFeature", result, (error) => {
+                  if (error) return console.error("something went wrong!", error);
+                });
+                buildfire.navigation.navigateTo({
+                  instanceId: result.instanceId,
+                });
+              }
+            );
+        } else {
+            user = authManager.currentUser;
+            leaderboardDrawer.classList.add("hide");
+            contentContainer.classList.remove("small");
+            addScoreDialog.open();
+        }
     }
 
     else {
