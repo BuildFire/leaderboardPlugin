@@ -258,7 +258,7 @@ buildfire.auth.getCurrentUser(function (err, user) {
                 ],
               },
             },
-            "userLoyaltyPoints1",
+            "userLoyaltyPoints",
             (err, result) => {
                 if(result && result.length > 0){
                     let response = result[0].data
@@ -707,29 +707,32 @@ const minfifyBoard = () => {
 const showAddScoreView = () => {
     if (authManager.currentUser) {
         if(settings != null &&  settings.userEarnPoints && settings.userEarnPoints === "SCORE_FROM_FREE_TEXT_QUESTIONNAIRE"){
-            let items = [];
-            settings.features.forEach(element => {
-              items.push({
-                text: element.title,
-                instanceId: element.instanceId,
-                iconUrl: element.iconUrl
-              })
-            });
-            buildfire.components.drawer.open(
-              {
-                listItems: items
-              },
-              (err, result) => {
-                if (err) return console.error(err);
-                buildfire.components.drawer.closeDrawer();
-                buildfire.localStorage.setItem("selectedFeature", result, (error) => {
-                  if (error) return console.error("something went wrong!", error);
-                });
+            if(settings.features.length == 1){
                 buildfire.navigation.navigateTo({
-                  instanceId: result.instanceId,
+                    instanceId: settings.features[0].instanceId,
+                  });
+            } else {
+                let items = [];
+                settings.features.forEach(element => {
+                  items.push({
+                    text: element.title,
+                    instanceId: element.instanceId,
+                    iconUrl: element.iconUrl
+                  })
                 });
-              }
-            );
+                buildfire.components.drawer.open(
+                  {
+                    listItems: items
+                  },
+                  (err, result) => {
+                    if (err) return console.error(err);
+                    buildfire.components.drawer.closeDrawer();
+                    buildfire.navigation.navigateTo({
+                      instanceId: result.instanceId,
+                    });
+                  }
+                );
+            }
         } else {
             user = authManager.currentUser;
             leaderboardDrawer.classList.add("hide");
@@ -848,6 +851,11 @@ const inject = () => {
     document.getElementById("add-dialog-subtitle").innerHTML = strings.get('score.addSubtitle')
     document.getElementById("edit-dialog-title").innerHTML = strings.get('score.edit')
     document.getElementById("edit-dialog-subtitle").innerHTML = strings.get('score.editSubtitle')
+
+    document.getElementById("overallText").innerHTML = strings.get('scoreboard.overall')
+    document.getElementById("monthText").innerHTML = strings.get('scoreboard.month')
+    document.getElementById("weekText").innerHTML = strings.get('scoreboard.week')
+    document.getElementById("dayText").innerHTML = strings.get('scoreboard.day')
 }
 
 

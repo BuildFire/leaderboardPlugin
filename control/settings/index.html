@@ -34,7 +34,7 @@
     <div class="row" style="align-items: start">
         <div class="labels col-md-4 pull-left tooltip-container">
                 <span>Notifications Frequency </span>
-                <span class="tip btn-info-icon btn-primary"><span class="cp-tooltip">If this field is  blank, then “Points per Item” cannot be blank. If this field has a value greater than zero, then this item will show up as a reward to redeem on the Loyalty feature’s main screen</span>
+                <span class="tip btn-info-icon btn-primary"><span class="cp-tooltip">If this field is  blank, then 'Points per Item' cannot be blank. If this field has a value greater than zero, then this item will show up as a reward to redeem on the Loyalty feature's main screen</span>
             
         </div>
         <div class="main col-md-8 pull-right">
@@ -55,7 +55,7 @@
                 </div>
                 <div class="col-md-6 checkbox checkbox-primary" style="margin-top: 20px !important">
                     <input id="allTimeChange" type="checkbox" value="allTimeChange" >
-                    <label for="allTimeChange">All-Time Change</label>
+                    <label for="allTimeChange">Overall Change</label>
                 </div>
             </span>
         </div>
@@ -80,10 +80,10 @@
             
         </div>
       </div>
-      <div class="row" style="margin-top: 30px;align-items:start">
+      <div id="ftqFeaturesContainer" class="row" style="margin-top: 30px;align-items:start">
         <div class="labels col-md-4 pull-left tooltip-container">
             <span>Free Text Questionnaire</span>
-            <span class="tip btn-info-icon btn-primary"><span class="cp-tooltip">You must enable "Calculate score" and "Save Submissions to App Data" options on connected Free Text Questionnaire. Points will be calculated and updated after you enter Leaderboard plugin again.</span>
+            <span class="tip btn-info-icon btn-primary"><span class="cp-tooltip">You must enable 'Calculate score' and 'Save Submissions to App Data' options on connected Free Text Questionnaire. Points will be calculated and updated after you enter Leaderboard plugin again.</span>
         </div>
         <div class="main col-md-8 pull-right">
             <div class="ftqFeatures"></div>
@@ -116,6 +116,7 @@
 
     var settings = null;
     var ftqFeautreItems = [];
+    var ftqFeaturesContainer = document.getElementById("ftqFeaturesContainer")
     var honorSystemRadioBtn = document.getElementById("honorSystem")
     var scoreFromFreeTextQuestionnaireadioBtn = document.getElementById("scoreFromFreeTextQuestionnaire")
 
@@ -161,11 +162,13 @@
                 if(settings.userEarnPoints && settings.userEarnPoints == scoreFromFreeTextQuestionnaireadioBtn.value){
                     scoreFromFreeTextQuestionnaireadioBtn.setAttribute("checked",true)
                 } else {
+                    ftqFeaturesContainer.style.display = "none"
                     honorSystemRadioBtn.setAttribute("checked",true)
                 }
 
                 if(settings.features && settings.features.length > 0){
                     ftqFeatures.loadItems(settings.features);
+                    changeActionItemsIcon()
                 } else {
                     settings.features = []
                 }
@@ -189,16 +192,28 @@
         })
     }
 
+    const changeActionItemsIcon = () => {
+        Array.from(document.querySelectorAll(".btn-icon.btn-delete-icon")).forEach(
+                        (el) => {
+                        el.classList.remove("btn-icon", "btn-delete-icon", "btn-danger");
+                        el.classList.add("icon", "icon-cross2");
+                        }
+                    );
+    }
+
     const initUserEarnPointsRadioBtns = () => {
         scoreFromFreeTextQuestionnaireadioBtn.addEventListener('input', function (evt) {
             if(settings && settings.userEarnPoints != evt.target.value){
                 settings.userEarnPoints = evt.target.value;
+                ftqFeaturesContainer.style.display = "block"
                 save();
             }
         });
         honorSystemRadioBtn.addEventListener('input', function (evt) {
             if(settings && settings.userEarnPoints != evt.target.value){
                 settings.userEarnPoints = evt.target.value;
+                ftqFeaturesContainer.style.display = "none"
+
                 save();
             }
         });
@@ -256,6 +271,8 @@
                     console.error("Error saving the widget details: ", err);
                 }
             });
+          
+            changeActionItemsIcon()
         };
 
         ftqFeatures.onDeleteItem = function (item, index) {

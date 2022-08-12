@@ -24,5 +24,31 @@ const stringsConfig = {
                 , maxLength: 60
             }
         }
+    },
+    scoreboard: {
+        title: "Scoreboard"
+        , subtitle: ""
+        , labels: {
+            overall: {
+                title: "Overall",
+                defaultValue: "Overall",
+                maxLength: 10,
+            },
+            day: {
+                title: "Day",
+                defaultValue: "Day",
+                maxLength: 10,
+            }
+            , week: {
+                title: "Week"
+                , defaultValue: "Week"
+                , maxLength: 10
+            }
+            , month: {
+                title: "Month"
+                , defaultValue: "Month"
+                , maxLength: 10
+            }
+        }
     }
 };

@@ -726,3 +726,6 @@ p.infoText {
 .radio-inline + .radio-inline, .checkbox-inline + .checkbox-inline {
     margin-left: 0 !important;
 }
+div.col-md-5.text-right.pull-right.padding-right-zero > a {
+    display: none;
+}
