@@ -307,7 +307,7 @@ const editScore = () => {
                         if (!err) {
                             currentActiveTab = Keys.overall;
                             displayScores();
-                            renderUserRankToast(res.rank);
+                            renderUserRankToast(res);
                         }
                     });
 
@@ -448,7 +448,7 @@ const switchTab = (activeTab) => {
                         currentActiveTab = Keys.overall;
                         displayScores();
                         if(!isCalculatingLoyaltyPoints){
-                            renderUserRankToast(res.rank);
+                            renderUserRankToast(res);
                         }
                     }
                 });
@@ -472,7 +472,7 @@ const switchTab = (activeTab) => {
                     if (!err) {
                         currentActiveTab = Keys.daily;
                         displayScores();
-                        renderUserRankToast(res.rank, true);
+                        renderUserRankToast(res, true);
                     }
 
                     else {
@@ -496,7 +496,7 @@ const switchTab = (activeTab) => {
                     if (!err) {
                         currentActiveTab = Keys.monthly;
                         displayScores();
-                        renderUserRankToast(res.rank);
+                        renderUserRankToast(res);
                     }
 
                     else {
@@ -521,7 +521,7 @@ const switchTab = (activeTab) => {
                     if (!err) {
                         currentActiveTab = Keys.weekly;
                         displayScores();
-                        renderUserRankToast(res.rank);
+                        renderUserRankToast(res);
                     }
 
                     else {
@@ -546,9 +546,9 @@ const switchTab = (activeTab) => {
 }
 
 // render user rank toast
-const renderUserRankToast = (rank, canEdit) => {
-    if (rank > -1) {
-        snackbarLabel.innerHTML = `You are ranked #${rank}`;
+const renderUserRankToast = (result, canEdit) => {
+    if (result.rank > -1) {
+        snackbarLabel.innerHTML = `You are ranked #${result.rank} with ${result.score} points`;
         if(canEdit && (!settings || (settings.userEarnPoints != "SCORE_FROM_FREE_TEXT_QUESTIONNAIRE"))){
             editScoreContainer.classList.add('show');
         }
