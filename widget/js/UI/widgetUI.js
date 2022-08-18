@@ -4,6 +4,7 @@ var user = {
     displayImage: "",
 };
 
+var isCalculatingLoyaltyPoints = false
 
 let testData = [
     {
@@ -123,6 +124,9 @@ function loadItems(carouselItems) {
 buildfire.datastore.get("Settings",(err, result)=>{
     if(err) return;
     settings = result.data;
+    if(settings.calculateLoyaltyPoints && settings.calculateLoyaltyPoints == true){
+        calculateLoyaltyPoints();
+    }
    
 })
 
@@ -248,26 +252,27 @@ const addScore = () => {
     }
 }
 
-buildfire.auth.getCurrentUser(function (err, user) {
-    if(user){
-        buildfire.appData.search(
-            {
-              filter: {
-                $or: [
-                  { "$json.userId": user._id },
-                ],
-              },
-            },
-            "userLoyaltyPoints",
-            (err, result) => {
-                if(result && result.length > 0){
-                    let response = result[0].data
-                    editScoreInput.value = response.totalPoints
-                    editScore();
-                }
-             })
-    }
-})
+const calculateLoyaltyPoints = () => {
+    isCalculatingLoyaltyPoints = true;
+    buildfire.auth.getCurrentUser(function (err, user) {
+        if(user){
+            buildfire.appData.search(
+                {
+                  filter: {
+                    "$json.userId": {$eq: user._id}
+                  },
+                },
+                "userLoyaltyPoints",
+                (err, result) => {
+                    if(result && result.length > 0){
+                        let response = result[0].data
+                        editScoreInput.value = response.totalPoints
+                        editScore();
+                    }
+                 })
+        }
+    })
+}
 
 //Edit the score of the user
 const editScore = () => {
@@ -291,7 +296,24 @@ const editScore = () => {
             }
             if (data) {
                 editScoreDialog.close();
-                displayScores();
+                if(isCalculatingLoyaltyPoints){
+                    isCalculatingLoyaltyPoints = false;
+                    Scores.getCurrentUserRank(Keys.overall, (err, res) => {
+                        if (err && err == "Scoreboard is empty") {
+                            console.error(err);
+                            if (!leaderboardDrawer.classList.contains("hide")) leaderboardDrawer.classList.add("hide");
+                            contentContainer.classList.remove("small");
+                        }
+                        if (!err) {
+                            currentActiveTab = Keys.overall;
+                            displayScores();
+                            renderUserRankToast(res.rank);
+                        }
+                    });
+
+                } else {
+                    displayScores();
+                }
                 editScoreButton.classList.remove("disabled");
                 editScoreButton.disabled = false;
                 if (editScoreLabel.classList.contains("error")) editScoreLabel.classList.remove("error");
@@ -425,7 +447,9 @@ const switchTab = (activeTab) => {
                     if (!err) {
                         currentActiveTab = Keys.overall;
                         displayScores();
-                        renderUserRankToast(res.rank);
+                        if(!isCalculatingLoyaltyPoints){
+                            renderUserRankToast(res.rank);
+                        }
                     }
                 });
             }
@@ -525,7 +549,7 @@ const switchTab = (activeTab) => {
 const renderUserRankToast = (rank, canEdit) => {
     if (rank > -1) {
         snackbarLabel.innerHTML = `You are ranked #${rank}`;
-        if (canEdit) {
+        if(canEdit && (!settings || (settings.userEarnPoints != "SCORE_FROM_FREE_TEXT_QUESTIONNAIRE"))){
             editScoreContainer.classList.add('show');
         }
     }

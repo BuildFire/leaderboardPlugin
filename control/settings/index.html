@@ -23,6 +23,7 @@
         
     <link href="../../../../styles/helper.css" rel="stylesheet" />
     <link href="../../../../styles/siteIcons.css" rel="stylesheet" />
+    <link href="./style.css" rel="stylesheet">
 
     <script src="../../../../scripts/sortable.min.js"></script>
     <script src="../../../../scripts/buildfire/components/actionItems/sortableList.js"></script>
@@ -34,7 +35,7 @@
     <div class="row" style="align-items: start">
         <div class="labels col-md-4 pull-left tooltip-container">
                 <span>Notifications Frequency </span>
-                <span class="tip btn-info-icon btn-primary"><span class="cp-tooltip">If this field is  blank, then 'Points per Item' cannot be blank. If this field has a value greater than zero, then this item will show up as a reward to redeem on the Loyalty feature's main screen</span>
+                <span class="tip btn-info-icon btn-primary"><span class="cp-tooltip">Set how often rack change notifications should be sent out for 1st, 2nd and 3rd place</span>
             
         </div>
         <div class="main col-md-8 pull-right">
@@ -89,7 +90,15 @@
             <div class="ftqFeatures"></div>
         </div>
      </div>
-
+     <div class="row input-control side-label margin-bottom-twenty" style="margin-top: 30px">
+        <div  class="labels col-md-4 pull-left">
+            <span>Calculate Loyalty Points</span>
+        </div>
+        <div class="button-switch col-md-8" style="justify-content: right;margin-right:16px ;">
+            <input id="enableCalculatePoints" type="checkbox" onclick="setEnableCalculatePoints()">
+            <label for="enableCalculatePoints" class="label-success"></label>
+        </div>
+    </div>
 
     <h1>Reset Leaderboard</h1>
     <p class="infoText">This option will delete all entries and scores in the leaderboard!</p>
@@ -124,6 +133,7 @@
     var weeklyChange = document.getElementById("weeklyChange")
     var monthlyChange = document.getElementById("monthlyChange")
     var allTimeChange = document.getElementById("allTimeChange")
+    var enableCalculatePoints = document.getElementById("enableCalculatePoints")
 
     var ftqFeatures = null
     //Register push notifications event
@@ -166,6 +176,10 @@
                     honorSystemRadioBtn.setAttribute("checked",true)
                 }
 
+                if(settings.calculateLoyaltyPoints && settings.calculateLoyaltyPoints == true ){
+                    enableCalculatePoints.checked = true
+                }
+
                 if(settings.features && settings.features.length > 0){
                     ftqFeatures.loadItems(settings.features);
                     changeActionItemsIcon()
@@ -190,6 +204,15 @@
                 }
             }
         })
+    }
+
+    const setEnableCalculatePoints = () => {
+        if(enableCalculatePoints.checked){
+            settings.calculateLoyaltyPoints = true
+        } else {
+            settings.calculateLoyaltyPoints = false
+        }
+        save();
     }
 
     const changeActionItemsIcon = () => {
