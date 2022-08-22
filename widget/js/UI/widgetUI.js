@@ -265,9 +265,32 @@ const calculateLoyaltyPoints = () => {
                 "userLoyaltyPoints",
                 (err, result) => {
                     if(result && result.length > 0){
-                        let response = result[0].data
-                        editScoreInput.value = response.totalPoints
-                        editScore();
+                        var loyaltyPoints = result[0].data.totalPoints
+                        Scores.getCurrentUserRank(Keys.overall, (error, overal) => {
+                            Scores.getCurrentUserRank(Keys.daily, (err, daily) => {
+                                if(overal.score < loyaltyPoints){
+                                    if(daily && daily.score > 0){
+                                        if(daily.score == overal.score){
+                                            editScoreInput.value = loyaltyPoints
+                                        } else {
+                                            editScoreInput.value = (loyaltyPoints - overal.score) + daily.score
+                                        }
+                                        editScore();
+    
+                                    } else {
+                                        editScoreInput.value = loyaltyPoints - overal.score
+                                        editScore();
+                                    }
+                                } else if(overal.score > loyaltyPoints){
+                                    if(daily && daily.score > 0){
+                                        let totalScore = daily.score - (overal.score - loyaltyPoints) 
+                                        editScoreInput.value = totalScore < 0 ? 0 : totalScore
+                                        editScore();
+                                    }
+                                }
+                               
+                            });
+                        });
                     }
                  })
         }
