@@ -7,10 +7,9 @@
 	<link href="../../../scripts/owlCarousel/owlCarousel.css" rel="stylesheet" />
 	<link href="./css/index.css" rel="stylesheet" />
 
-
-
-	<script src="../../../scripts/buildfire.min.js"></script>
-	<script src="./js/shared/scoreboard.js""></script>
+	<script src="../../../scripts/buildfire.js"></script>
+	<script src="../../../scripts/buildfire/components/drawer/drawer.js"></script>
+	<script src="./js/shared/scoreboard.js"></script>
 	<script src=" ../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
 	<script src="./js/shared/authManager.js"></script>
 	<script src="./js/data/UserSetting.js"></script>
@@ -132,16 +131,16 @@
 				<div id="swipeIndicator" class="drag-indicator"></div>
 				<div class="drawer-menu">
 					<div onclick="switchTab(Keys.overall)" class="drawer-header-title active-header" id="overallHeader">
-						<p>Overall</p>
+						<p id="overallText"></p>
 					</div>
 					<div onclick="switchTab(Keys.monthly)" class="drawer-header-title" id="monthHeader">
-						<p>Month</p>
+						<p id="monthText"></p>
 					</div>
 					<div onclick="switchTab(Keys.weekly)" class="drawer-header-title" id="weekHeader">
-						<p>Week</p>
+						<p id="weekText"></p>
 					</div>
 					<div onclick="switchTab(Keys.daily)" class="drawer-header-title" id="dayHeader">
-						<p>Day</p>
+						<p id="dayText"></p>
 					</div>
 				</div>
 			</div>

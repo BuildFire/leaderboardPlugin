@@ -89,6 +89,7 @@
 
     <script src="../../../../scripts/tinymce/tinymce.min.js"></script>
 
+    <link href="../../../../styles/control/bf-base.css" rel="stylesheet" />
 
 </head>
 
@@ -96,9 +97,11 @@
     <div id="stringsContainer" class="hidden">
         loading...
     </div>
-    <a id="saveButton" class="btn btn-success pull-right hidden" onclick="save()">Save</a>
-    <a id="deleteButton" style="display: none" class="text-danger pull-right hidden"
-        onclick="deleteLanguage(strings.id)">Delete</a>
+    <div class="bottom-actions">
+        <a id="saveButton" class="btn btn-success pull-right hidden" onclick="save()">Save</a>
+
+    </div>
+   
 
     <script>
         let strings;

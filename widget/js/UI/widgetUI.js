@@ -4,6 +4,7 @@ var user = {
     displayImage: "",
 };
 
+var isCalculatingLoyaltyPoints = false
 
 let testData = [
     {
@@ -98,6 +99,7 @@ let testData = [
     },
 ];
 
+let settings = null;
 let strings;
 
 let shownScores = [];
@@ -119,7 +121,14 @@ function loadItems(carouselItems) {
     view.loadItems(carouselItems);
 }
 
-
+buildfire.datastore.get("Settings",(err, result)=>{
+    if(err) return;
+    settings = result.data;
+    if(settings.calculateLoyaltyPoints && settings.calculateLoyaltyPoints == true){
+        calculateLoyaltyPoints();
+    }
+   
+})
 
 /// call buildfire datastore to see if there are any previously saved items
 buildfire.datastore.get(function (err, obj) {
@@ -146,7 +155,9 @@ buildfire.datastore.onUpdate(function (obj) {
     if (obj.tag == "wysContent") {
         loadData(null, obj)
     }
-
+    else if(obj.tag == "Settings"){
+        settings = obj.data
+    }
     else if (obj.data && obj.data.carouselItems) {
         loadItems(obj.data.carouselItems)
     }
@@ -203,10 +214,12 @@ const checkEditScore = () => {
 //add score for current user
 const addScore = () => {
     if (checkAddScore()) {
+        settings.isSubscribedToPN = isSubscribedToPN
+
         addScoreButton.classList.add("disabled");
         addScoreButton.disabled = true;
         let score = parseInt(addScoreInput.value);
-        Scores.addScore({ score: score, settings: { isSubscribedToPN: isSubscribedToPN } }, (err, data) => {
+        Scores.addScore({ score: score, settings }, (err, data) => {
             if (err == 'User not logged in') {
                 authManager.enforceLogin();
             }
@@ -239,13 +252,59 @@ const addScore = () => {
     }
 }
 
+const calculateLoyaltyPoints = () => {
+    isCalculatingLoyaltyPoints = true;
+    buildfire.auth.getCurrentUser(function (err, user) {
+        if(user){
+            buildfire.appData.search(
+                {
+                  filter: {
+                    "$json.userId": {$eq: user._id}
+                  },
+                },
+                "userLoyaltyPoints",
+                (err, result) => {
+                    if(result && result.length > 0){
+                        var loyaltyPoints = result[0].data.totalPoints
+                        Scores.getCurrentUserRank(Keys.overall, (error, overal) => {
+                            Scores.getCurrentUserRank(Keys.daily, (err, daily) => {
+                                if(overal.score < loyaltyPoints){
+                                    if(daily && daily.score > 0){
+                                        if(daily.score == overal.score){
+                                            editScoreInput.value = loyaltyPoints
+                                        } else {
+                                            editScoreInput.value = (loyaltyPoints - overal.score) + daily.score
+                                        }
+                                        editScore();
+    
+                                    } else {
+                                        editScoreInput.value = loyaltyPoints - overal.score
+                                        editScore();
+                                    }
+                                } else if(overal.score > loyaltyPoints){
+                                    if(daily && daily.score > 0){
+                                        let totalScore = daily.score - (overal.score - loyaltyPoints) 
+                                        editScoreInput.value = totalScore < 0 ? 0 : totalScore
+                                        editScore();
+                                    }
+                                }
+                               
+                            });
+                        });
+                    }
+                 })
+        }
+    })
+}
+
 //Edit the score of the user
 const editScore = () => {
     editScoreButton.classList.add("disabled");
     editScoreButton.disabled = true;
     if (checkEditScore()) {
         let score = parseInt(editScoreInput.value);
-        Scores.editDailyScore({ score: score, settings: { isSubscribedToPN: isSubscribedToPN } }, (err, data) => {
+        settings.isSubscribedToPN = isSubscribedToPN
+        Scores.editDailyScore({ score: score, settings}, (err, data) => {
             if (err == 'User not logged in') {
                 authManager.enforceLogin();
             }
@@ -260,7 +319,24 @@ const editScore = () => {
             }
             if (data) {
                 editScoreDialog.close();
-                displayScores();
+                if(isCalculatingLoyaltyPoints){
+                    isCalculatingLoyaltyPoints = false;
+                    Scores.getCurrentUserRank(Keys.overall, (err, res) => {
+                        if (err && err == "Scoreboard is empty") {
+                            console.error(err);
+                            if (!leaderboardDrawer.classList.contains("hide")) leaderboardDrawer.classList.add("hide");
+                            contentContainer.classList.remove("small");
+                        }
+                        if (!err) {
+                            currentActiveTab = Keys.overall;
+                            displayScores();
+                            renderUserRankToast(res);
+                        }
+                    });
+
+                } else {
+                    displayScores();
+                }
                 editScoreButton.classList.remove("disabled");
                 editScoreButton.disabled = false;
                 if (editScoreLabel.classList.contains("error")) editScoreLabel.classList.remove("error");
@@ -394,7 +470,9 @@ const switchTab = (activeTab) => {
                     if (!err) {
                         currentActiveTab = Keys.overall;
                         displayScores();
-                        renderUserRankToast(res.rank);
+                        if(!isCalculatingLoyaltyPoints){
+                            renderUserRankToast(res);
+                        }
                     }
                 });
             }
@@ -417,7 +495,7 @@ const switchTab = (activeTab) => {
                     if (!err) {
                         currentActiveTab = Keys.daily;
                         displayScores();
-                        renderUserRankToast(res.rank, true);
+                        renderUserRankToast(res, true);
                     }
 
                     else {
@@ -441,7 +519,7 @@ const switchTab = (activeTab) => {
                     if (!err) {
                         currentActiveTab = Keys.monthly;
                         displayScores();
-                        renderUserRankToast(res.rank);
+                        renderUserRankToast(res);
                     }
 
                     else {
@@ -466,7 +544,7 @@ const switchTab = (activeTab) => {
                     if (!err) {
                         currentActiveTab = Keys.weekly;
                         displayScores();
-                        renderUserRankToast(res.rank);
+                        renderUserRankToast(res);
                     }
 
                     else {
@@ -491,10 +569,10 @@ const switchTab = (activeTab) => {
 }
 
 // render user rank toast
-const renderUserRankToast = (rank, canEdit) => {
-    if (rank > -1) {
-        snackbarLabel.innerHTML = `You are ranked #${rank}`;
-        if (canEdit) {
+const renderUserRankToast = (result, canEdit) => {
+    if (result.rank > -1) {
+        snackbarLabel.innerHTML = `You are ranked #${result.rank} with ${result.score} points`;
+        if(canEdit && (!settings || (settings.userEarnPoints != "SCORE_FROM_FREE_TEXT_QUESTIONNAIRE"))){
             editScoreContainer.classList.add('show');
         }
     }
@@ -675,10 +753,39 @@ const minfifyBoard = () => {
 //Toggle the view where the user adds the score
 const showAddScoreView = () => {
     if (authManager.currentUser) {
-        user = authManager.currentUser;
-        leaderboardDrawer.classList.add("hide");
-        contentContainer.classList.remove("small");
-        addScoreDialog.open();
+        if(settings != null &&  settings.userEarnPoints && settings.userEarnPoints === "SCORE_FROM_FREE_TEXT_QUESTIONNAIRE"){
+            if(settings.features.length == 1){
+                buildfire.navigation.navigateTo({
+                    instanceId: settings.features[0].instanceId,
+                  });
+            } else {
+                let items = [];
+                settings.features.forEach(element => {
+                  items.push({
+                    text: element.title,
+                    instanceId: element.instanceId,
+                    iconUrl: element.iconUrl
+                  })
+                });
+                buildfire.components.drawer.open(
+                  {
+                    listItems: items
+                  },
+                  (err, result) => {
+                    if (err) return console.error(err);
+                    buildfire.components.drawer.closeDrawer();
+                    buildfire.navigation.navigateTo({
+                      instanceId: result.instanceId,
+                    });
+                  }
+                );
+            }
+        } else {
+            user = authManager.currentUser;
+            leaderboardDrawer.classList.add("hide");
+            contentContainer.classList.remove("small");
+            addScoreDialog.open();
+        }
     }
 
     else {
@@ -791,6 +898,11 @@ const inject = () => {
     document.getElementById("add-dialog-subtitle").innerHTML = strings.get('score.addSubtitle')
     document.getElementById("edit-dialog-title").innerHTML = strings.get('score.edit')
     document.getElementById("edit-dialog-subtitle").innerHTML = strings.get('score.editSubtitle')
+
+    document.getElementById("overallText").innerHTML = strings.get('scoreboard.overall')
+    document.getElementById("monthText").innerHTML = strings.get('scoreboard.month')
+    document.getElementById("weekText").innerHTML = strings.get('scoreboard.week')
+    document.getElementById("dayText").innerHTML = strings.get('scoreboard.day')
 }
 
 

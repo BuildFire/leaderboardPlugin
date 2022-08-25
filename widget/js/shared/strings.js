@@ -48,7 +48,7 @@ buildfire.services.Strings = class{
 
 		let v
 		let l = this._data[segmentKey][labelKey];
-		if(l.value || (l.value ==="" && !l.required))
+		if(l.value)
 			v= l.value;
 		else
 			v= l.defaultValue || "";

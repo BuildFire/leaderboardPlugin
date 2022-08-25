@@ -273,6 +273,24 @@ class Scores {
             , sortAscending: false
         });
 
+        let isNotifyingOnDailyChange = false;
+        let isNotifyingOnWeeklyChange = false;
+        let isNotifyingOnMonthlyChange = false;
+        let isNotifyingOnOverallChange = false;
+
+        if(data.settings.notificationsFrequency && data.settings.notificationsFrequency.length > 0){
+            data.settings.notificationsFrequency.forEach(element => {
+                if(element == "dailyChange"){
+                    isNotifyingOnDailyChange = true;
+                } else if(element == "monthlyChange"){
+                    isNotifyingOnMonthlyChange = true
+                } else if(element == "weeklyChange"){
+                    isNotifyingOnWeeklyChange = true                    
+                } else if(element == "allTimeChange"){
+                    isNotifyingOnOverallChange = true;
+                }
+            });
+        }
 
         // Log score to daily board
         dailyBoard.getScoreboard((error, scoreboard) => {
@@ -282,7 +300,7 @@ class Scores {
                 sb = scoreboard.topScores;
             }
             let previousScore = this._getUserPreviousScore(user._id, sb)
-            dailyBoard.logScore(user, parseInt(data.score) + previousScore, 'Daily', (err, result) => {
+            dailyBoard.logScore(user, parseInt(data.score) + previousScore, 'Daily', isNotifyingOnDailyChange, (err, result) => {
                 if (err) return callback(err);
                 if (result && result.rankedAt >= 0) {
                     rankedAt = result.rankedAt;
@@ -298,7 +316,7 @@ class Scores {
                 sb = scoreboard.topScores;
             }
             let previousScore = this._getUserPreviousScore(user._id, sb)
-            weeklyBoard.logScore(user, parseInt(data.score) + previousScore, 'Weekly', (err, result) => {
+            weeklyBoard.logScore(user, parseInt(data.score) + previousScore, 'Weekly', isNotifyingOnWeeklyChange, (err, result) => {
                 if (err) return callback(err);
                 if (result && result.rankedAt >= 0) {
                     rankedAt = result.rankedAt;
@@ -314,7 +332,7 @@ class Scores {
                 sb = scoreboard.topScores;
             }
             let previousScore = this._getUserPreviousScore(user._id, sb)
-            monthlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Monthly', (err, result) => {
+            monthlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Monthly', isNotifyingOnMonthlyChange, (err, result) => {
                 if (err) return callback(err);
                 if (result && result.rankedAt >= 0) {
                     rankedAt = result.rankedAt;
@@ -330,7 +348,7 @@ class Scores {
                 sb = scoreboard.topScores;
             }
             let previousScore = this._getUserPreviousScore(user._id, sb)
-            yearlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Yearly', (err, result) => {
+            yearlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Yearly',isNotifyingOnOverallChange, (err, result) => {
                 if (err) return callback(err);
                 // Trigger analytics event
                 buildfire.analytics.trackAction(analyticKeys.SCORE_LOGGED.key);
@@ -401,11 +419,31 @@ class Scores {
             , sortAscending: false
         });
 
+
+        let isNotifyingOnDailyChange = false;
+        let isNotifyingOnWeeklyChange = false;
+        let isNotifyingOnMonthlyChange = false;
+        let isNotifyingOnOverallChange = false;
+
+        if(data.settings.notificationsFrequency && data.settings.notificationsFrequency.length > 0){
+            data.settings.notificationsFrequency.forEach(element => {
+                if(element == "dailyChange"){
+                    isNotifyingOnDailyChange = true;
+                } else if(element == "monthlyChange"){
+                    isNotifyingOnMonthlyChange = true
+                } else if(element == "weeklyChange"){
+                    isNotifyingOnWeeklyChange = true                    
+                } else if(element == "allTimeChange"){
+                    isNotifyingOnOverallChange = true;
+                }
+            });
+        }
+
         // Get user's last daily score
         dailyBoard.getScoreboard((error, scoreboard) => {
             userLastDailyScore = this._getUserPreviousScore(user._id, scoreboard.topScores)
             // Apply changes to rest of boards
-            dailyBoard.logScore(user, parseInt(data.score), 'Daily', (err, result) => {
+            dailyBoard.logScore(user, parseInt(data.score), 'Daily',isNotifyingOnDailyChange, (err, result) => {
                 if (err) return callback(err);
                 // Edit weekly board
                 weeklyBoard.getScoreboard((error, scoreboard) => {
@@ -415,7 +453,7 @@ class Scores {
                         sb = scoreboard.topScores;
                     }
                     let weeklyPreviousScore = this._getUserPreviousScore(user._id, sb)
-                    weeklyBoard.logScore(user, weeklyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Weekly', (err, result) => {
+                    weeklyBoard.logScore(user, weeklyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Weekly',isNotifyingOnWeeklyChange, (err, result) => {
                         if (err) return callback(err);
                         // Edit monthly board
                         monthlyBoard.getScoreboard((error, scoreboard) => {
@@ -425,7 +463,7 @@ class Scores {
                                 sb = scoreboard.topScores;
                             }
                             let monthlyPreviousScore = this._getUserPreviousScore(user._id, sb)
-                            monthlyBoard.logScore(user, monthlyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Monthly', (err, result) => {
+                            monthlyBoard.logScore(user, monthlyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Monthly',isNotifyingOnMonthlyChange, (err, result) => {
                                 if (err) return callback(err);
                                 //Edit yearly board
                                 yearlyBoard.getScoreboard((error, scoreboard) => {
@@ -435,7 +473,7 @@ class Scores {
                                         sb = scoreboard.topScores;
                                     }
                                     let yearlyPreviousScore = this._getUserPreviousScore(user._id, sb)
-                                    yearlyBoard.logScore(user, yearlyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Yearly', (err, result) => {
+                                    yearlyBoard.logScore(user, yearlyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Yearly', isNotifyingOnOverallChange, (err, result) => {
                                         if (err) return callback(err);
                                         return callback(null, "Success")
                                     })

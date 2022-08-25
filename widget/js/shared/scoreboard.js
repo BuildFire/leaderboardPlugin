@@ -67,7 +67,7 @@ buildfire.gamify.Scoreboard.prototype = {
         } else
             return false;
     }
-    , logScore: function (user, score, boardName, callback) {
+    , logScore: function (user, score, boardName, isNotifyingUser, callback) {
         if (!user.id && user._id) user.id = user._id;
 
         if (this.options.autoSubscribeToPushNotification) {
@@ -254,7 +254,7 @@ buildfire.gamify.Scoreboard.prototype = {
                             bumpedDisplayName: bumpedOff ? bumpedOff.user.displayName || bumpedOff.user.firstName + bumpedOff.user.lastName || bumpedOff.user.firstName || 'someone' : null,
                         };
 
-                        if (t._PNEnabled()) {                         
+                        if (t._PNEnabled() && isNotifyingUser) {                         
                             if (rankedAt == 0) {
                                 console.log("send message", obj.userDisplayName + " is now at first place in the " + boardName + " board! Can you take over?")
                                 buildfire.notifications.pushNotification.schedule({
