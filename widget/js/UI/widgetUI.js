@@ -268,7 +268,7 @@ const calculateLoyaltyPoints = () => {
                         var loyaltyPoints = result[0].data.totalPoints
                         Scores.getCurrentUserRank(Keys.overall, (error, overal) => {
                             Scores.getCurrentUserRank(Keys.daily, (err, daily) => {
-                                if(overal.score < loyaltyPoints){
+                                if(overal && overal.score < loyaltyPoints){
                                     if(daily && daily.score > 0){
                                         if(daily.score == overal.score){
                                             editScoreInput.value = loyaltyPoints
@@ -281,12 +281,15 @@ const calculateLoyaltyPoints = () => {
                                         editScoreInput.value = loyaltyPoints - overal.score
                                         editScore();
                                     }
-                                } else if(overal.score > loyaltyPoints){
+                                } else if(overal && overal.score > loyaltyPoints){
                                     if(daily && daily.score > 0){
                                         let totalScore = daily.score - (overal.score - loyaltyPoints) 
                                         editScoreInput.value = totalScore < 0 ? 0 : totalScore
                                         editScore();
                                     }
+                                } else if(!overal){
+                                    editScoreInput.value = loyaltyPoints
+                                    editScore();
                                 }
                                
                             });
