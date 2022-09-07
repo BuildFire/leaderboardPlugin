@@ -4,7 +4,7 @@ var user = {
     displayImage: "",
 };
 
-var isCalculatingLoyaltyPoints = false
+var isCalculatingPoints = false
 
 let testData = [
     {
@@ -126,6 +126,8 @@ buildfire.datastore.get("Settings",(err, result)=>{
     settings = result.data;
     if(settings.calculateLoyaltyPoints && settings.calculateLoyaltyPoints == true){
         calculateLoyaltyPoints();
+    } else if(settings && settings.userEarnPoints == "SCORE_FROM_FREE_TEXT_QUESTIONNAIRE"){
+        calculateFtqPoints();
     }
    
 })
@@ -252,8 +254,65 @@ const addScore = () => {
     }
 }
 
+const editScoreFromFTQ = (overal, daily, points) => {
+    if(!overal){
+        editScoreInput.value = points
+        editScore();
+    }
+    else if(!daily){
+        editScoreInput.value = points
+        editScore();
+    }
+    else if(overal.score > 0 && overal.score == daily.score){
+        editScoreInput.value = points + overal.score
+        editScore();
+    }else if(daily.score > 0){
+        editScoreInput.value = points + daily.score
+        editScore();
+    }
+}
+
+const editScoreFromLoyalty = (overal, daily, points) => {
+    if(overal && overal.score < points){
+        if(daily && daily.score > 0){
+            if(daily.score == overal.score){
+                editScoreInput.value = points
+            } else {
+                editScoreInput.value = (points - overal.score) + daily.score
+            }
+            editScore();
+
+        } else {
+            editScoreInput.value = points - overal.score
+            editScore();
+        }
+    } else if(overal && overal.score > points){
+        if(daily && daily.score > 0){
+            let totalScore = daily.score - (overal.score - points) 
+            editScoreInput.value = totalScore < 0 ? 0 : totalScore
+            editScore();
+        }
+    } else if(!overal){
+        editScoreInput.value = points
+        editScore();
+    }
+}
+
+
+const editScoreByCalculatingPoint = (points, pointsFrom) => {
+    Scores.getCurrentUserRank(Keys.overall, (error, overal) => {
+        Scores.getCurrentUserRank(Keys.daily, (err, daily) => {
+            if(pointsFrom == "LOYALTY"){
+               editScoreFromLoyalty(overal, daily, points)
+            } else if(pointsFrom == "FTQ"){
+                editScoreFromFTQ(overal, daily, points);
+            }
+        });
+    });
+}
+
 const calculateLoyaltyPoints = () => {
-    isCalculatingLoyaltyPoints = true;
+    isCalculatingPoints = true;
     buildfire.auth.getCurrentUser(function (err, user) {
         if(user){
             buildfire.appData.search(
@@ -266,39 +325,56 @@ const calculateLoyaltyPoints = () => {
                 (err, result) => {
                     if(result && result.length > 0){
                         var loyaltyPoints = result[0].data.totalPoints
-                        Scores.getCurrentUserRank(Keys.overall, (error, overal) => {
-                            Scores.getCurrentUserRank(Keys.daily, (err, daily) => {
-                                if(overal && overal.score < loyaltyPoints){
-                                    if(daily && daily.score > 0){
-                                        if(daily.score == overal.score){
-                                            editScoreInput.value = loyaltyPoints
-                                        } else {
-                                            editScoreInput.value = (loyaltyPoints - overal.score) + daily.score
-                                        }
-                                        editScore();
-    
-                                    } else {
-                                        editScoreInput.value = loyaltyPoints - overal.score
-                                        editScore();
-                                    }
-                                } else if(overal && overal.score > loyaltyPoints){
-                                    if(daily && daily.score > 0){
-                                        let totalScore = daily.score - (overal.score - loyaltyPoints) 
-                                        editScoreInput.value = totalScore < 0 ? 0 : totalScore
-                                        editScore();
-                                    }
-                                } else if(!overal){
-                                    editScoreInput.value = loyaltyPoints
-                                    editScore();
-                                }
-                               
-                            });
-                        });
+                        if(loyaltyPoints != 0){
+                            editScoreByCalculatingPoint(loyaltyPoints, "LOYALTY")
+                        }
                     }
                  })
         }
     })
 }
+
+const calculateFtqPoints = function(){
+    if(settings.features && settings.features.length > 0){
+        buildfire.auth.getCurrentUser(function (err, user) {
+            if(user){
+                isCalculatingPoints = true;
+                settings.features.forEach(element => {
+                    buildfire.appData.search({
+                      filter: { "$json.user._id": {$eq: user._id} },
+                      sort:   {"finishedDateTime": -1},
+                      skip:   0,
+                      limit:  1
+                    },
+                    "freeTextQuestionnaireSubmissions_" + element.instanceId,
+                    (err, res) => { 
+                      if(res && res.length > 0 && !res[0].data.isEarnedPoints){
+                        let selectedFTQ = res[0].data;
+                        selectedFTQ.isEarnedPoints = true;
+                        buildfire.appData.update(
+                          res[0].id, // Replace this with your object id
+                          selectedFTQ,
+                          "freeTextQuestionnaireSubmissions_" + element.instanceId,
+                          (err, result) => {
+                            if (err) return console.error("Error while inserting your data", err);
+                            let score = 0 
+                            selectedFTQ.answers.forEach(answer => {
+                              score += answer.score ? answer.score : 0
+                            });
+                            if(score != 0){
+                                editScoreByCalculatingPoint(score, "FTQ")
+                            }
+                          }
+                        );
+                      }
+                    })
+                  });
+            }
+        })
+        
+    }
+       
+  }
 
 //Edit the score of the user
 const editScore = () => {
@@ -322,8 +398,8 @@ const editScore = () => {
             }
             if (data) {
                 editScoreDialog.close();
-                if(isCalculatingLoyaltyPoints){
-                    isCalculatingLoyaltyPoints = false;
+                if(isCalculatingPoints){
+                    isCalculatingPoints = false;
                     Scores.getCurrentUserRank(Keys.overall, (err, res) => {
                         if (err && err == "Scoreboard is empty") {
                             console.error(err);
@@ -395,12 +471,10 @@ const ui = (elementType, appendTo, innerHTML, classNameArray, imageSource, image
 
 // Fetches the scores of the active tab and passes to renderLeaderboard
 const displayScores = () => {
-    console.log("displaying scores");
     // Turn on active tab
     switch (currentActiveTab) {
         case Keys.overall:
             getScores(Keys.overall, (scores) => {
-                console.log("overall scores", scores);
                 if (scores.length > 0) {
                     overallScores = scores;
                     drawerScoresContainer.innerHTML = ""
@@ -473,7 +547,7 @@ const switchTab = (activeTab) => {
                     if (!err) {
                         currentActiveTab = Keys.overall;
                         displayScores();
-                        if(!isCalculatingLoyaltyPoints){
+                        if(!isCalculatingPoints){
                             renderUserRankToast(res);
                         }
                     }
@@ -813,7 +887,6 @@ const showEditScoreView = () => {
 //get list of score of a leaderboard
 const getScores = (leaderboardType, cb) => {
     Scores.getScores({ leaderboardType: leaderboardType, settings: { isSubscribedToPN: isSubscribedToPN } }, (err, scores) => {
-        console.log(scores);
         if (err) console.error(err);
         cb(scores);
     })
