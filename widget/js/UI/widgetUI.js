@@ -255,11 +255,11 @@ const addScore = () => {
 }
 
 const editScoreFromFTQ = (overal, daily, points) => {
-    if(!overal){
+    if(!overal || overal.score == 0){
         editScoreInput.value = points
         editScore();
     }
-    else if(!daily){
+    else if(!daily || daily.score == 0){
         editScoreInput.value = points
         editScore();
     }
