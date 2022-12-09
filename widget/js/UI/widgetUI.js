@@ -359,7 +359,7 @@ const calculateFtqPoints = function(){
                             if (err) return console.error("Error while inserting your data", err);
                             let score = 0 
                             selectedFTQ.answers.forEach(answer => {
-                              score += answer.score ? answer.score : 0
+                              score += answer && answer.score ? answer.score : 0
                             });
                             if(score != 0){
                                 editScoreByCalculatingPoint(score, "FTQ")
