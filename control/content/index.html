@@ -37,7 +37,7 @@
         tinymce.init({
             selector: "#wysiwygContent",
             setup: function (editor) {
-                editor.on('change', function () {
+                editor.on('change keyUp', function () {
                     saveWYSContent(editor.getContent())
                 });
             }
