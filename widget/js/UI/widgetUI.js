@@ -275,10 +275,8 @@ const editScoreFromFTQ = (overal, daily, points) => {
 const editScoreFromLoyalty = (overal, daily, points) => {
     let dailyScore = daily && daily.score ? daily.score : 0 
     const newDailyScore = dailyScore + points
-    if(newDailyScore > 0){
-        editScoreInput.value = newDailyScore;
-        editScore();
-    }
+    editScoreInput.value = newDailyScore > 0 ? newDailyScore : 0;
+    editScore();
 }
 
 
