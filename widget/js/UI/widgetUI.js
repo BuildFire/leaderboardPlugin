@@ -276,7 +276,7 @@ const editScoreFromLoyalty = (overal, daily, points) => {
     let dailyScore = daily && daily.score ? daily.score : 0 
     const newDailyScore = dailyScore + points
     editScoreInput.value = newDailyScore > 0 ? newDailyScore : 0;
-    editScore();
+    editScore(true);
 }
 
 
@@ -368,13 +368,13 @@ const calculateFtqPoints = function(){
   }
 
 //Edit the score of the user
-const editScore = () => {
+const editScore = (allowScoreToBeZero = false) => {
     editScoreButton.classList.add("disabled");
     editScoreButton.disabled = true;
     if (checkEditScore()) {
         let score = parseInt(editScoreInput.value);
         settings.isSubscribedToPN = isSubscribedToPN
-        Scores.editDailyScore({ score: score, settings}, (err, data) => {
+        Scores.editDailyScore({ score: score, settings, allowScoreToBeZero}, (err, data) => {
             if (err == 'User not logged in') {
                 authManager.enforceLogin();
             }
