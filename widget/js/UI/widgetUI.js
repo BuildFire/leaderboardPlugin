@@ -305,24 +305,14 @@ const calculateLoyaltyPoints = () => {
                 "userLoyaltyPoints",
                 (err, result) => {
                     if(result && result.length > 0){
-                        var loyaltyNewPoints = result[0].data && result[0].data.newPoints ? result[0].data.newPoints : 0 
-                        if(loyaltyNewPoints != 0){
-                            editScoreByCalculatingPoint(loyaltyNewPoints, "LOYALTY")
-                            resetLoyaltyNewPoints(user._id)
+                        var loyaltyPoints = result[0].data.totalPoints
+                        if(loyaltyPoints != 0){
+                            editScoreByCalculatingPoint(loyaltyPoints, "LOYALTY")
                         }
                     }
                  })
         }
     })
-}
-
-const resetLoyaltyNewPoints = (userId) => {
-    buildfire.appData.searchAndUpdate(
-        { userId: { $eq: userId } },
-        { $set: { newPoints: 0 } },
-        "userLoyaltyPoints",
-        (err, result) => {}
-        );
 }
 
 const calculateFtqPoints = function(){
