@@ -273,29 +273,10 @@ const editScoreFromFTQ = (overal, daily, points) => {
 }
 
 const editScoreFromLoyalty = (overal, daily, points) => {
-    if(overal && overal.score < points){
-        if(daily && daily.score > 0){
-            if(daily.score == overal.score){
-                editScoreInput.value = points
-            } else {
-                editScoreInput.value = (points - overal.score) + daily.score
-            }
-            editScore();
-
-        } else {
-            editScoreInput.value = points - overal.score
-            editScore();
-        }
-    } else if(overal && overal.score > points){
-        if(daily && daily.score > 0){
-            let totalScore = daily.score - (overal.score - points) 
-            editScoreInput.value = totalScore < 0 ? 0 : totalScore
-            editScore();
-        }
-    } else if(!overal){
-        editScoreInput.value = points
-        editScore();
-    }
+    let dailyScore = daily && daily.score ? daily.score : 0 
+    const newDailyScore = dailyScore + points
+    editScoreInput.value = newDailyScore > 0 ? newDailyScore : 0;
+    editScore(true);
 }
 
 
@@ -324,15 +305,26 @@ const calculateLoyaltyPoints = () => {
                 "userLoyaltyPoints",
                 (err, result) => {
                     if(result && result.length > 0){
-                        var loyaltyPoints = result[0].data.totalPoints
-                        if(loyaltyPoints != 0){
-                            editScoreByCalculatingPoint(loyaltyPoints, "LOYALTY")
+                        var loyaltyNewPoints = result[0].data && result[0].data.newPoints ? result[0].data.newPoints : 0 
+                        if(loyaltyNewPoints != 0){
+                            editScoreByCalculatingPoint(loyaltyNewPoints, "LOYALTY")
+                            resetLoyaltyNewPoints(user._id)
                         }
                     }
                  })
         }
     })
 }
+
+const resetLoyaltyNewPoints = (userId) => {
+    buildfire.appData.searchAndUpdate(
+        { userId: { $eq: userId } },
+        { $set: { newPoints: 0 } },
+        "userLoyaltyPoints",
+        (err, result) => {}
+        );
+}
+
 
 const calculateFtqPoints = function(){
     if(settings.features && settings.features.length > 0){
@@ -377,13 +369,13 @@ const calculateFtqPoints = function(){
   }
 
 //Edit the score of the user
-const editScore = () => {
+const editScore = (allowScoreToBeZero = false) => {
     editScoreButton.classList.add("disabled");
     editScoreButton.disabled = true;
     if (checkEditScore()) {
         let score = parseInt(editScoreInput.value);
         settings.isSubscribedToPN = isSubscribedToPN
-        Scores.editDailyScore({ score: score, settings}, (err, data) => {
+        Scores.editDailyScore({ score: score, settings, allowScoreToBeZero}, (err, data) => {
             if (err == 'User not logged in') {
                 authManager.enforceLogin();
             }
