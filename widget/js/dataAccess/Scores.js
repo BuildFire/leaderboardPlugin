@@ -385,7 +385,6 @@ class Scores {
         if (typeof data.score !== 'number') return callback("Score must be a number")
         if (data.score < 0) return callback("Score cannot be negative")
         if (data.score == 0 && !data.allowScoreToBeZero) return callback("Score cannot be 0")
-
         // Get each scoreboard tag
         let date = this.getStandardDate(new Date(), "America/Los_Angeles")
         let dailyTag = this.getDailyTag(date)
