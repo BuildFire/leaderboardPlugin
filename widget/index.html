@@ -50,7 +50,7 @@
 						aria-labelledby="add-dialog-title" aria-describedby="my-dialog-content"
 						>
 						<!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
-						<h2 class="mdc-dialog__title" id="add-dialog-title" bfString="score.add">
+						<h2 class="mdc-dialog__title dialog-title" id="add-dialog-title" bfString="score.add">
 							<!--
 			   -->Add Score
 							<!--
@@ -65,7 +65,7 @@
 										<input inputmode="numeric" type="text" id="addScoreInput"
 											class="dialog-input-field" />
 									</div>
-									<p id="addScoreErrorMessage" class="dialog-input-error-message"></p>
+									<p id="addScoreErrorMessage" class="dialog-input-error-message" bfString="score.requiredMessage">This field is required</p>
 								</div>
 							</div>
 						</div>
@@ -90,14 +90,14 @@
 					<div class="mdc-dialog__surface" role="alertdialog" aria-modal="true"
 						aria-labelledby="edit-dialog-title" aria-describedby="my-dialog-content">
 						<!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
-						<h2 class="mdc-dialog__title" id="edit-dialog-title" bfString="score.edit">
+						<h2 class="mdc-dialog__title dialog-title" id="edit-dialog-title" bfString="score.edit">
 							<!--
 			   -->Edit Score
 							<!--
 			 -->
 						</h2>
 						<div class="mdc-dialog__content" id="my-dialog-content">
-							<p id="edit-dialog-subtitle" bfString="score.editSubtitle"></p>
+							<p id="edit-dialog-subtitle" class="edit-dialog-subtitle" bfString="score.editSubtitle">Enter your score here. You may edit only today's score!</p>
 							<div class="inline-text-field-container">
 								<div class="dialog-input-container">
 									<div class="dialog-input-wrapper">
@@ -105,7 +105,7 @@
 										<input inputmode="numeric" type="text" id="editScoreInput"
 											class="dialog-input-field" />
 									</div>
-									<p id="editScoreErrorMessage" class="dialog-input-error-message"></p>
+									<p id="editScoreErrorMessage" class="dialog-input-error-message" bfString="score.requiredMessage">This field is required</p>
 								</div>
 							</div>
 						</div>
@@ -133,13 +133,13 @@
 						<p id="overallText" bfString="scoreboard.overall">Overall</p>
 					</div>
 					<div onclick="switchTab(Keys.monthly)" class="drawer-header-title" id="monthHeader">
-						<p id="monthText" bfString="scoreboard.day">Day</p>
+						<p id="monthText" bfString="scoreboard.month">Month</p>
 					</div>
 					<div onclick="switchTab(Keys.weekly)" class="drawer-header-title" id="weekHeader">
 						<p id="weekText" bfString="scoreboard.week">Week</p>
 					</div>
 					<div onclick="switchTab(Keys.daily)" class="drawer-header-title" id="dayHeader">
-						<p id="dayText" bfString="scoreboard.month">Month</p>
+						<p id="dayText" bfString="scoreboard.day">Day</p>
 					</div>
 				</div>
 			</div>

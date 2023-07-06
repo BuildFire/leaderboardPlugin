@@ -11,9 +11,9 @@
                 },
                 "addSubtitle": {
                     "title": "Add Score Enter Your Score Here. You May Add More Than One Score in a Day!",
-                    "defaultValue": "Add Score Enter your score here. You may add more than one score in a day!",
+                    "defaultValue": "Add score enter your score here. You may add more than one score in a day!",
                     "maxLength": 100,
-                    "placeholder": "Add Score Enter your score here. You may add more than one score in a day!"
+                    "placeholder": "Add score enter your score here. You may add more than one score in a day!"
                 },
                 "edit": {
                     "title": "Edit Score",
@@ -32,6 +32,12 @@
                     "defaultValue": "Your Score",
                     "maxLength": 30,
                     "placeholder": "Your Score"
+                },
+                "requiredMessage": {
+                    "title": "This Field Is Required",
+                    "defaultValue": "This field is required",
+                    "maxLength": 50,
+                    "placeholder": "This field is required"
                 }
             }
         },

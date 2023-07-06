@@ -14,6 +14,21 @@
     z-index: 300 !important;
 }
 
+.dialog-title{
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.edit-dialog-subtitle{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .header {
     min-width: 60px;
     color: #000;
@@ -119,6 +134,13 @@ p.infoText {
     color: rgba(0,0,0,.6);
 }
 
+.dialog-input-wrapper label {
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 .dialog-input-wrapper label.error {
     color: #f44336;
 }
@@ -129,6 +151,10 @@ p.infoText {
     margin-top: 5px;
     margin-left: 10px;
     visibility: hidden;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 #my_container_div {
@@ -254,6 +280,14 @@ p.infoText {
     height: 100%;
     font-size: 15px;
     color: #999999;
+    width: 20%;
+}
+.drawer-header-title p{
+    overflow: hidden;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    
 }
 
 .active-header {

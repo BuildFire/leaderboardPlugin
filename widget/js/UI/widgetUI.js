@@ -188,7 +188,6 @@ const checkAddScore = () => {
     else {
         addScoreLabel.classList.add("error");
         addScoreErrorMessage.classList.add("show");
-        addScoreErrorMessage.innerHTML = "This field is required";
         return false;
     }
 };
@@ -202,7 +201,6 @@ const checkEditScore = () => {
     else {
         editScoreLabel.classList.add("error");
         editScoreErrorMessage.classList.add("show");
-        editScoreErrorMessage.innerHTML = "This field is required";
         return false;
     }
 };
