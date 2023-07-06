@@ -1,0 +1,68 @@
+{
+    "sections": {
+        "score": {
+            "title": "Score Input",
+            "labels": {
+                "add": {
+                    "title": "Add Score",
+                    "defaultValue": "Add Score",
+                    "maxLength": 30,
+                    "placeholder": "Add Score"
+                },
+                "addSubtitle": {
+                    "title": "Add Score Enter Your Score Here. You May Add More Than One Score in a Day!",
+                    "defaultValue": "Add Score Enter your score here. You may add more than one score in a day!",
+                    "maxLength": 100,
+                    "placeholder": "Add Score Enter your score here. You may add more than one score in a day!"
+                },
+                "edit": {
+                    "title": "Edit Score",
+                    "defaultValue": "Edit Score",
+                    "maxLength": 30,
+                    "placeholder": "Edit Score"
+                },
+                "editSubtitle": {
+                    "title": "Enter Your Score Here. You May Edit Only Today’s Score!",
+                    "defaultValue": "Enter your score here. You may edit only today's score!",
+                    "maxLength": 60,
+                    "placeholder": "Enter your score here. You may edit only today's score!"
+                },
+                "yourScore": {
+                    "title": "Your Score",
+                    "defaultValue": "Your Score",
+                    "maxLength": 30,
+                    "placeholder": "Your Score"
+                }
+            }
+        },
+        "scoreboard": {
+            "title": "Scoreboard",
+            "labels": {
+                "overall": {
+                    "title": "Overall",
+                    "defaultValue": "Overall",
+                    "maxLength": 10,
+                    "placeholder": "Overall"
+                },
+                "day": {
+                    "title": "Day",
+                    "defaultValue": "Day",
+                    "maxLength": 10,
+                    "placeholder": "Day"
+                },
+                "week": {
+                    "title": "Week",
+                    "defaultValue": "Week",
+                    "maxLength": 10,
+                    "placeholder": "Week"
+                },
+                "month": {
+                    "title": "Month",
+                    "defaultValue": "Month",
+                    "maxLength": 10,
+                    "placeholder": "Month"
+                }
+            }
+        }
+    }
+}

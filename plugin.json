@@ -13,14 +13,15 @@
     "settings": {
       "enabled": true
     },
+    "language": {
+      "enabled": true,
+      "languageJsonPath": "resources/languages.json",
+      "tagName": "$bfLanguageSettings_en-us"
+    },
     "customTabs": [
       {
         "title": "Tests",
         "url": "tests/index.html"
-      },
-      {
-        "title": "Language",
-        "url": "strings/index.html"
       }
     ]
   },
