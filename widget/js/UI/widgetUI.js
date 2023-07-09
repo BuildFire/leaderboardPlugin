@@ -704,7 +704,7 @@ const renderScoreRow = (score, index) => {
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
         image = ui('img', imageContainer, null, ['score-image'], score.displayPictureUrl, 'profile');
     }
-    let scoreDiv = ui('div', row, null, ['score-scoreDiv']);
+    let scoreDiv = ui('div', row, null, ['score-row-right']);
     let name = ui('p', scoreDiv, score.displayName, ['score-name']);
     let scoreP = ui('p', scoreDiv, score.currentScore, ['score-score']);
 }
@@ -771,7 +771,7 @@ const renderEmptyScoreRow = (score, index) => {
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
         image = ui('img', imageContainer, null, ['score-image'], score.displayPictureUrl);
     }
-    let scoreDiv = ui('div', row, null, ['score-scoreDiv']);
+    let scoreDiv = ui('div', row, null, ['score-row-right']);
     let name = ui('p', scoreDiv, score.displayName, ['score-name']);
     let scoreP = ui('p', scoreDiv, '0', ['score-score']);
 }
@@ -783,7 +783,7 @@ const renderLoadingRow = () => {
     let rank = ui('div', leftContainer, null, ['loading-score-rank'], null);
     let imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
     let image = ui('div', imageContainer, null, ['loading-score-image'], null);
-    let scoreDiv = ui('div', row, null, ['score-scoreDiv']);
+    let scoreDiv = ui('div', row, null, ['score-row-right']);
     let name = ui('div', scoreDiv, null, ['loading-score-name']);
     let scoreP = ui('p', scoreDiv, null, ['loading-score-score']);
 }

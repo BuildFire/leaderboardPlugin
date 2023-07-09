@@ -1,6 +1,6 @@
 {
   "author": "BuildFire",
-  "pluginName": "Leaderboard",
+  "pluginName": "Leaderboard[dev]",
   "pluginDescription": "Leaderboard, is a dynamic plugin that enables you to compete with team-members and your community for the highest score at the top of the board, it also enables you to create trackable challenges, and keep scores in a daily-weekly-monthly format, as well as staying up to date on current rankings via push notifications.",
   "supportEmail": "support@buildfire.com",
   "control": {
@@ -17,6 +17,16 @@
       "enabled": true,
       "languageJsonPath": "resources/languages.json",
       "tagName": "$bfLanguageSettings_en-us"
+    },
+    "cssInjection": { 
+      "enabled": true,
+      "layouts": [ 
+        {
+            "name": "Layout 1",
+            "imageUrl": "resources/layouts_img/layout1.png",
+            "cssPath": "widget/layouts/layout1.css"
+        }
+     ]
     },
     "customTabs": [
       {
