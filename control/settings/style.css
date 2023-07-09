@@ -1,87 +1,332 @@
-  .button-switch{
-    display: flex;
-    align-items: center;
-    height: 2.5rem;
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.settings-modal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  min-width: 500px;
+  background-color: #fff;
+  border: 1px solid #CDCDCD;
+}
+
+.show {
+  display: block;
+}
+
+.modal-header {
+  background-color: #EEF0F0;
+  padding: 5px 10px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header>h4 {
+  color: #5F5F5F;
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 30px 10px !important;
+  display: flex;
+  align-items: center;
+}
+
+.modal-body>p {
+  max-width: 90%;
+  color: #000 !important;
+}
+
+.modal-footer {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  border: none !important;
+}
+
+.modal-footer>button {
+  padding: 5px 30px !important;
+}
+
+.btn-cancel {
+  background-color: var(--bf-theme-background);
+  border: 1px solid #CDCDCD !important;
+}
+
+.button-switch {
+  display: flex;
+  align-items: center;
+  height: 2.5rem;
+}
+
+.button-switch>label {
+  cursor: pointer;
+  height: 0;
+  position: relative;
+  width: 40px;
+  text-align: left;
+}
+
+#snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: var(--bf-theme-success);
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 12px;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  bottom: 0;
+  font-size: 12px;
+}
+
+.show {
+  visibility: visible;
+}
+
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fade-in 0.5s, fade-out 0.5s 2.5s;
+  animation: fade-in 0.5s, fade-out 0.5s 2.5s;
+}
+
+@-webkit-keyframes fade-in {
+  from {
+    bottom: 0;
+    opacity: 0;
   }
-  
-  .button-switch > label {
-    cursor: pointer;
-    height: 0;
-    position: relative;
-    width: 40px;
-    text-align: left;
+
+  to {
+    bottom: 30px;
+    opacity: 1;
   }
-  
-  .button-switch > label::before {
-    background: #909090;
-    border-radius: 18px;
-    content: "";
-    height: 27px;
-    margin-top: -13.5px;
-    position: absolute;
-    opacity: 0.3;
-    transition: all 0.4s ease-in-out;
-    width: 46px;
+}
+
+@keyframes fade-in {
+  from {
+    bottom: 0;
+    opacity: 0;
   }
-  
-  .button-switch > label::after {
-    background: var(--c-white);
-    border-radius: 16px;
-    box-shadow: 0 0 5px rgb(0 0 0 / 30%);
-    content: "";
-    height: 24px;
-    left: 0;
-    margin-top: -9px;
-    position: absolute;
-    top: -4px;
-    transition: all 0.3s ease-in-out;
-    width: 24px;
+
+  to {
+    bottom: 30px;
+    opacity: 1;
   }
-  
-  .button-switch > input[type="checkbox"]:checked + label::before {
-    background: inherit;
-    opacity: 0.5;
+}
+
+@-webkit-keyframes fade-out {
+  from {
+    bottom: 30px;
+    opacity: 1;
   }
-  
-  .button-switch > input[type="checkbox"] {
-    display: none;
-    margin: 4px 0 0;
+
+  to {
+    bottom: 0;
+    opacity: 0;
   }
-  
-  .button-switch > input[type="checkbox"]:checked + label::after {
-    background: inherit;
-    left: 23px;
+}
+
+@keyframes fade-out {
+  from {
+    bottom: 30px;
+    opacity: 1;
   }
-  
-  .button-switch.switch-sm > label::before {
-    background: #909090;
-    border-radius: 18px;
-    content: "";
-    height: 1.5rem;
-    margin-top: 0;
-    position: absolute;
-    opacity: 0.3;
-    transition: all 0.4s ease-in-out;
-    width: 3rem;
+
+  to {
+    bottom: 0;
+    opacity: 0;
   }
-  
-  .button-switch.switch-sm > label::after {
-    background: var(--c-white);
-    border-radius: 16px;
-    box-shadow: 0 0 5px rgb(0 0 0 / 30%);
-    content: "";
-    left: 0;
-    margin-top: 0;
-    position: absolute;
-    top: -12px;
-    transition: all 0.3s ease-in-out;
-    height: 1.5rem;
-    width: 1.5rem;
-  }
-  
-  .button-switch.switch-sm > label{
-    display: flex;
-    align-items: center;
-    width: 2rem;
-  }
-  
+}
+
+p.infoText {
+  background-color: #f9f9f9;
+  line-height: 1.33;
+  text-align: left;
+  color: #9e9e9e;
+  padding: 8px 15px;
+  width: 100%;
+  font-weight: normal;
+}
+
+.button-switch>label::before {
+  background: #909090;
+  border-radius: 18px;
+  content: "";
+  height: 27px;
+  margin-top: -13.5px;
+  position: absolute;
+  opacity: 0.3;
+  transition: all 0.4s ease-in-out;
+  width: 46px;
+}
+
+.button-switch>label::after {
+  background: var(--c-white);
+  border-radius: 16px;
+  box-shadow: 0 0 5px rgb(0 0 0 / 30%);
+  content: "";
+  height: 24px;
+  left: 0;
+  margin-top: -9px;
+  position: absolute;
+  top: -4px;
+  transition: all 0.3s ease-in-out;
+  width: 24px;
+}
+
+.button-switch>input[type="checkbox"]:checked+label::before {
+  background: inherit;
+  opacity: 0.5;
+}
+
+.button-switch>input[type="checkbox"] {
+  display: none;
+  margin: 4px 0 0;
+}
+
+.button-switch>input[type="checkbox"]:checked+label::after {
+  background: inherit;
+  left: 23px;
+}
+
+.button-switch.switch-sm>label::before {
+  background: #909090;
+  border-radius: 18px;
+  content: "";
+  height: 1.5rem;
+  margin-top: 0;
+  position: absolute;
+  opacity: 0.3;
+  transition: all 0.4s ease-in-out;
+  width: 3rem;
+}
+
+.button-switch.switch-sm>label::after {
+  background: var(--c-white);
+  border-radius: 16px;
+  box-shadow: 0 0 5px rgb(0 0 0 / 30%);
+  content: "";
+  left: 0;
+  margin-top: 0;
+  position: absolute;
+  top: -12px;
+  transition: all 0.3s ease-in-out;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.button-switch.switch-sm>label {
+  display: flex;
+  align-items: center;
+  width: 2rem;
+}
+
+
+.tooltip-container {
+  display: flex;
+  align-items: center;
+}
+
+.tooltip-container .btn-info-icon:after {
+  content: 'i';
+  font-weight: 400;
+  font-size: 12px;
+  font-style: normal;
+  left: 0;
+  top: auto !important;
+  left: auto;
+}
+
+.tooltip-container .btn-info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  color: #fff;
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.tooltip-container .btn-info-icon .cp-tooltip {
+  background-color: rgba(0, 0, 0, .75);
+  color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+  position: absolute;
+  left: calc(100% + 12px);
+  cursor: auto;
+  font-size: 12px;
+  min-width: 160px;
+  opacity: 0;
+  transform: scale(.1);
+  transition: opacity ease .1s, transform ease .1s;
+  transform-origin: left;
+  pointer-events: none;
+  z-index: 100;
+  top: -68px;
+}
+
+.tooltip-container .btn-info-icon .cp-tooltip.second-tooltip {
+  top: -105px;
+}
+
+.tooltip-container .btn-info-icon:hover .cp-tooltip {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.tooltip-container .btn-info-icon .cp-tooltip::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-left: 4px solid rgba(0, 0, 0, .75);
+  border-bottom: 4px solid rgba(0, 0, 0, .75);
+  border-right: 4px solid transparent;
+  border-top: 4px solid transparent;
+  position: absolute;
+  left: -7px;
+  transform: rotate(45deg) translateY(-50%);
+  top: 50%;
+  bottom: 50%;
+}
+
+.tooltip-container .btn-info-icon:hover .cp-tooltip2 {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.checkbox {
+  margin-top: 0 !important;
+}
+
+.radio-inline+.radio-inline,
+.checkbox-inline+.checkbox-inline {
+  margin-left: 0 !important;
+}
+
+div.col-md-5.text-right.pull-right.padding-right-zero>a {
+  display: none;
+}
