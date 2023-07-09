@@ -18,6 +18,14 @@
     overflow: hidden;
 }
 
+.dialog-label{
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 8rem;
+}
+
 .edit-dialog-subtitle {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -611,27 +619,32 @@
     }
 }
 
+.show {
+    visibility: visible;
+}
+
 /* ---- Score Drawer ----*/
 #leaderboardDrawer {}
 
-#leaderboardDrawer #drawerHeader{}
+#leaderboardDrawer #drawerHeader {}
 
-#leaderboardDrawer .drag-indicator{}
+#leaderboardDrawer .drag-indicator {}
 
-#leaderboardDrawer .drawer-menu{}
+#leaderboardDrawer .drawer-menu {}
 
-#leaderboardDrawer .drawer-content{}
+#leaderboardDrawer .drawer-content {}
 
-#leaderboardDrawer .score-row{}
+#leaderboardDrawer .score-row {}
 
 /* ---- User Score Rank ---- */
 /* rank image */
-#leaderboardDrawer .rank-container img{}
+#leaderboardDrawer .rank-container img {}
+
 /* user image */
-#leaderboardDrawer .score-image-container img{}
+#leaderboardDrawer .score-image-container img {}
+
 /* user name */
-#leaderboardDrawer .score-name{}
+#leaderboardDrawer .score-name {}
+
 /* user score */
-#leaderboardDrawer .score-score{}
-
-
+#leaderboardDrawer .score-score {}

@@ -223,7 +223,6 @@ const addScore = () => {
                 addScoreErrorMessage.classList.add("show");
                 addScoreButton.classList.remove("disabled");
                 addScoreButton.disabled = false;
-                addScoreErrorMessage.innerHTML = "Please input a valid score";
             }
 
             if (data) {
@@ -239,7 +238,6 @@ const addScore = () => {
                 addScoreButton.disabled = false;
                 if (addScoreLabel.classList.contains("error")) addScoreLabel.classList.remove("error");
                 if (addScoreErrorMessage.classList.contains("show")) addScoreErrorMessage.classList.remove("show");
-                addScoreErrorMessage.innerHTML = "";
                 addScoreInput.value = "";
             }
         });
@@ -375,7 +373,6 @@ const editScore = (allowScoreToBeZero = false) => {
                 console.error(err);
                 editScoreLabel.classList.add("error");
                 editScoreErrorMessage.classList.add("show");
-                editScoreErrorMessage.innerHTML = "Please input a valid score";
                 editScoreButton.classList.remove("disabled");
                 editScoreButton.disabled = false;
                 return;
@@ -404,7 +401,6 @@ const editScore = (allowScoreToBeZero = false) => {
                 editScoreButton.disabled = false;
                 if (editScoreLabel.classList.contains("error")) editScoreLabel.classList.remove("error");
                 if (editScoreErrorMessage.classList.contains("show")) editScoreErrorMessage.classList.remove("show");
-                editScoreErrorMessage.innerHTML = "";
                 editScoreInput.value = "";
             }
         });
@@ -882,7 +878,6 @@ const closeAddDialog = () => {
     addScoreButton.disabled = false;
     if (addScoreLabel.classList.contains("error")) addScoreLabel.classList.remove("error");
     if (addScoreErrorMessage.classList.contains("show")) addScoreErrorMessage.classList.remove("show");
-    addScoreErrorMessage.innerHTML = "";
     addScoreInput.value = "";
     getScores(Keys.overall, (scores) => {
         if (scores.length != 0) {
@@ -898,7 +893,6 @@ const closeEditDialog = () => {
     editScoreButton.disabled = false;
     if (editScoreLabel.classList.contains("error")) editScoreLabel.classList.remove("error");
     if (editScoreErrorMessage.classList.contains("show")) editScoreErrorMessage.classList.remove("show");
-    editScoreErrorMessage.innerHTML = "";
     editScoreInput.value = "";
     getScores(Keys.overall, (scores) => {
         if (scores.length != 0) {

@@ -38,6 +38,18 @@
                     "defaultValue": "This field is required",
                     "maxLength": 50,
                     "placeholder": "This field is required"
+                },
+                "dialogSave": {
+                    "title": "Save",
+                    "defaultValue": "Save",
+                    "maxLength": 10,
+                    "placeholder": "Save"
+                },
+                "dialogCancel": {
+                    "title": "Cancel",
+                    "defaultValue": "Cancel",
+                    "maxLength": 10,
+                    "placeholder": "Cancel"
                 }
             }
         },
