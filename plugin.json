@@ -1,7 +1,7 @@
 {
   "author": "BuildFire",
   "pluginName": "Leaderboard",
-  "pluginDescription": "Leaderboard, is a dynamic plugin that enables you to compete with team-members and your community for the highest score at the top of the board, it also enables you to create trackable challenges, and keep scores in a daily-weekly-monthly format, as well as staying up to date on current rankings via push notifications.",
+  "pluginDescription": "Easily add a leaderboard to your mobile app, creating a fun and engaging experience for your users.",
   "supportEmail": "support@buildfire.com",
   "control": {
     "content": {
@@ -40,5 +40,16 @@
   "languages": [
     "en"
   ],
-  "keywords": "leaderboard, compete, competititon, score, scoring, trackable, challenges, rankings, timeframe"
+  "keywords": "leaderboard, compete, competititon, score, scoring, trackable, challenges, rankings, timeframe",
+	"media": [
+		{ "type": "image-resource", "path": "1-Plugin.png" },
+		{ "type": "image-resource", "path": "2-Benefits.png" },
+		{ "type": "image-resource", "path": "3-Use-Cases.png" },
+		{ "type": "image-resource", "path": "4-Content-Tab.png" },
+		{ "type": "image-resource", "path": "5-Analytics-Tab.png" },
+    {
+      "type": "youtube-video",
+      "path": "https://www.youtube.com/watch?v=HudhZTMpY5c"
+    }
+	]
 }
