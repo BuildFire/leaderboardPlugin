@@ -100,7 +100,6 @@ let testData = [
 ];
 
 let settings = null;
-let strings;
 
 let shownScores = [];
 let currentActiveTab = Keys.overall;
@@ -171,11 +170,6 @@ buildfire.messaging.onReceivedMessage = (message) => {
         if (!leaderboardDrawer.classList.contains("hide")) leaderboardDrawer.classList.add("hide");
         contentContainer.classList.remove("small");
     }
-    else {
-        if (message.cmd && message.cmd == "refresh") {
-            loadLanguage("en-us")
-        }
-    }
 };
 
 //load data into wys
@@ -194,7 +188,6 @@ const checkAddScore = () => {
     else {
         addScoreLabel.classList.add("error");
         addScoreErrorMessage.classList.add("show");
-        addScoreErrorMessage.innerHTML = "This field is required";
         return false;
     }
 };
@@ -208,7 +201,6 @@ const checkEditScore = () => {
     else {
         editScoreLabel.classList.add("error");
         editScoreErrorMessage.classList.add("show");
-        editScoreErrorMessage.innerHTML = "This field is required";
         return false;
     }
 };
@@ -231,7 +223,6 @@ const addScore = () => {
                 addScoreErrorMessage.classList.add("show");
                 addScoreButton.classList.remove("disabled");
                 addScoreButton.disabled = false;
-                addScoreErrorMessage.innerHTML = "Please input a valid score";
             }
 
             if (data) {
@@ -247,7 +238,6 @@ const addScore = () => {
                 addScoreButton.disabled = false;
                 if (addScoreLabel.classList.contains("error")) addScoreLabel.classList.remove("error");
                 if (addScoreErrorMessage.classList.contains("show")) addScoreErrorMessage.classList.remove("show");
-                addScoreErrorMessage.innerHTML = "";
                 addScoreInput.value = "";
             }
         });
@@ -383,7 +373,6 @@ const editScore = (allowScoreToBeZero = false) => {
                 console.error(err);
                 editScoreLabel.classList.add("error");
                 editScoreErrorMessage.classList.add("show");
-                editScoreErrorMessage.innerHTML = "Please input a valid score";
                 editScoreButton.classList.remove("disabled");
                 editScoreButton.disabled = false;
                 return;
@@ -412,7 +401,6 @@ const editScore = (allowScoreToBeZero = false) => {
                 editScoreButton.disabled = false;
                 if (editScoreLabel.classList.contains("error")) editScoreLabel.classList.remove("error");
                 if (editScoreErrorMessage.classList.contains("show")) editScoreErrorMessage.classList.remove("show");
-                editScoreErrorMessage.innerHTML = "";
                 editScoreInput.value = "";
             }
         });
@@ -712,7 +700,7 @@ const renderScoreRow = (score, index) => {
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
         image = ui('img', imageContainer, null, ['score-image'], score.displayPictureUrl, 'profile');
     }
-    let scoreDiv = ui('div', row, null, ['score-scoreDiv']);
+    let scoreDiv = ui('div', row, null, ['score-row-right']);
     let name = ui('p', scoreDiv, score.displayName, ['score-name']);
     let scoreP = ui('p', scoreDiv, score.currentScore, ['score-score']);
 }
@@ -779,7 +767,7 @@ const renderEmptyScoreRow = (score, index) => {
         imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
         image = ui('img', imageContainer, null, ['score-image'], score.displayPictureUrl);
     }
-    let scoreDiv = ui('div', row, null, ['score-scoreDiv']);
+    let scoreDiv = ui('div', row, null, ['score-row-right']);
     let name = ui('p', scoreDiv, score.displayName, ['score-name']);
     let scoreP = ui('p', scoreDiv, '0', ['score-score']);
 }
@@ -791,7 +779,7 @@ const renderLoadingRow = () => {
     let rank = ui('div', leftContainer, null, ['loading-score-rank'], null);
     let imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
     let image = ui('div', imageContainer, null, ['loading-score-image'], null);
-    let scoreDiv = ui('div', row, null, ['score-scoreDiv']);
+    let scoreDiv = ui('div', row, null, ['score-row-right']);
     let name = ui('div', scoreDiv, null, ['loading-score-name']);
     let scoreP = ui('p', scoreDiv, null, ['loading-score-score']);
 }
@@ -890,7 +878,6 @@ const closeAddDialog = () => {
     addScoreButton.disabled = false;
     if (addScoreLabel.classList.contains("error")) addScoreLabel.classList.remove("error");
     if (addScoreErrorMessage.classList.contains("show")) addScoreErrorMessage.classList.remove("show");
-    addScoreErrorMessage.innerHTML = "";
     addScoreInput.value = "";
     getScores(Keys.overall, (scores) => {
         if (scores.length != 0) {
@@ -906,7 +893,6 @@ const closeEditDialog = () => {
     editScoreButton.disabled = false;
     if (editScoreLabel.classList.contains("error")) editScoreLabel.classList.remove("error");
     if (editScoreErrorMessage.classList.contains("show")) editScoreErrorMessage.classList.remove("show");
-    editScoreErrorMessage.innerHTML = "";
     editScoreInput.value = "";
     getScores(Keys.overall, (scores) => {
         if (scores.length != 0) {
@@ -936,7 +922,6 @@ const testScores = () => {
 
 //get previous user settings
 const load = () => {
-    loadLanguage("en-us");
     authManager.getCurrentUser();
     getScores(Keys.overall, (scores) => {
         if (scores && scores.length > 0) {
@@ -952,26 +937,6 @@ const load = () => {
 
 }
 
-const loadLanguage = (lang) => {
-    strings = new buildfire.services.Strings(lang, stringsConfig);
-    strings.init().then(() => {
-        strings.inject();
-        inject();
-    });
-}
-
-
-const inject = () => {
-    document.getElementById("add-dialog-title").innerHTML = strings.get('score.add')
-    document.getElementById("add-dialog-subtitle").innerHTML = strings.get('score.addSubtitle')
-    document.getElementById("edit-dialog-title").innerHTML = strings.get('score.edit')
-    document.getElementById("edit-dialog-subtitle").innerHTML = strings.get('score.editSubtitle')
-
-    document.getElementById("overallText").innerHTML = strings.get('scoreboard.overall')
-    document.getElementById("monthText").innerHTML = strings.get('scoreboard.month')
-    document.getElementById("weekText").innerHTML = strings.get('scoreboard.week')
-    document.getElementById("dayText").innerHTML = strings.get('scoreboard.day')
-}
 
 
 load();
