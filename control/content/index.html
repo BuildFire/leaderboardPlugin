@@ -32,16 +32,7 @@
 
     <script>
         /// create a new instance of the buildfire carousel editor
-        var editor = new buildfire.components.carousel.editor("#contentCarousel");
-
-        tinymce.init({
-            selector: "#wysiwygContent",
-            setup: function (editor) {
-                editor.on('change', function () {
-                    saveWYSContent(editor.getContent())
-                });
-            }
-        });
+        const editor = new buildfire.components.carousel.editor("#contentCarousel");
 
         /// handle the loading
         function loadItems(carouselItems) {
@@ -52,37 +43,23 @@
         /// call buildfire datastore to see if there are any previously saved items
         buildfire.datastore.get(function (err, obj) {
             if (err)
-                alert('error');
+                console.error('error');
             else
                 loadItems(obj.data.carouselItems)
         });
 
         /// save any changes in items
         function save(items) {
-            console.log('saving...');
             buildfire.datastore.save({ carouselItems: items }, function (e) {
                 if (e)
-                    alert("error");
+                    console.error("error");
                 else
                     console.log('saved.');
             });
         }
 
-
-        // this method will be called when a new item added to the list
-        editor.onAddItems = function (items) {
-            save(editor.items);
-        };
-        // this method will be called when an item deleted from the list
-        editor.onDeleteItem = function (item, index) {
-            save(editor.items);
-        };
-        // this method will be called when you edit item details
-        editor.onItemChange = function (item) {
-            save(editor.items);
-        };
-        // this method will be called when you change the order of items
-        editor.onOrderChange = function (item, oldIndex, newIndex) {
+        // // this method will be called when a new item added to the list
+        editor.onAddItems = editor.onDeleteItem = editor.onItemChange = editor.onOrderChange = function () {
             save(editor.items);
         };
 
@@ -98,15 +75,28 @@
             }
         }
 
-
-        // Check datastore for previous content
-        buildfire.datastore.get("wysContent", (err, result) => {
-            if (err) return console.error("Error while getting your data", err);
-            if (result && result.data && result.data.content) {
-                console.log("Content found in datastore", result.data.content);
-                tinymce.activeEditor.setContent(result.data.content);
-                saveWYSContent(result.data.content);
-            }
+        let timerDelay = null;
+        tinymce.init({
+        selector: "#wysiwygContent",
+        setup: (editor) => {
+            editor.on("change keyUp", (e) => {
+            if (timerDelay) clearTimeout(timerDelay);
+            timerDelay = setTimeout(() => {
+                let wysiwygContent = tinymce.activeEditor.getContent();
+                saveWYSContent(wysiwygContent);
+            }, 500);
+            });
+            editor.on("init", () => {
+                    // Check datastore for previous content
+                    buildfire.datastore.get("wysContent", (err, result) => {
+                        if (err) return console.error("Error while getting your data", err);
+                        if (result && result.data && result.data.content) {
+                            console.log("Content found in datastore", result);
+                            editor.setContent(result.data.content);
+                        }
+                    });
+            });
+        }
         });
 
         // Save content to datastore
@@ -121,27 +111,6 @@
                 );
             }
         }
-
-
-
-        // function createLeaderboard() {
-        //     let sb = new buildfire.gamify.Scoreboard("Scoreboard", 100, true);
-        //     leaderboardLB = new leaderboard(sb);
-        //     console.log("Created a new Scoreboard")
-        //     console.log(leaderboardLB.getSize())
-        // }
-
-        // function changeSize() {
-        //     let size = lbSize.value
-        //     if (isNaN(size)) {
-        //         console.log("Must input numbers");
-        //         return false;
-        //     }
-        //     else {
-        //         leaderboardLB.setSize(parseInt(size))
-        //         console.log(leaderboardLB.getSize())
-        //     }
-        // }
 
         load()
     </script>
