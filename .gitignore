@@ -59,4 +59,7 @@ typings/
 
 # next.js build output
 .next
-plugin.zip 
+plugin.zip
+
+# Intellij dir
+.idea
