@@ -3,6 +3,7 @@
   "pluginName": "Leaderboard",
   "pluginDescription": "Easily add a leaderboard to your mobile app, creating a fun and engaging experience for your users.",
   "supportEmail": "support@buildfire.com",
+  "supportSite": "https://learn.appdocumentation.com/en/articles/8524929-leaderboard-plugin-overview",
   "control": {
     "content": {
       "enabled": true
@@ -18,9 +19,9 @@
       "languageJsonPath": "resources/languages.json",
       "tagName": "$bfLanguageSettings_en-us"
     },
-    "cssInjection": { 
+    "cssInjection": {
       "enabled": true,
-      "layouts": [ 
+      "layouts": [
         {
             "name": "Layout 1",
             "imageUrl": "resources/layouts_img/layout1.png",
