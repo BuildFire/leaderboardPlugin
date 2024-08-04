@@ -244,39 +244,39 @@ const addScore = () => {
     }
 }
 
-const editScoreFromFTQ = (overal, daily, points) => {
+const editScoreFromFTQ = (overal, daily, points, callback) => {
     if(!overal || overal.score == 0){
         editScoreInput.value = points
-        editScore();
+        editScore(false, callback);
     }
     else if(!daily || daily.score == 0){
         editScoreInput.value = points
-        editScore();
+        editScore(false, callback);
     }
     else if(overal.score > 0 && overal.score == daily.score){
         editScoreInput.value = points + overal.score
-        editScore();
+        editScore(false, callback);
     }else if(daily.score > 0){
         editScoreInput.value = points + daily.score
-        editScore();
+        editScore(false, callback);
     }
 }
 
-const editScoreFromLoyalty = (overal, daily, points) => {
+const editScoreFromLoyalty = (overal, daily, points, callback) => {
     let dailyScore = daily && daily.score ? daily.score : 0 
     const newDailyScore = dailyScore + points
     editScoreInput.value = newDailyScore > 0 ? newDailyScore : 0;
-    editScore(true);
+    editScore(true, callback);
 }
 
 
-const editScoreByCalculatingPoint = (points, pointsFrom) => {
+const editScoreByCalculatingPoint = (points, pointsFrom, callback) => {
     Scores.getCurrentUserRank(Keys.overall, (error, overal) => {
         Scores.getCurrentUserRank(Keys.daily, (err, daily) => {
             if(pointsFrom == "LOYALTY"){
-               editScoreFromLoyalty(overal, daily, points)
+               editScoreFromLoyalty(overal, daily, points, callback)
             } else if(pointsFrom == "FTQ"){
-                editScoreFromFTQ(overal, daily, points);
+                editScoreFromFTQ(overal, daily, points, callback);
             }
         });
     });
@@ -289,17 +289,22 @@ const calculateLoyaltyPoints = () => {
             buildfire.appData.search(
                 {
                   filter: {
-                    "$json.userId": {$eq: user._id}
+                    "$json.userId": {$eq: user._id},
+                    "$and": [
+                        {
+                            "$json.newPoints": { $gt: 0 }
+                        }
+                    ]
                   },
                 },
                 "userLoyaltyPoints",
                 (err, result) => {
-                    if(result && result.length > 0){
-                        var loyaltyNewPoints = result[0].data && result[0].data.newPoints ? result[0].data.newPoints : 0 
-                        if(loyaltyNewPoints != 0){
-                            editScoreByCalculatingPoint(loyaltyNewPoints, "LOYALTY")
+                    if(result && result[0] && result[0].data){ // user loyalty record is a single record and all not calculated points will be stored in this record
+                        const loyaltyNewPoints = result[0].data.newPoints;
+                        editScoreByCalculatingPoint(loyaltyNewPoints, "LOYALTY", (err, res) => {
+                            if (err) return console.error(err);
                             resetLoyaltyNewPoints(user._id)
-                        }
+                        });
                     }
                  })
         }
@@ -323,31 +328,52 @@ const calculateFtqPoints = function(){
                 isCalculatingPoints = true;
                 settings.features.forEach(element => {
                     buildfire.appData.search({
-                      filter: { "$json.user._id": {$eq: user._id} },
+                      filter: {
+                        "$json.user._id": {$eq: user._id},
+                        "$or": [
+                            {
+                                "$json.isEarnedPoints": {$eq: false}
+                            }, {
+                                "$json.isEarnedPoints": {$exists: false}
+                            }
+                        ]
+                      },
                       sort:   {"finishedDateTime": -1},
                       skip:   0,
-                      limit:  1
                     },
                     "freeTextQuestionnaireSubmissions_" + element.instanceId,
-                    (err, res) => { 
-                      if(res && res.length > 0 && !res[0].data.isEarnedPoints){
-                        let selectedFTQ = res[0].data;
-                        selectedFTQ.isEarnedPoints = true;
-                        buildfire.appData.update(
-                          res[0].id, // Replace this with your object id
-                          selectedFTQ,
-                          "freeTextQuestionnaireSubmissions_" + element.instanceId,
-                          (err, result) => {
-                            if (err) return console.error("Error while inserting your data", err);
-                            let score = 0 
-                            selectedFTQ.answers.forEach(answer => {
-                              score += answer && answer.score ? answer.score : 0
+                    (err, submissions) => { 
+                      if(submissions && submissions.length > 0){
+                        let score = 0;
+                        submissions.forEach(submission => {
+                            submission.data.answers.forEach(answer => {
+                                score += (answer && answer.score) ? answer.score : 0
                             });
-                            if(score != 0){
-                                editScoreByCalculatingPoint(score, "FTQ")
-                            }
-                          }
-                        );
+                        })
+                        if(score != 0){
+                            editScoreByCalculatingPoint(score, "FTQ", (error, res) => {
+                                if (error) return console.error(error);
+
+                                const promises = [];
+                                submissions.forEach(submission => {
+                                    promises.push(new Promise((resolve, reject) => {
+                                        buildfire.appData.update(submission.id, { $set: { isEarnedPoints: true } },
+                                            "freeTextQuestionnaireSubmissions_" + element.instanceId,
+                                            (err, result) => {
+                                                if (err) return reject(err);
+                                                resolve(result)
+                                            }
+                                        );
+                                    }))
+                                })
+                               
+                                Promise.all(promises).then(() => {
+                                    console.log("All points are calculated");
+                                }).catch((err) => {
+                                    console.log(err);
+                                })
+                            });
+                        }
                       }
                     })
                   });
@@ -359,13 +385,14 @@ const calculateFtqPoints = function(){
   }
 
 //Edit the score of the user
-const editScore = (allowScoreToBeZero = false) => {
+const editScore = (allowScoreToBeZero = false, callback) => {
     editScoreButton.classList.add("disabled");
     editScoreButton.disabled = true;
     if (checkEditScore()) {
         let score = parseInt(editScoreInput.value);
         settings.isSubscribedToPN = isSubscribedToPN
         Scores.editDailyScore({ score: score, settings, allowScoreToBeZero}, (err, data) => {
+            callback && callback(err, data);
             if (err == 'User not logged in') {
                 authManager.enforceLogin();
             }
