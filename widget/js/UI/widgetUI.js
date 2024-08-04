@@ -354,24 +354,24 @@ const calculateFtqPoints = function(){
                             editScoreByCalculatingPoint(score, "FTQ", (error, res) => {
                                 if (error) return console.error(error);
 
-                                const promises = [];
-                                submissions.forEach(submission => {
-                                    promises.push(new Promise((resolve, reject) => {
-                                        buildfire.appData.update(submission.id, { $set: { isEarnedPoints: true } },
-                                            "freeTextQuestionnaireSubmissions_" + element.instanceId,
-                                            (err, result) => {
-                                                if (err) return reject(err);
-                                                resolve(result)
-                                            }
-                                        );
-                                    }))
-                                })
-                               
-                                Promise.all(promises).then(() => {
-                                    console.log("All points are calculated");
-                                }).catch((err) => {
-                                    console.log(err);
-                                })
+                                buildfire.appData.searchAndUpdate({
+                                    "$json.user._id": { $eq: user._id },
+                                    "$or": [
+                                        {
+                                            "$json.isEarnedPoints": { $eq: false }
+                                        }, {
+                                            "$json.isEarnedPoints": { $exists: false }
+                                        }
+                                    ]
+                                }, {
+                                    $set: {
+                                        isEarnedPoints: true
+                                    }
+                                }, "freeTextQuestionnaireSubmissions_" + element.instanceId,
+                                (err, res) => {
+                                    if (err) console.log(err);
+                                });
+
                             });
                         }
                       }
