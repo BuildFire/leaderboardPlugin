@@ -289,24 +289,19 @@ const calculateLoyaltyPoints = () => {
             buildfire.appData.search(
                 {
                   filter: {
-                    "$json.userId": {$eq: user._id},
-                    "$and": [
-                        {
-                            "$json.newPoints": { $gt: 0 }
-                        }
-                    ]
+                    "$json.userId": {$eq: user._id}
                   },
                 },
                 "userLoyaltyPoints",
                 (err, result) => {
-                    if(result && result[0] && result[0].data){ // user loyalty record is a single record and all not calculated points will be stored in this record
+                    if(result && result[0] && result[0].data && result[0].data.newPoints) { // user loyalty record is a single record and all not calculated points will be stored in this record
                         const loyaltyNewPoints = result[0].data.newPoints;
                         editScoreByCalculatingPoint(loyaltyNewPoints, "LOYALTY", (err, res) => {
                             if (err) return console.error(err);
                             resetLoyaltyNewPoints(user._id)
                         });
                     }
-                 })
+                });
         }
     })
 }
@@ -330,13 +325,7 @@ const calculateFtqPoints = function(){
                     buildfire.appData.search({
                       filter: {
                         "$json.user._id": {$eq: user._id},
-                        "$or": [
-                            {
-                                "$json.isEarnedPoints": {$eq: false}
-                            }, {
-                                "$json.isEarnedPoints": {$exists: false}
-                            }
-                        ]
+                        "$json.isEarnedPoints": {$exists: false}
                       },
                       sort:   {"finishedDateTime": -1},
                       skip:   0,
@@ -356,13 +345,7 @@ const calculateFtqPoints = function(){
 
                                 buildfire.appData.searchAndUpdate({
                                     "$json.user._id": { $eq: user._id },
-                                    "$or": [
-                                        {
-                                            "$json.isEarnedPoints": { $eq: false }
-                                        }, {
-                                            "$json.isEarnedPoints": { $exists: false }
-                                        }
-                                    ]
+                                    "$json.isEarnedPoints": { $exists: false }
                                 }, {
                                     $set: {
                                         isEarnedPoints: true
@@ -371,7 +354,6 @@ const calculateFtqPoints = function(){
                                 (err, res) => {
                                     if (err) console.log(err);
                                 });
-
                             });
                         }
                       }
