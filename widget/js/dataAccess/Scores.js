@@ -176,7 +176,8 @@ class Scores {
      * @param {Date} date the date of today
     */
     static getDailyTag = (date) => {
-        return "" + date.getDate() + (date.getMonth() + 1) + date.getFullYear()
+        // include daily_ with the tag to distinguish it from weekly tag
+        return "daily_" + date.getDate() + (date.getMonth() + 1) + date.getFullYear()
     }
 
     /**
@@ -184,21 +185,14 @@ class Scores {
      * @param {Date} date the date of today
     */
     static getWeeklyTag = (date) => {
-        const startWeekDayIndex = 1; // 1 MonthDay 0 Sundays
-        const firstDate = new Date(date.getFullYear(), date.getMonth(), 1);
-        const firstDay = firstDate.getDay();
-
-        let weekNumber = Math.ceil((date.getDate() + firstDay) / 7);
-        if (startWeekDayIndex === 1) {
-            if (date.getDay() === 0 && date.getDate() > 1) {
-                weekNumber -= 1;
-            }
-
-            if (firstDate.getDate() === 1 && firstDay === 0 && date.getDate() > 1) {
-                weekNumber += 1;
-            }
-        }
-        return weekNumber.toString() + (date.getMonth() + 1) + date.getFullYear()
+        const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        const firstDayOfWeek = firstDayOfMonth.getDay();
+        
+        // Calculate the week number in the month
+        const weekNumber = Math.ceil((date.getDate() + firstDayOfWeek) / 7);   
+        
+        // include weekly_ with the tag to distinguish it from daily tag
+        return `weekly_${weekNumber}${date.getMonth() + 1}${date.getFullYear()}`;
     }
 
     /**
