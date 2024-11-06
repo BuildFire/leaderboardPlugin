@@ -29,6 +29,7 @@
 	display: flex;
 	gap: 0.5rem;
 	align-items: center;
+	padding-right: 0.25rem;
 }
 
 .ftqFeatures .draggable-list-view .d-item span.icon {
