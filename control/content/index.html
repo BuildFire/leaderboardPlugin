@@ -2,35 +2,43 @@
 <html>
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
 
-    <!-- JS -->
-    <script src="../../../../scripts/buildfire.min.js"></script>
-    <script src="../../widget/global/services/BFGamifyComponent.js""></script>
-    <script src=" ../../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
-    <script src="../../widget/global/services/AnalyticsManager.js"></script>
-    <script src="../../../../scripts/tinymce/tinymce.min.js"></script>
-    <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
-    <script src="../../../../scripts/sortable.min.js"></script>
-    <script src="../../../../scripts/buildfire/components/carousel/carousel.js"></script>
+  <!-- JS -->
+  <script src="../../../../scripts/buildfire.min.js"></script>
+  <script src=" ../../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
+  <script src="../../../../scripts/tinymce/tinymce.min.js"></script>
+  <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+  <script src="../../../../scripts/sortable.min.js"></script>
+  <script src="../../../../scripts/buildfire/components/carousel/carousel.js"></script>
 
-	<link href="../../../../styles/helper.css" rel="stylesheet" />
-    <link href="../../../../styles/siteIcons.css" rel="stylesheet" />
-    <link href="../../../../styles/control/bf-base.css" rel="stylesheet" />
-    <link href="./css/style.css" rel="stylesheet" />
+  <script src="../../widget/global/services/BFGamifyComponent.js"></script>
+  <script src="../../widget/global/services/AuthManager.js"></script>
+  <script src="../../widget/global/services/AnalyticsManager.js"></script>
+  <script src="../../widget/global/js/models/Carousel.js"></script>
+  <script src="../../widget/global/js/models/Wysiwyg.js"></script>
+  <script src="../../widget/global/js/repositories/Carousels.js"></script>
+  <script src="../../widget/global/js/repositories/Wysiwygs.js"></script>
+
+  <link href="../../../../styles/helper.css" rel="stylesheet" />
+  <link href="../../../../styles/siteIcons.css" rel="stylesheet" />
+  <link href="../../../../styles/control/bf-base.css" rel="stylesheet" />
+  <link href="./css/style.css" rel="stylesheet" />
 
 </head>
 
 <body>
-	<section class="margin-right-twenty">
-		<h1>Introduction</h1>
-		<p class="info-note">The introduction is displayed behind the leaderboard drawer.</p>
-		<div id="contentCarousel" class="margin-bottom-thirty"></div>
+  <section class="margin-right-twenty">
+    <h1>Introduction</h1>
+    <p class="info-note">The introduction is displayed behind the leaderboard drawer.</p>
+    <div id="contentCarousel" class="margin-bottom-thirty"></div>
 
-		<span>Description</span>
-		<textarea id="wysiwygContent" name="content"></textarea>
-	</section>
+    <span>Description</span>
+    <textarea id="wysiwygContent" name="content"></textarea>
+  </section>
 </body>
+<script src="./js/state.js"></script>
+<script src="./js/content.controller.js"></script>
 <script src="./js/index.js"></script>
 </html>
