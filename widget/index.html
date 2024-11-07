@@ -2,154 +2,136 @@
 <html>
 
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="buildfire" content="enableMDTheme,enablePluginJsonLoad" />
-	<link href="../../../scripts/owlCarousel/owlCarousel.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="buildfire" content="enableMDTheme,enablePluginJsonLoad" />
+  <link href="../../../scripts/owlCarousel/owlCarousel.css" rel="stylesheet" />
 
-	<script src="../../../scripts/buildfire.js"></script>
-	<script src="../../../scripts/buildfire/components/drawer/drawer.js"></script>
-	<script src="./js/shared/scoreboard.js"></script>
-	<script src=" ../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
-	<script src="./js/shared/authManager.js"></script>
-	<script src="./js/data/UserSetting.js"></script>
-	<script src="./js/dataAccess/UserSettings.js"></script>
-	<script src="./js/data/Score.js"></script>
-	<script src="./js/dataAccess/Scores.js"></script>
-	<script src="./js/data/Keys.js"></script>
-	<script src="./js/shared/analyticKeys.js"></script>
-	<script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
-	<script type="text/javascript" src="../../../scripts/owlCarousel/owlCarousel.js"></script>
-	<script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
-	<script src="js/UI/widgetUI.js" defer></script>
-	<link href="../../../styles/materialDesign/material-components-web@4.0.0.min.css" rel="stylesheet" />
-	<script src="../../../scripts/materialDesign/material-components-web@4.0.0.min.js" type="text/javascript"></script>
-	<script src="js/UI/swipehandler.js"></script>
+  <script src="../../../scripts/buildfire.js"></script>
+  <script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+  <script src="../../../scripts/buildfire/components/drawer/drawer.js"></script>
+  <script src=" ../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
+  <script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
+  <script type="text/javascript" src="../../../scripts/owlCarousel/owlCarousel.js"></script>
+  <link href="../../../styles/materialDesign/material-components-web@4.0.0.min.css" rel="stylesheet" />
+  <script src="../../../scripts/materialDesign/material-components-web@4.0.0.min.js" type="text/javascript"></script>
+
+  <script src="../../../scripts/buildfire/components/swipeableDrawer/swipeableDrawer.js"></script>
+  <link rel="stylesheet" href="../../../styles/components/swipeableDrawer/swipeableDrawer.css" />
+
+
+  <script src="./global/js/constants/index.js"></script>
+
+  <script src="./global/js/models/UserSetting.js"></script>
+  <script src="./global/js/models/Score.js"></script>
+  <script src="./global/js/models/Setting.js"></script>
+
+  <script src="./global/services/BFGamifyComponent.js"></script>
+  <script src="./global/services/AuthManager.js"></script>
+  <script src="./global/services/AnalyticsManager.js"></script>
+
+  <script src="./global/js/repositories/Scores.js"></script>
+  <script src="./global/js/repositories/Settings.js"></script>
+  <script src="./global/js/repositories/UserSettings.js"></script>
 </head>
 
 <body>
-	<div id="main_container">
-		<button onclick="showAddScoreView()" class="add_btn mdc-theme--primary-bg mdc-button" id="add_btn"></button>
-		<div id="scoreSnackbar">
-			<div id="snackbarContent" class="snackbar-content">
-				<div id="snackbarLabel"></div>
-				<div id="editScoreContainer" class="edit">
-					<p onclick="showEditScoreView()">Edit Score</p>
-					<span onclick="hideToast()" class="snack-close">&times;</span>
-				</div>
-			</div>
-		</div>
-		<div id="contentContainer" class="content-container">
-			<div id="carousel"></div>
-			<div id="my_container_div"></div>
-		</div>
-		<div id="contentElement">
-			<div class="mdc-dialog" id="add_score_dialog">
-				<div class="mdc-dialog__container">
-					<div class="mdc-dialog__surface" role="alertdialog" aria-modal="true"
-						aria-labelledby="add-dialog-title" aria-describedby="my-dialog-content"
-						>
-						<!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
-						<h2 class="mdc-dialog__title dialog-title" id="add-dialog-title" bfString="score.add">
-							<!--
-			   -->Add Score
-							<!--
-			 -->
-						</h2>
-						<div class="mdc-dialog__content" id="my-dialog-content">
-							<p id="add-dialog-subtitle" bfString="score.addSubtitle">Input your score here. Please add one score day!</p>
-							<div class="inline-text-field-container">
-								<div class="dialog-input-container">
-									<div class="dialog-input-wrapper">
-										<label id="addScoreLabel" for="score_input" bfString="score.yourScore">Your Score</label>
-										<input inputmode="numeric" type="text" id="addScoreInput"
-											class="dialog-input-field" />
-									</div>
-									<p id="addScoreErrorMessage" class="dialog-input-error-message" bfString="score.requiredMessage">This field is required</p>
-								</div>
-							</div>
-						</div>
-						<div class="mdc-dialog__actions">
-							<button onclick="closeAddDialog()" type="button" class="mdc-button mdc-dialog__button">
-								<div class="mdc-button__ripple"></div>
-								<span class="mdc-button__label dialog-label" bfString="score.dialogCancel">Cancel</span>
-							</button>
-							<button id="addScoreButton" onclick="addScore()" type="button"
-								class="mdc-button mdc-dialog__button">
-								<div class="mdc-button__ripple"></div>
-								<span class="mdc-button__label dialog-label" bfString="score.dialogSave">Save</span>
-							</button>
-						</div>
-					</div>
-				</div>
-				<div class="mdc-dialog__scrim"></div>
-			</div>
+  <div id="main_container">
+    <button onclick="widget.showAddScoreView()" class="add_btn mdc-theme--primary-bg mdc-button" id="add_btn"></button>
+    <div id="scoreSnackbar">
+      <div id="snackbarContent" class="snackbar-content">
+        <div id="snackbarLabel"></div>
+        <div id="editScoreContainer" class="edit">
+          <p onclick="showEditScoreView()">Edit Score</p>
+          <span onclick="hideToast()" class="snack-close">&times;</span>
+        </div>
+      </div>
+    </div>
+    <div id="contentContainer" class="content-container">
+      <div id="carousel"></div>
+      <div id="my_container_div"></div>
+    </div>
+    <div id="contentElement">
+      <div class="mdc-dialog" id="addScoreDialog">
+        <div class="mdc-dialog__container">
+          <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true"
+            aria-labelledby="add-dialog-title" aria-describedby="my-dialog-content"
+            >
+            <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+            <h2 class="mdc-dialog__title dialog-title" id="addEditDialogTitle"></h2>
+            <div class="mdc-dialog__content" id="my-dialog-content">
+              <p id="addEditDialogSubtitle"></p>
+              <div class="inline-text-field-container">
+                <div class="dialog-input-container">
+                  <div class="dialog-input-wrapper">
+                    <label id="addScoreLabel" for="score_input" bfString="score.yourScore">Your Score</label>
+                    <input inputmode="numeric" type="text" id="addEditScoreInput" class="dialog-input-field" />
+                  </div>
+                  <p id="addScoreErrorMessage" class="dialog-input-error-message" bfString="score.requiredMessage">This field is required</p>
+                </div>
+              </div>
+            </div>
+            <div class="mdc-dialog__actions">
+              <button id="closeScoreDialog" type="button" class="mdc-button mdc-dialog__button">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label dialog-label" bfString="score.dialogCancel">Cancel</span>
+              </button>
+              <button id="submitScoreBtn" type="button"
+                class="mdc-button mdc-dialog__button">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label dialog-label" bfString="score.dialogSave">Save</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+      </div>
 
-			<div class="mdc-dialog" id="edit_score_dialog">
-				<div class="mdc-dialog__container">
-					<div class="mdc-dialog__surface" role="alertdialog" aria-modal="true"
-						aria-labelledby="edit-dialog-title" aria-describedby="my-dialog-content">
-						<!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
-						<h2 class="mdc-dialog__title dialog-title" id="edit-dialog-title" bfString="score.edit">
-							<!--
-			   -->Edit Score
-							<!--
-			 -->
-						</h2>
-						<div class="mdc-dialog__content" id="my-dialog-content">
-							<p id="edit-dialog-subtitle" class="edit-dialog-subtitle" bfString="score.editSubtitle">Enter your score here. You may edit only today's score!</p>
-							<div class="inline-text-field-container">
-								<div class="dialog-input-container">
-									<div class="dialog-input-wrapper">
-										<label id="editScoreLabel" for="score_input" bfString="score.yourScore">Your Score</label>
-										<input inputmode="numeric" type="text" id="editScoreInput"
-											class="dialog-input-field" />
-									</div>
-									<p id="editScoreErrorMessage" class="dialog-input-error-message" bfString="score.requiredMessage">This field is required</p>
-								</div>
-							</div>
-						</div>
-						<div class="mdc-dialog__actions">
-							<button onclick="closeEditDialog()" type="button" class="mdc-button mdc-dialog__button">
-								<div class="mdc-button__ripple"></div>
-								<span class="mdc-button__label dialog-label" bfString="score.dialogCancel">Cancel</span>
-							</button>
-							<button id="editScoreButton" onclick="editScore()" type="button"
-								class="mdc-button mdc-dialog__button">
-								<div class="mdc-button__ripple"></div>
-								<span class="mdc-button__label dialog-label" bfString="score.dialogSave">Save</span>
-							</button>
-						</div>
-					</div>
-				</div>
-				<div class="mdc-dialog__scrim"></div>
-			</div>
-		</div>
-		<div id="leaderboardDrawer" class="hide">
-			<div id="drawerHeader">
-				<div id="swipeIndicator" class="drag-indicator"></div>
-				<div class="drawer-menu">
-					<div onclick="switchTab(Keys.overall)" class="drawer-header-title active-header" id="overallHeader">
-						<p id="overallText" bfString="scoreboard.overall">Overall</p>
-					</div>
-					<div onclick="switchTab(Keys.monthly)" class="drawer-header-title" id="monthHeader">
-						<p id="monthText" bfString="scoreboard.month">Month</p>
-					</div>
-					<div onclick="switchTab(Keys.weekly)" class="drawer-header-title" id="weekHeader">
-						<p id="weekText" bfString="scoreboard.week">Week</p>
-					</div>
-					<div onclick="switchTab(Keys.daily)" class="drawer-header-title" id="dayHeader">
-						<p id="dayText" bfString="scoreboard.day">Day</p>
-					</div>
-				</div>
-			</div>
-			<div class="drawer-content">
-				<div id="drawerScoresContainer" class="score-container">
-				</div>
-			</div>
-		</div>
-	</div>
+      <div class="mdc-dialog" id="edit_score_dialog">
+        <div class="mdc-dialog__container">
+          <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true"
+            aria-labelledby="edit-dialog-title" aria-describedby="my-dialog-content">
+            <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+            <h2 class="mdc-dialog__title dialog-title" id="edit-dialog-title" bfString="score.edit">
+              <!--
+         -->Edit Score
+              <!--
+       -->
+            </h2>
+            <div class="mdc-dialog__content" id="my-dialog-content">
+              <p id="edit-dialog-subtitle" class="edit-dialog-subtitle" bfString="score.editSubtitle">Enter your score here. You may edit only today's score!</p>
+              <div class="inline-text-field-container">
+                <div class="dialog-input-container">
+                  <div class="dialog-input-wrapper">
+                    <label id="editScoreLabel" for="score_input" bfString="score.yourScore">Your Score</label>
+                    <input inputmode="numeric" type="text" id="editScoreInput"
+                      class="dialog-input-field" />
+                  </div>
+                  <p id="editScoreErrorMessage" class="dialog-input-error-message" bfString="score.requiredMessage">This field is required</p>
+                </div>
+              </div>
+            </div>
+            <div class="mdc-dialog__actions">
+              <button onclick="closeEditDialog()" type="button" class="mdc-button mdc-dialog__button">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label dialog-label" bfString="score.dialogCancel">Cancel</span>
+              </button>
+              <button id="editScoreButton" onclick="editScore()" type="button"
+                class="mdc-button mdc-dialog__button">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label dialog-label" bfString="score.dialogSave">Save</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+      </div>
+    </div>
+  </div>
 
 
 </body>
-
+  <script src="js/state.js" defer></script>
+  <script src="js/index.js" defer></script>
+  <script src="js/widget.controller.js" defer></script>
+  <script src="js/scoreSwipeableDrawer.js"></script>
 </html>

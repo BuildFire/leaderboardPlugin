@@ -5,7 +5,7 @@ class Scores {
      * @param {String} userID id of the user
      * @param {Object} scoreBoard the scoreboard to search in
     */
-    static _getUserPreviousScore = (userId, scoreBoard) => {
+    static getUserPreviousScore(userId, scoreBoard) {
         let prevScore = 0;
 
         if (scoreBoard.length == 0) return prevScore;
@@ -45,19 +45,19 @@ class Scores {
         let date = this.getStandardDate(new Date(), "America/Los_Angeles")
 
         //Get the tag of the leaderboard
-        if (scoreBoard === Keys.daily) {
+        if (scoreBoard === enums.Keys.daily) {
             tag = this.getDailyTag(date)
         }
 
-        else if (scoreBoard === Keys.weekly) {
+        else if (scoreBoard === enums.Keys.weekly) {
             tag = this.getWeeklyTag(date)
         }
 
-        else if (scoreBoard === Keys.monthly) {
+        else if (scoreBoard === enums.Keys.monthly) {
             tag = this.getMonthlyTag(date)
         }
 
-        else if (scoreBoard === Keys.overall) {
+        else if (scoreBoard === enums.Keys.overall) {
             tag = this.getYearlyTag(date)
         }
 
@@ -116,23 +116,23 @@ class Scores {
         let date = this.getStandardDate(new Date(), "America/Los_Angeles")
 
         //Get the tag of the leaderboard
-        if (data.leaderboardType === Keys.daily) {
+        if (data.leaderboardType === enums.Keys.daily) {
             tag = this.getDailyTag(date)
         }
 
-        else if (data.leaderboardType === Keys.weekly) {
+        else if (data.leaderboardType === enums.Keys.weekly) {
             tag = this.getWeeklyTag(date)
         }
 
-        else if (data.leaderboardType === Keys.monthly) {
+        else if (data.leaderboardType === enums.Keys.monthly) {
             tag = this.getMonthlyTag(date)
         }
 
-        else if (data.leaderboardType === Keys.overall) {
+        else if (data.leaderboardType === enums.Keys.overall) {
             tag = this.getYearlyTag(date)
         }
 
-        //Get the scoreboard 
+        //Get the scoreboard
         let sb = new buildfire.gamify.Scoreboard(tag, 100, {
             autoSubscribeToPushNotification: data.settings.isSubscribedToPN
             , overrideRecords: true
@@ -143,7 +143,7 @@ class Scores {
         sb.getScoreboard((err, scoreboard) => {
             if (err) return callback("Error fetching scoreboard");
             if (scoreboard.topScores.length > 0) {
-                scoreboard.topScores.forEach((element, index) => {                    
+                scoreboard.topScores.forEach((element, index) => {
                     // let imgURL = buildfire.imageLib.cropImage(buildfire.auth.getUserPictureUrl({ userId: element.user._id }), { width: width, height: height });
                     let imgURL = buildfire.auth.getUserPictureUrl({ userId: element.user._id });
                     scores.push(new Score({
@@ -187,10 +187,10 @@ class Scores {
     static getWeeklyTag = (date) => {
         const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
         const firstDayOfWeek = firstDayOfMonth.getDay();
-        
+
         // Calculate the week number in the month
-        const weekNumber = Math.ceil((date.getDate() + firstDayOfWeek) / 7);   
-        
+        const weekNumber = Math.ceil((date.getDate() + firstDayOfWeek) / 7);
+
         // include weekly_ with the tag to distinguish it from daily tag
         return `weekly_${weekNumber}${date.getMonth() + 1}${date.getFullYear()}`;
     }
@@ -279,7 +279,7 @@ class Scores {
                 } else if(element == "monthlyChange"){
                     isNotifyingOnMonthlyChange = true
                 } else if(element == "weeklyChange"){
-                    isNotifyingOnWeeklyChange = true                    
+                    isNotifyingOnWeeklyChange = true
                 } else if(element == "allTimeChange"){
                     isNotifyingOnOverallChange = true;
                 }
@@ -293,7 +293,7 @@ class Scores {
             if (scoreboard.topScores.length > 0) {
                 sb = scoreboard.topScores;
             }
-            let previousScore = this._getUserPreviousScore(user._id, sb)
+            let previousScore = this.getUserPreviousScore(user._id, sb)
             dailyBoard.logScore(user, parseInt(data.score) + previousScore, 'Daily', isNotifyingOnDailyChange, (err, result) => {
                 if (err) return callback(err);
                 if (result && result.rankedAt >= 0) {
@@ -309,7 +309,7 @@ class Scores {
             if (scoreboard.topScores.length > 0) {
                 sb = scoreboard.topScores;
             }
-            let previousScore = this._getUserPreviousScore(user._id, sb)
+            let previousScore = this.getUserPreviousScore(user._id, sb)
             weeklyBoard.logScore(user, parseInt(data.score) + previousScore, 'Weekly', isNotifyingOnWeeklyChange, (err, result) => {
                 if (err) return callback(err);
                 if (result && result.rankedAt >= 0) {
@@ -325,7 +325,7 @@ class Scores {
             if (scoreboard.topScores.length > 0) {
                 sb = scoreboard.topScores;
             }
-            let previousScore = this._getUserPreviousScore(user._id, sb)
+            let previousScore = this.getUserPreviousScore(user._id, sb)
             monthlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Monthly', isNotifyingOnMonthlyChange, (err, result) => {
                 if (err) return callback(err);
                 if (result && result.rankedAt >= 0) {
@@ -341,17 +341,17 @@ class Scores {
             if (scoreboard.topScores.length > 0) {
                 sb = scoreboard.topScores;
             }
-            let previousScore = this._getUserPreviousScore(user._id, sb)
+            let previousScore = this.getUserPreviousScore(user._id, sb)
             yearlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Yearly',isNotifyingOnOverallChange, (err, result) => {
                 if (err) return callback(err);
                 // Trigger analytics event
                 buildfire.analytics.trackAction(analyticKeys.SCORE_LOGGED.key);
                 if (result && result.rankedAt >= 0) {
-                    return callback(null, { rank: result.rankedAt, board: Keys.overall })
+                    return callback(null, { rank: result.rankedAt, board: enums.Keys.overall })
                 }
 
                 else {
-                    return callback(null, { rank: rankedAt, board: Keys.overall })
+                    return callback(null, { rank: rankedAt, board: enums.Keys.overall })
                 }
             })
         });
@@ -425,7 +425,7 @@ class Scores {
                 } else if(element == "monthlyChange"){
                     isNotifyingOnMonthlyChange = true
                 } else if(element == "weeklyChange"){
-                    isNotifyingOnWeeklyChange = true                    
+                    isNotifyingOnWeeklyChange = true
                 } else if(element == "allTimeChange"){
                     isNotifyingOnOverallChange = true;
                 }
@@ -434,7 +434,7 @@ class Scores {
 
         // Get user's last daily score
         dailyBoard.getScoreboard((error, scoreboard) => {
-            userLastDailyScore = this._getUserPreviousScore(user._id, scoreboard.topScores)
+            userLastDailyScore = this.getUserPreviousScore(user._id, scoreboard.topScores)
             // Apply changes to rest of boards
             dailyBoard.logScore(user, parseInt(data.score), 'Daily',isNotifyingOnDailyChange, (err, result) => {
                 if (err) return callback(err);
@@ -445,7 +445,7 @@ class Scores {
                     if (scoreboard.topScores.length > 0) {
                         sb = scoreboard.topScores;
                     }
-                    let weeklyPreviousScore = this._getUserPreviousScore(user._id, sb)
+                    let weeklyPreviousScore = this.getUserPreviousScore(user._id, sb)
                     weeklyBoard.logScore(user, weeklyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Weekly',isNotifyingOnWeeklyChange, (err, result) => {
                         if (err) return callback(err);
                         // Edit monthly board
@@ -455,7 +455,7 @@ class Scores {
                             if (scoreboard.topScores.length > 0) {
                                 sb = scoreboard.topScores;
                             }
-                            let monthlyPreviousScore = this._getUserPreviousScore(user._id, sb)
+                            let monthlyPreviousScore = this.getUserPreviousScore(user._id, sb)
                             monthlyBoard.logScore(user, monthlyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Monthly',isNotifyingOnMonthlyChange, (err, result) => {
                                 if (err) return callback(err);
                                 //Edit yearly board
@@ -465,7 +465,7 @@ class Scores {
                                     if (scoreboard.topScores.length > 0) {
                                         sb = scoreboard.topScores;
                                     }
-                                    let yearlyPreviousScore = this._getUserPreviousScore(user._id, sb)
+                                    let yearlyPreviousScore = this.getUserPreviousScore(user._id, sb)
                                     yearlyBoard.logScore(user, yearlyPreviousScore - parseInt(userLastDailyScore) + parseInt(data.score), 'Yearly', isNotifyingOnOverallChange, (err, result) => {
                                         if (err) return callback(err);
                                         return callback(null, "Success")
@@ -478,6 +478,35 @@ class Scores {
             })
         });
     }
+
+	static editScore(score, boardName, isNotifyingOnDailyChange, callback) {
+		const date = this.getStandardDate(new Date(), "America/Los_Angeles")
+		let tag;
+
+		switch (boardName) {
+			case "Daily":
+                tag = this.getDailyTag(date);
+                break;
+            case "Weekly":
+                tag = this.getWeeklyTag(date);
+                break;
+            case "Monthly":
+                tag = this.getMonthlyTag(date);
+                break;
+            case "Yearly":
+                tag = this.getYearlyTag(date);
+                break;
+            default:
+                return callback("Invalid board name");
+		}
+		let board = new buildfire.gamify.Scoreboard(tag, 100, {
+            autoSubscribeToPushNotification: true
+            , overrideRecords: true
+            , sortAscending: false
+        });
+
+		board.logScore(authManager.currentUser, parseInt(score), boardName,isNotifyingOnDailyChange, callback);
+	}
 
     /**
     * Resets the data on all boards
