@@ -19,7 +19,7 @@ const settingsController = {
   },
 
   reset() {
-    // // reset all leaderboards
+    // reset all leaderboards
     buildfire.dialog.confirm(
       {
         title: 'Reset Leaderboard',
@@ -39,7 +39,7 @@ const settingsController = {
             if (settings && settings.isSubscribedToPN) {
               Scores.reset({ isSubscribedToPN: settings.isSubscribedToPN }, (err, res) => {
                 if (err) return console.log(err);
-                buildfire.messaging.sendMessageToWidget('Reset');
+                settingPage.syncWithWidget('reset');
 
                 buildfire.dialog.toast({
                   type: 'success',
