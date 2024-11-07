@@ -1,23 +1,43 @@
-const content = {
+const contentPage = {
+  syncWithWidget(cmd, data) {
+    buildfire.messaging.sendMessageToWidget({ cmd, data });
+  },
+
   initCarousel() {
     this.editor = new buildfire.components.carousel.editor('#contentCarousel');
     this.editor.loadItems(state.carouselItems);
 
     this.editor.onAddItems = () => {
       state.carouselItems = this.editor.items;
-      contentController.updateCarousel();
+      contentController.updateCarousel().then(() => {
+        this.syncWithWidget('carousel', state.carouselItems);
+      }).catch((err) => {
+        console.error(err);
+      });
     };
     this.editor.onDeleteItem = () => {
       state.carouselItems = this.editor.items;
-      contentController.updateCarousel();
+      contentController.updateCarousel().then(() => {
+        this.syncWithWidget('carousel', state.carouselItems);
+      }).catch((err) => {
+        console.error(err);
+      });
     };
     this.editor.onItemChange = () => {
       state.carouselItems = this.editor.items;
-      contentController.updateCarousel();
+      contentController.updateCarousel().then(() => {
+        this.syncWithWidget('carousel', state.carouselItems);
+      }).catch((err) => {
+        console.error(err);
+      });
     };
     this.editor.onOrderChange = () => {
       state.carouselItems = this.editor.items;
-      contentController.updateCarousel();
+      contentController.updateCarousel().then(() => {
+        this.syncWithWidget('carousel', state.carouselItems);
+      }).catch((err) => {
+        console.error(err);
+      });
     };
   },
 
@@ -30,7 +50,11 @@ const content = {
           if (timerDelay) clearTimeout(timerDelay);
           timerDelay = setTimeout(() => {
             state.wysiwyg = tinymce.activeEditor.getContent();
-            contentController.updateWysiwyg();
+            contentController.updateWysiwyg().then(() => {
+              this.syncWithWidget('wysiwyg', state.wysiwyg);
+            }).catch((err) => {
+              console.error(err);
+            });
           }, 500);
         });
         editor.on('init', () => {
@@ -55,5 +79,5 @@ const content = {
 };
 
 window.onload = () => {
-  content.init();
+  contentPage.init();
 };

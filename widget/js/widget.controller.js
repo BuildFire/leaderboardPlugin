@@ -132,27 +132,6 @@ const widgetController = {
     });
   },
 
-  getCarouselContent() {
-    return new Promise((resolve, reject) => {
-      buildfire.datastore.get((err, obj) => {
-        if (err) return reject(err);
-
-        return resolve(obj.data.carouselItems);
-      });
-    });
-  },
-
-  getWYSIWYG() {
-    return new Promise((resolve, reject) => {
-      buildfire.datastore.get('wysContent', (err, res) => {
-        if (err) reject(err);
-        else {
-          resolve(res.data);
-        }
-      });
-    });
-  },
-
   getSettings() {
     return new Promise((resolve, reject) => {
       buildfire.datastore.get('Settings', (err, result) => {
@@ -165,11 +144,11 @@ const widgetController = {
 
   init() {
     return new Promise((resolve, reject) => {
-      const promises = [this.getSettings(), this.getWYSIWYG(), this.getCarouselContent()];
+      const promises = [this.getSettings(), Wysiwygs.get(), Carousels.get()];
       Promise.all(promises).then(([settings, wysiwyg, carousel]) => {
         state.settings = settings;
         state.wysiwyg = wysiwyg;
-        state.carousel = carousel;
+        state.carousel = carousel.carouselItems;
 
         return resolve();
       }).catch(reject);

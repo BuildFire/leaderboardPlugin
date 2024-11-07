@@ -1,6 +1,6 @@
 class UserSettings {
-  static TAG() {
-    return '"UserSettings"';
+  static get TAG() {
+    return 'UserSettings';
   }
 
   /**

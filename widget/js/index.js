@@ -4,7 +4,22 @@ const widget = {
 
   handleCPSync() {
     buildfire.messaging.onReceivedMessage = (message) => {
-      window.location.reload(); // TODO: this should be handled
+      switch (message.cmd) {
+        case 'carousel':
+          state.carousel = message.data;
+          this.appendCarouselItems();
+          break;
+        case 'wysiwyg':
+          state.wysiwyg.content = message.data;
+          this.printWYSIWYGContent();
+          break;
+        case 'settings':
+          state.settings = message.data;
+          break;
+        default:
+          break;
+      }
+    //   window.location.reload(); // TODO: this should be handled
     };
   },
 
@@ -159,17 +174,15 @@ const widget = {
   },
 
   initScoreDialog() {
-    if (state.settings.userEarnPoints === enums.EARN_POINTS.HONOR_SYSTEM) {
-      this.addEditScoreDialog = new mdc.dialog.MDCDialog(document.getElementById('addScoreDialog'));
-      this.addEditScoreDialog.listen('MDCDialog:opened', () => {
-        // Assuming contentElement references a common parent element with the rest of the page's content
-        contentElement.setAttribute('aria-hidden', 'true');
-      });
+    this.addEditScoreDialog = new mdc.dialog.MDCDialog(document.getElementById('addScoreDialog'));
+    this.addEditScoreDialog.listen('MDCDialog:opened', () => {
+      // Assuming contentElement references a common parent element with the rest of the page's content
+      contentElement.setAttribute('aria-hidden', 'true');
+    });
 
-      this.addEditScoreDialog.listen('MDCDialog:closing', (event) => {
-        contentElement.removeAttribute('aria-hidden');
-      });
-    }
+    this.addEditScoreDialog.listen('MDCDialog:closing', (event) => {
+      contentElement.removeAttribute('aria-hidden');
+    });
   },
 
   init() {
@@ -185,6 +198,8 @@ const widget = {
 
       this.checkForNewPoints();
       scoreSwipeableDrawer.init();
+
+      this.handleCPSync();
 
       if (scores && scores.length > 0) {
         state.overallScores = scores;

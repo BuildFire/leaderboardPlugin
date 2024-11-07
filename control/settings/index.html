@@ -6,13 +6,18 @@
 
 	<!-- JS -->
 	<script src="../../../../scripts/buildfire.min.js"></script>
-	<script src="../../widget/global/services/BFGamifyComponent.js"></script>
 	<script src=" ../../../../scripts/buildfire/services/notifications/pushNotifications.js"></script>
-	<script src="../../widget/global/js/repositories/Scores.js"></script>
+
+	<script src="../../widget/global/services/BFGamifyComponent.js"></script>
 	<script src="../../widget/global/services/AuthManager.js"></script>
-	<script src="../../widget/global/js/models/UserSetting.js"></script>
-	<script src="../../widget/global/js/repositories/UserSettings.js"></script>
 	<script src="../../widget/global/services/AnalyticsManager.js"></script>
+	<script src="../../widget/global/js/models/Setting.js"></script>
+	<script src="../../widget/global/js/models/Score.js"></script>
+	<script src="../../widget/global/js/models/UserSetting.js"></script>
+	<script src="../../widget/global/js/repositories/Settings.js"></script>
+	<script src="../../widget/global/js/repositories/Scores.js"></script>
+	<script src="../../widget/global/js/repositories/UserSettings.js"></script>
+	<script src="../../widget/global/js/constants/index.js"></script>
 
 	<script src="../../../../scripts/sortable.min.js"></script>
 	<script src="../../../../scripts/buildfire/components/actionItems/sortableList.js"></script>
@@ -86,7 +91,7 @@
 
 			</div>
 		</div>
-		<div id="ftqFeaturesContainer" class="row">
+		<div id="ftqFeaturesContainer" class="row hidden">
 			<label class="labels col-md-4 pull-left tooltip-container">
 				Free Text Questionnaire
 				<span class="btn-info-icon btn-primary">
@@ -108,15 +113,17 @@
 				</span>
 			</label>
 			<div class="button-switch col-md-8 text-right" >
-				<input id="enableCalculatePoints" type="checkbox" onclick="setEnableCalculatePoints()">
+				<input id="enableCalculatePoints" type="checkbox">
 				<label for="enableCalculatePoints" class="label-success"></label>
 			</div>
 		</div>
 
 		<h1>Reset Leaderboard</h1>
 		<p class="info-note text-danger">Danger! This option will delete all entries and scores in the leaderboard!</p>
-		<button class="btn btn-danger pull-right rest-btn" onclick="reset()">Reset</button>
+		<button class="btn btn-danger pull-right rest-btn" onclick="settingsController.reset()">Reset</button>
 	</section>
 </body>
+<script src="./js/state.js"></script>
+<script src="./js/settings.controller.js"></script>
 <script src="./js/index.js"></script>
 </html>
