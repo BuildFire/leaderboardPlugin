@@ -187,8 +187,10 @@ const widget = {
       scoreSwipeableDrawer.init();
 
       if (scores && scores.length > 0) {
+        state.overallScores = scores;
+
         scoreSwipeableDrawer.toggleDrawer();
-        scoreSwipeableDrawer.switchTab(enums.Keys.overall);
+        scoreSwipeableDrawer.renderScoreList(scores);
       }
     }).catch((err) => {
       console.error(err);

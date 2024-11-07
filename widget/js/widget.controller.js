@@ -28,6 +28,7 @@ const widgetController = {
         }
 
         const logScores = [];
+        // TODO: push notification should be handled --
         logScores.push(new Promise((_resolve, _reject) => Scores.editScore(userDailyScore, enums.boardNames.Daily, false, (err, result) => {
           if (err) return _reject(err);
           return _resolve(result);

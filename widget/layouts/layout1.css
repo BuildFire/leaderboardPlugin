@@ -284,6 +284,7 @@
 .active-header {
     border-bottom: 2px solid var(--bf-theme-primary);
     color: initial !important;
+	font-weight: 600;
 }
 
 .score-row {
@@ -591,6 +592,24 @@
 
 .show {
     visibility: visible;
+}
+
+.swipeable-drawer-content{
+	height: -webkit-fill-available;
+}
+
+.swipeable-drawer-content #drawerContainer{
+	height: -webkit-fill-available;
+	display: flex;
+    flex-direction: column;
+}
+
+.swipeable-drawer-content #drawerContainer .drawer-content {
+	flex: 1;
+}
+
+.swipeable-drawer-content #drawerContainer .drawer-content #drawerScoresContainer {
+	height: 100%;
 }
 
 /* ---- Score Drawer ----*/

@@ -3,4 +3,5 @@ const state = {
   wysiwyg: '',
   carousel: [],
   activeTab: enums.Keys.overall,
+  overallScores: [],
 };
