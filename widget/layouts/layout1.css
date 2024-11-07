@@ -284,7 +284,7 @@
 .active-header {
     border-bottom: 2px solid var(--bf-theme-primary);
     color: initial !important;
-	font-weight: 600;
+    font-weight: 600;
 }
 
 .score-row {
@@ -595,45 +595,20 @@
 }
 
 .swipeable-drawer-content{
-	height: -webkit-fill-available;
+    height: -webkit-fill-available;
 }
 
 .swipeable-drawer-content #drawerContainer{
-	height: -webkit-fill-available;
-	display: flex;
+    height: -webkit-fill-available;
+    display: flex;
     flex-direction: column;
 }
 
 .swipeable-drawer-content #drawerContainer .drawer-content {
-	flex: 1;
+    flex: 1;
 }
 
 .swipeable-drawer-content #drawerContainer .drawer-content #drawerScoresContainer {
-	height: 100%;
+    height: 100%;
 }
 
-/* ---- Score Drawer ----*/
-#leaderboardDrawer {}
-
-#leaderboardDrawer #drawerHeader {}
-
-#leaderboardDrawer .drag-indicator {}
-
-#leaderboardDrawer .drawer-menu {}
-
-#leaderboardDrawer .drawer-content {}
-
-#leaderboardDrawer .score-row {}
-
-/* ---- User Score Rank ---- */
-/* rank image */
-#leaderboardDrawer .rank-container img {}
-
-/* user image */
-#leaderboardDrawer .score-image-container img {}
-
-/* user name */
-#leaderboardDrawer .score-name {}
-
-/* user score */
-#leaderboardDrawer .score-score {}

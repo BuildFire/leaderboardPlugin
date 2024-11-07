@@ -36,37 +36,37 @@ const scoreSwipeableDrawer = {
       let rankContainer = null;
       let image = null;
       if (index === 0) {
-        row = ui('div', drawerScoresContainer, null, ['score-row', 'first'], null);
-        leftContainer = ui('div', row, null, ['score-row-left'], null);
-        rankContainer = ui('div', leftContainer, null, ['rank-container'], null);
-        rank = ui('img', rankContainer, null, ['score-icon'], './images/number-one.svg');
-        imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image', 'first'], score.displayPictureUrl, 'profile', 0);
+        row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row', 'first'], null);
+        leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
+        rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
+        rank = widgetHelper.ui('img', rankContainer, null, ['score-icon'], './images/number-one.svg');
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
+        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'first'], score.displayPictureUrl, 'profile', 0);
       } else if (index === 1) {
-        row = ui('div', drawerScoresContainer, null, ['score-row', 'second'], null);
-        leftContainer = ui('div', row, null, ['score-row-left'], null);
-        rankContainer = ui('div', leftContainer, null, ['rank-container'], null);
-        rank = ui('img', rankContainer, null, ['score-icon'], './images/number-two.svg');
-        imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image', 'second'], score.displayPictureUrl, 'profile', 1);
+        row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row', 'second'], null);
+        leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
+        rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
+        rank = widgetHelper.ui('img', rankContainer, null, ['score-icon'], './images/number-two.svg');
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
+        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'second'], score.displayPictureUrl, 'profile', 1);
       } else if (index === 2) {
-        row = ui('div', drawerScoresContainer, null, ['score-row', 'third'], null);
-        leftContainer = ui('div', row, null, ['score-row-left'], null);
-        rankContainer = ui('div', leftContainer, null, ['rank-container'], null);
-        rank = ui('img', rankContainer, null, ['score-icon'], './images/number-three.svg');
-        imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image', 'third'], score.displayPictureUrl, 'profile', 2);
+        row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row', 'third'], null);
+        leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
+        rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
+        rank = widgetHelper.ui('img', rankContainer, null, ['score-icon'], './images/number-three.svg');
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
+        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'third'], score.displayPictureUrl, 'profile', 2);
       } else {
-        row = ui('div', drawerScoresContainer, null, ['score-row'], null);
-        leftContainer = ui('div', row, null, ['score-row-left'], null);
-        rankContainer = ui('div', leftContainer, null, ['rank-container'], null);
-        rank = ui('h5', rankContainer, `#${index + 1}`, ['score-rank']);
-        imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-        image = ui('img', imageContainer, null, ['score-image'], score.displayPictureUrl, 'profile');
+        row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row'], null);
+        leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
+        rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
+        rank = widgetHelper.ui('h5', rankContainer, `#${index + 1}`, ['score-rank']);
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
+        image = widgetHelper.ui('img', imageContainer, null, ['score-image'], score.displayPictureUrl, 'profile');
       }
-      const scoreDiv = ui('div', row, null, ['score-row-right']);
-      const name = ui('p', scoreDiv, score.displayName, ['score-name']);
-      const scoreP = ui('p', scoreDiv, score.currentScore, ['score-score']);
+      const scoreDiv = widgetHelper.ui('div', row, null, ['score-row-right']);
+      const name = widgetHelper.ui('p', scoreDiv, score.displayName, ['score-name']);
+      const scoreP = widgetHelper.ui('p', scoreDiv, score.currentScore, ['score-score']);
     });
 
     if (currentUserScore && Number(currentUserScore.currentScore) > 0) {
@@ -228,14 +228,14 @@ const scoreSwipeableDrawer = {
     drawerScoresContainer.innerHTML = '';
 
     for (let index = 0; index < 10; index++) {
-      const row = ui('div', drawerScoresContainer, null, ['loading-score-row'], null);
-      const leftContainer = ui('div', row, null, ['score-row-left'], null);
-      const rank = ui('div', leftContainer, null, ['loading-score-rank'], null);
-      const imageContainer = ui('div', leftContainer, null, ['score-image-container'], null);
-      const image = ui('div', imageContainer, null, ['loading-score-image'], null);
-      const scoreDiv = ui('div', row, null, ['score-row-right']);
-      const name = ui('div', scoreDiv, null, ['loading-score-name']);
-      const scoreP = ui('p', scoreDiv, null, ['loading-score-score']);
+      const row = widgetHelper.ui('div', drawerScoresContainer, null, ['loading-score-row'], null);
+      const leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
+      const rank = widgetHelper.ui('div', leftContainer, null, ['loading-score-rank'], null);
+      const imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
+      const image = widgetHelper.ui('div', imageContainer, null, ['loading-score-image'], null);
+      const scoreDiv = widgetHelper.ui('div', row, null, ['score-row-right']);
+      const name = widgetHelper.ui('div', scoreDiv, null, ['loading-score-name']);
+      const scoreP = widgetHelper.ui('p', scoreDiv, null, ['loading-score-score']);
     }
   },
 

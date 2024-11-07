@@ -16,10 +16,12 @@ const widget = {
         case 'settings':
           state.settings = message.data;
           break;
+        case 'reset':
+          window.location.reload();
+          break;
         default:
           break;
       }
-    //   window.location.reload(); // TODO: this should be handled
     };
   },
 
@@ -73,6 +75,7 @@ const widget = {
               widgetController.resetLoyaltyPoint(),
               widgetController.resetFTQPoints(),
             ]).then(() => {
+              scoreSwipeableDrawer.toggleDrawer();
               scoreSwipeableDrawer.switchTab(state.activeTab);
             }).catch((err) => {
               console.error(err);
@@ -110,6 +113,7 @@ const widget = {
 
         const options = { newScore: parseInt(addEditScoreInput.value), logType: 'add' };
         widgetController.addEditUserScore(options).then(() => {
+          scoreSwipeableDrawer.toggleDrawer();
           scoreSwipeableDrawer.switchTab(state.activeTab);
         }).catch((err) => {
           console.error(err);
@@ -123,6 +127,7 @@ const widget = {
 
         const options = { newScore: parseInt(addEditScoreInput.value), logType: 'edit' };
         widgetController.addEditUserScore(options).then(() => {
+          scoreSwipeableDrawer.toggleDrawer();
           scoreSwipeableDrawer.switchTab(state.activeTab);
         }).catch((err) => {
           console.error(err);
@@ -190,6 +195,8 @@ const widget = {
 
     const promises = [widgetController.getScores(enums.Keys.overall), widgetController.init()];
     Promise.all(promises).then(([scores]) => {
+      document.getElementById('main_container').classList.remove('hidden');
+
       this.view = new buildfire.components.carousel.view('#carousel', []);
       this.initScoreDialog();
 
