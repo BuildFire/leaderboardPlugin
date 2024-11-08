@@ -23,6 +23,23 @@ const contentController = {
     });
   },
 
+  getSettings() {
+    return new Promise((resolve, reject) => {
+      Settings.get().then((settings) => {
+        state.settings = new Setting(settings);
+        return resolve(settings);
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  },
+
+  saveSettings() {
+    return new Promise((resolve, reject) => {
+      Settings.save(new Setting(state.settings)).then(resolve).catch(reject);
+    });
+  },
+
   updateCarousel() {
     return new Promise((resolve, reject) => {
       Carousels.save(new Carousel({ carouselItems: state.carouselItems }))

@@ -27,21 +27,26 @@ const widgetController = {
           userYearlyScore += newScore;
         }
 
+        const enabledNotifications = {
+          daily: state.settings.notificationsFrequency.includes(enums.NOTIFICATION_FREQUENCIES.dailyChange),
+          weekly: state.settings.notificationsFrequency.includes(enums.NOTIFICATION_FREQUENCIES.weeklyChange),
+          monthly: state.settings.notificationsFrequency.includes(enums.NOTIFICATION_FREQUENCIES.monthlyChange),
+          yearly: state.settings.notificationsFrequency.includes(enums.NOTIFICATION_FREQUENCIES.allTimeChange),
+        };
         const logScores = [];
-        // TODO: push notification should be handled --
-        logScores.push(new Promise((_resolve, _reject) => Scores.editScore(userDailyScore, enums.boardNames.Daily, false, (err, result) => {
+        logScores.push(new Promise((_resolve, _reject) => Scores.editScore(userDailyScore, enums.boardNames.Daily, enabledNotifications.daily, (err, result) => {
           if (err) return _reject(err);
           return _resolve(result);
         })));
-        logScores.push(new Promise((_resolve, _reject) => Scores.editScore(userWeeklyScore, enums.boardNames.Weekly, false, (err, result) => {
+        logScores.push(new Promise((_resolve, _reject) => Scores.editScore(userWeeklyScore, enums.boardNames.Weekly, enabledNotifications.weekly, (err, result) => {
           if (err) return _reject(err);
           return _resolve(result);
         })));
-        logScores.push(new Promise((_resolve, _reject) => Scores.editScore(userMonthlyScore, enums.boardNames.Monthly, false, (err, result) => {
+        logScores.push(new Promise((_resolve, _reject) => Scores.editScore(userMonthlyScore, enums.boardNames.Monthly, enabledNotifications.monthly, (err, result) => {
           if (err) return _reject(err);
           return _resolve(result);
         })));
-        logScores.push(new Promise((_resolve, _reject) => Scores.editScore(userYearlyScore, enums.boardNames.Yearly, false, (err, result) => {
+        logScores.push(new Promise((_resolve, _reject) => Scores.editScore(userYearlyScore, enums.boardNames.Yearly, enabledNotifications.yearly, (err, result) => {
           if (err) return _reject(err);
           return _resolve(result);
         })));
@@ -134,11 +139,9 @@ const widgetController = {
 
   getSettings() {
     return new Promise((resolve, reject) => {
-      buildfire.datastore.get('Settings', (err, result) => {
-        if (err) return reject(err);
-
-        return resolve(result.data);
-      });
+      Settings.get()
+        .then((settings) => resolve(new Setting(settings)))
+        .catch(reject);
     });
   },
 

@@ -4,4 +4,5 @@ const state = {
   carousel: [],
   activeTab: enums.Keys.overall,
   overallScores: [],
+  currentListScores: [],
 };

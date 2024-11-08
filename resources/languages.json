@@ -4,25 +4,25 @@
             "title": "Score Input",
             "labels": {
                 "add": {
-                    "title": "Add Score",
+                    "title": "Add Score Title",
                     "defaultValue": "Add Score",
                     "maxLength": 30,
                     "placeholder": "Add Score"
                 },
                 "addSubtitle": {
-                    "title": "Add Score Enter Your Score Here. You May Add More Than One Score in a Day!",
+                    "title": "Add Score Info Message",
                     "defaultValue": "Add score enter your score here. You may add more than one score in a day!",
                     "maxLength": 100,
                     "placeholder": "Add score enter your score here. You may add more than one score in a day!"
                 },
                 "edit": {
-                    "title": "Edit Score",
+                    "title": "Edit Score Title",
                     "defaultValue": "Edit Score",
                     "maxLength": 30,
                     "placeholder": "Edit Score"
                 },
                 "editSubtitle": {
-                    "title": "Enter Your Score Here. You May Edit Only Today’s Score!",
+                    "title": "Edit Score Info Message",
                     "defaultValue": "Enter your score here. You may edit only today's score!",
                     "maxLength": 60,
                     "placeholder": "Enter your score here. You may edit only today's score!"
@@ -34,7 +34,7 @@
                     "placeholder": "Your Score"
                 },
                 "requiredMessage": {
-                    "title": "This Field Is Required",
+                    "title": "Score Input Error Message",
                     "defaultValue": "This field is required",
                     "maxLength": 50,
                     "placeholder": "This field is required"

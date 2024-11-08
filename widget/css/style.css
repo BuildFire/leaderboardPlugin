@@ -1,16 +1,25 @@
 .hidden {
-    display: none;
+    display: none !important;
+}
+
+.bf-skeleton-container .skeleton-list-item-avatar-two-line {
+    padding: 0 2rem;
+}
+
+.bf-skeleton-container .bf-skeleton-loader.skeleton-avatar {
+    width: 4rem;
+    height: 4rem;
 }
 
 .edit-score-icon {
-	display: flex;
-	align-items: center;
+    display: flex;
+    align-items: center;
     justify-content: center;
     cursor: pointer;
 }
 
 .edit-score-icon path {
-	fill: var(--bf-theme-icons) !important;
+    fill: var(--bf-theme-icons) !important;
 }
 
 .mdc-dialog .mdc-dialog__title {

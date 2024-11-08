@@ -20,6 +20,7 @@ const scoreSwipeableDrawer = {
   },
 
   renderScoreList(scores) {
+    state.currentListScores = scores;
     const drawerScoresContainer = document.getElementById('drawerScoresContainer');
     drawerScoresContainer.innerHTML = '';
 
@@ -63,7 +64,7 @@ const scoreSwipeableDrawer = {
       }
       const scoreDiv = widgetHelper.ui('div', row, null, ['score-row-right']);
       const name = widgetHelper.ui('p', scoreDiv, score.displayName, ['score-name']);
-      const scoreP = widgetHelper.ui('p', scoreDiv, score.currentScore, ['score-score']);
+      const scoreP = widgetHelper.ui('p', scoreDiv, score.currentScore || '0', ['score-score']);
 
       if (score.userId === authManager.currentUser.userId) {
         currentUserScore = { ...score, rank: index + 1 };

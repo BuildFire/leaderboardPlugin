@@ -15,6 +15,7 @@ const widget = {
           break;
         case 'settings':
           state.settings = message.data;
+          scoreSwipeableDrawer.renderScoreList(state.currentListScores);
           break;
         case 'reset':
           window.location.reload();
@@ -102,39 +103,58 @@ const widget = {
     const addEditDialogTitle = document.getElementById('addEditDialogTitle');
     const addEditDialogSubtitle = document.getElementById('addEditDialogSubtitle');
     const addEditScoreInput = document.getElementById('addEditScoreInput');
+    const addScoreLabel = document.getElementById('addScoreLabel');
+    const addScoreErrorMessage = document.getElementById('addScoreErrorMessage');
     const closeScoreDialog = document.getElementById('closeScoreDialog');
     const submitScoreBtn = document.getElementById('submitScoreBtn');
 
     const inputHolder = document.getElementById('addInputHolder');
     const scoreInput = new mdc.textField.MDCTextField(inputHolder);
 
-    if (dialogType === 'add') {
-      addEditDialogTitle.innerHTML = 'Add Score';
-      addEditDialogSubtitle.innerHTML = 'Dialog Subtitle';
-      submitScoreBtn.onclick = () => {
-        this.addEditScoreDialog.close();
+    closeScoreDialog.innerHTML = getLanguage('score.dialogCancel');
+    submitScoreBtn.innerHTML = getLanguage('score.dialogSave');
+    addScoreLabel.innerHTML = getLanguage('score.yourScore');
+    addScoreErrorMessage.innerHTML = getLanguage('score.requiredMessage');
 
-        const options = { newScore: parseInt(addEditScoreInput.value), logType: 'add' };
-        widgetController.addEditUserScore(options).then(() => {
-          scoreSwipeableDrawer.toggleDrawer();
-          scoreSwipeableDrawer.switchTab(state.activeTab);
-        }).catch((err) => {
-          console.error(err);
-        });
+    addScoreErrorMessage.classList.add('hidden');
+
+    if (dialogType === 'add') {
+      addEditDialogTitle.innerHTML = getLanguage('score.add');
+      addEditDialogSubtitle.innerHTML = getLanguage('score.addSubtitle');
+      submitScoreBtn.onclick = () => {
+        if (!addEditScoreInput.value) {
+          addScoreErrorMessage.classList.remove('hidden');
+        } else {
+          this.addEditScoreDialog.close();
+
+          const options = { newScore: parseInt(addEditScoreInput.value), logType: 'add' };
+          widgetController.addEditUserScore(options).then(() => {
+            scoreSwipeableDrawer.toggleDrawer();
+            scoreSwipeableDrawer.switchTab(state.activeTab);
+
+            AnalyticsManager.trackAction('score-logged');
+          }).catch((err) => {
+            console.error(err);
+          });
+        }
       };
     } else if (dialogType === 'edit') {
-      addEditDialogTitle.innerHTML = 'Edit Score';
-      addEditDialogSubtitle.innerHTML = 'Dialog Subtitle';
+      addEditDialogTitle.innerHTML = getLanguage('score.edit');
+      addEditDialogSubtitle.innerHTML = getLanguage('score.editSubtitle');
       submitScoreBtn.onclick = () => {
-        this.addEditScoreDialog.close();
+        if (!addEditScoreInput.value) {
+          addScoreErrorMessage.classList.remove('hidden');
+        } else {
+          this.addEditScoreDialog.close();
 
-        const options = { newScore: parseInt(addEditScoreInput.value), logType: 'edit' };
-        widgetController.addEditUserScore(options).then(() => {
-          scoreSwipeableDrawer.toggleDrawer();
-          scoreSwipeableDrawer.switchTab(state.activeTab);
-        }).catch((err) => {
-          console.error(err);
-        });
+          const options = { newScore: parseInt(addEditScoreInput.value), logType: 'edit' };
+          widgetController.addEditUserScore(options).then(() => {
+            scoreSwipeableDrawer.toggleDrawer();
+            scoreSwipeableDrawer.switchTab(state.activeTab);
+          }).catch((err) => {
+            console.error(err);
+          });
+        }
       };
     }
 
@@ -195,7 +215,7 @@ const widget = {
   init() {
     buildfire.appearance.titlebar.show();
 
-    const promises = [widgetController.getScores(enums.Keys.overall), widgetController.init()];
+    const promises = [widgetController.getScores(enums.Keys.overall), widgetController.init(), initLanguageStrings()];
     Promise.all(promises).then(([scores]) => {
       document.getElementById('main_container').classList.remove('hidden');
 

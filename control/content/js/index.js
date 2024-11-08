@@ -3,6 +3,17 @@ const contentPage = {
     buildfire.messaging.sendMessageToWidget({ cmd, data });
   },
 
+  checkAnalytics() {
+    if (!state.settings.isAnalyticsRegistered) {
+      AnalyticsManager.registerEvents().then(() => {
+        state.settings.isAnalyticsRegistered = true;
+        contentController.saveSettings();
+      }).catch((err) => {
+        console.error(err);
+      });
+    }
+  },
+
   initCarousel() {
     this.editor = new buildfire.components.carousel.editor('#contentCarousel');
     this.editor.loadItems(state.carouselItems);
@@ -68,12 +79,14 @@ const contentPage = {
 
   init() {
     Promise.all([
+      contentController.getSettings(),
       contentController.getWysiwyg(),
       contentController.getCarousel(),
       authManager.refreshCurrentUser(),
     ]).then(() => {
       this.initCarousel();
       this.initWysiwyg();
+      this.checkAnalytics();
     }).catch((err) => {
       console.error(err);
     });

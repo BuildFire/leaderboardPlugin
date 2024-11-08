@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 class Scores {
   /**
      * Searches scoreboard for a previous score of the user
@@ -209,6 +210,7 @@ class Scores {
     // Check for errors in score
     if (typeof data.score === 'undefined') return callback('Score cannot be undefined');
     if (data.score === null) return callback('Score cannot be null');
+    if (isNaN(data.score)) return callback('Score cannot be NaN');
     if (typeof data.score !== 'number') return callback('Score must be a number');
     if (data.score < 0) return callback('Score cannot be negative');
     if (data.score === 0) return callback('Score cannot be 0');
@@ -325,7 +327,6 @@ class Scores {
       yearlyBoard.logScore(user, parseInt(data.score) + previousScore, 'Yearly', isNotifyingOnOverallChange, (err, result) => {
         if (err) return callback(err);
         // Trigger analytics event
-        buildfire.analytics.trackAction(analyticKeys.SCORE_LOGGED.key);
         if (result && result.rankedAt >= 0) {
           return callback(null, { rank: result.rankedAt, board: enums.Keys.overall });
         }
@@ -335,7 +336,7 @@ class Scores {
     });
   }
 
-  static editScore(score, boardName, isNotifyingOnDailyChange, callback) {
+  static editScore(score, boardName, isNotifyingOnChange, callback) {
     const date = this.getStandardDate(new Date(), 'America/Los_Angeles');
     let tag;
 
@@ -361,7 +362,7 @@ class Scores {
       sortAscending: false,
     });
 
-    board.logScore(authManager.currentUser, parseInt(score), boardName, isNotifyingOnDailyChange, callback);
+    board.logScore(authManager.currentUser, parseInt(score), boardName, isNotifyingOnChange, callback);
   }
 
   /**

@@ -1,20 +1,18 @@
 const settingsController = {
   getSettings() {
     return new Promise((resolve, reject) => {
-      buildfire.datastore.get('Settings', (err, result) => {
-        if (err) return reject(err);
-        state.settings = new Settings(result.data);
-        return resolve(result.data);
+      Settings.get().then((settings) => {
+        state.settings = new Setting(settings);
+        return resolve(settings);
+      }).catch((err) => {
+        reject(err);
       });
     });
   },
 
   saveSettings() {
     return new Promise((resolve, reject) => {
-      buildfire.datastore.save({ ...state.settings }, 'Settings', (err, result) => {
-        if (err) return reject(err);
-        return resolve(result);
-      });
+      Settings.save(new Setting(state.settings)).then(resolve).catch(reject);
     });
   },
 

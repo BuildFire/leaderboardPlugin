@@ -147,9 +147,7 @@
 .dialog-input-error-message {
     color: #f44336;
     font-size: .8rem;
-    margin-top: 5px;
     margin-left: 10px;
-    visibility: hidden;
     display: block;
     white-space: nowrap;
     text-overflow: ellipsis;

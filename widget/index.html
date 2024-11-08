@@ -40,10 +40,12 @@
   <!-- endbuild -->
 
   <!-- build:bundleJSFiles  -->
-  <script src="js/helper.js" defer></script>
-  <script src="js/state.js" defer></script>
-  <script src="js/index.js" defer></script>
-  <script src="js/widget.controller.js" defer></script>
+  <script src="js/utils/stringKeys.js"></script>
+  <script src="js/utils/strings.js"></script>
+  <script src="js/utils/helper.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/index.js"></script>
+  <script src="js/widget.controller.js"></script>
   <script src="js/scoreSwipeableDrawer.js"></script>
   <!-- endbuild -->
 
@@ -54,7 +56,8 @@
 
 <body>
   <div id="main_container" class="hidden">
-    <button onclick="widget.showAddScoreView()" class="add_btn mdc-theme--primary-bg mdc-button" id="add_btn"></button>
+    <button onclick="widget.showAddScoreView()" class="add_btn mdc-theme--primary-bg mdc-button"
+      id="add_btn"></button>
     <div id="scoreSnackbar">
       <div id="snackbarContent" class="snackbar-content">
         <div id="snackbarLabel"></div>
@@ -77,12 +80,14 @@
             <div class="mdc-dialog__content" id="my-dialog-content">
               <p id="addEditDialogSubtitle"></p>
               <div class="inline-text-field-container">
-				<label id="addInputHolder" class="mdc-text-field transparentBackgroundTheme">
-					<div class="mdc-text-field__ripple"></div>
-					<input id="addEditScoreInput" class="mdc-text-field__input" type="number">
-					<span id="addScoreLabel" class="mdc-floating-label">some label</span>
-					<div class="mdc-line-ripple"></div>
-				</label>
+                <label id="addInputHolder" class="mdc-text-field transparentBackgroundTheme">
+                  <div class="mdc-text-field__ripple"></div>
+                  <input id="addEditScoreInput" class="mdc-text-field__input" type="number">
+                  <span id="addScoreLabel" class="mdc-floating-label">some label</span>
+                  <div class="mdc-line-ripple"></div>
+                </label>
+                <p id="addScoreErrorMessage" class="dialog-input-error-message hidden"
+                  bfString="score.requiredMessage">This field is required</p>
 
               </div>
             </div>
@@ -91,8 +96,7 @@
                 <div class="mdc-button__ripple"></div>
                 <span class="mdc-button__label dialog-label" bfString="score.dialogCancel">Cancel</span>
               </button>
-              <button id="submitScoreBtn" type="button"
-                class="mdc-button mdc-dialog__button">
+              <button id="submitScoreBtn" type="button" class="mdc-button mdc-dialog__button">
                 <div class="mdc-button__ripple"></div>
                 <span class="mdc-button__label dialog-label" bfString="score.dialogSave">Save</span>
               </button>
@@ -104,4 +108,5 @@
     </div>
   </div>
 </body>
+
 </html>
