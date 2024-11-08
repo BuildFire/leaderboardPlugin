@@ -58,7 +58,9 @@ const contentPage = {
           }, 500);
         });
         editor.on('init', () => {
-          editor.setContent(state.wysiwyg);
+          if (state.wysiwyg) {
+            editor.setContent(state.wysiwyg);
+          }
         });
       },
     });

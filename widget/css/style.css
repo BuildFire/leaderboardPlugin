@@ -1,0 +1,22 @@
+.hidden {
+    display: none;
+}
+
+.edit-score-icon {
+	display: flex;
+	align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.edit-score-icon path {
+	fill: var(--bf-theme-icons) !important;
+}
+
+.mdc-dialog .mdc-dialog__title {
+    color: var(--bf-theme-header-text) !important;
+}
+
+.mdc-dialog .mdc-dialog__content {
+    color: var(--bf-theme-body-text) !important;
+}

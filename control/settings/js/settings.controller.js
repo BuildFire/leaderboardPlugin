@@ -34,11 +34,11 @@ const settingsController = {
         if (err) console.error(err);
 
         if (isConfirmed) {
-          UserSettings.get((err, settings) => {
-            if (err) return console.log(err);
+          UserSettings.get((error, settings) => {
+            if (error) return console.error(error);
             if (settings && settings.isSubscribedToPN) {
-              Scores.reset({ isSubscribedToPN: settings.isSubscribedToPN }, (err, res) => {
-                if (err) return console.log(err);
+              Scores.reset({ isSubscribedToPN: settings.isSubscribedToPN }, (e, res) => {
+                if (e) return console.error(e);
                 settingPage.syncWithWidget('reset');
 
                 buildfire.dialog.toast({

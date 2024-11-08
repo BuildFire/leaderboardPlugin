@@ -26,9 +26,6 @@ const scoreSwipeableDrawer = {
     let currentUserScore;
 
     scores.forEach((score, index) => {
-      if (score.userId === authManager.currentUser.userId) {
-        currentUserScore = { ...score, rank: index + 1 };
-      }
       let row = null;
       let rank = null;
       let leftContainer = null;
@@ -67,13 +64,35 @@ const scoreSwipeableDrawer = {
       const scoreDiv = widgetHelper.ui('div', row, null, ['score-row-right']);
       const name = widgetHelper.ui('p', scoreDiv, score.displayName, ['score-name']);
       const scoreP = widgetHelper.ui('p', scoreDiv, score.currentScore, ['score-score']);
+
+      if (score.userId === authManager.currentUser.userId) {
+        currentUserScore = { ...score, rank: index + 1 };
+        if (state.settings.userEarnPoints === enums.EARN_POINTS.HONOR_SYSTEM && state.activeTab === enums.Keys.daily) {
+          const editIcon = widgetHelper.ui('span', scoreP, null, ['edit-score-icon']);
+          editIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                <path d="M0 14.25V18H3.75L14.81 6.94L11.06 3.19L0 14.25ZM17.71 4.04C18.1 3.65 18.1 3.02 17.71 2.63L15.37 0.289998C14.98 -0.100002 14.35 -0.100002 13.96 0.289998L12.13 2.12L15.88 5.87L17.71 4.04Z" fill="#46BFE6"></path>
+                                </svg>`;
+
+          editIcon.onclick = () => {
+            widget.openScoreDialog('edit');
+          };
+        }
+      }
     });
 
     if (currentUserScore && Number(currentUserScore.currentScore) > 0) {
       if (currentUserScore.rank <= 3) {
-        buildfire.dialog.toast({ message: `You are ranked #${currentUserScore.rank} with ${currentUserScore.currentScore} points` });
+        buildfire.dialog.toast({
+          message: `You are ranked #${currentUserScore.rank} with ${currentUserScore.currentScore} points`,
+          hideDismissButton: true,
+          duration: 5000,
+        });
       } else {
-        buildfire.dialog.toast({ message: 'You are not ranked in top 100' });
+        buildfire.dialog.toast({
+          message: 'You are not ranked in top 100',
+          hideDismissButton: true,
+          duration: 5000,
+        });
       }
     }
   },
@@ -82,7 +101,9 @@ const scoreSwipeableDrawer = {
     state.activeTab = newTab;
 
     const currentActiveTab = document.querySelector('.active-header');
-    currentActiveTab?.classList.remove('active-header');
+    if (currentActiveTab) {
+      currentActiveTab.classList.remove('active-header');
+    }
 
     const selectedTabElement = document.getElementById(newTab);
     selectedTabElement.classList.add('active-header');
@@ -91,6 +112,8 @@ const scoreSwipeableDrawer = {
 
     widgetController.getScores(newTab)
       .then((scores) => {
+        this.toggleDrawerSkeleton();
+
         if (scores && scores.length) {
           this.renderScoreList(scores);
         } else {
@@ -225,17 +248,16 @@ const scoreSwipeableDrawer = {
 
   toggleDrawerSkeleton() {
     const drawerScoresContainer = document.getElementById('drawerScoresContainer');
-    drawerScoresContainer.innerHTML = '';
+    if (this.skeleton) {
+      this.skeleton.stop();
+      this.skeleton = null;
 
-    for (let index = 0; index < 10; index++) {
-      const row = widgetHelper.ui('div', drawerScoresContainer, null, ['loading-score-row'], null);
-      const leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
-      const rank = widgetHelper.ui('div', leftContainer, null, ['loading-score-rank'], null);
-      const imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
-      const image = widgetHelper.ui('div', imageContainer, null, ['loading-score-image'], null);
-      const scoreDiv = widgetHelper.ui('div', row, null, ['score-row-right']);
-      const name = widgetHelper.ui('div', scoreDiv, null, ['loading-score-name']);
-      const scoreP = widgetHelper.ui('p', scoreDiv, null, ['loading-score-score']);
+      drawerScoresContainer.innerHTML = '';
+    } else {
+      drawerScoresContainer.innerHTML = '';
+
+      this.skeleton = new buildfire.components.skeleton('#drawerScoresContainer', { type: 'list-item-avatar-two-line, list-item-avatar-two-line, list-item-avatar-two-line, list-item-avatar-two-line' });
+      this.skeleton.start();
     }
   },
 

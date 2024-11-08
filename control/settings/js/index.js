@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable max-len */
 const settingPage = {
   uiElements: {},
@@ -84,10 +85,10 @@ const settingPage = {
         },
       );
     };
-    ftqFeatures = new buildfire.components.actionItems.sortableList('.ftqFeatures');
+    const ftqFeatures = new buildfire.components.actionItems.sortableList('.ftqFeatures');
     document.querySelector('.add-new-item').innerHTML = 'Add Feature';
 
-    ftqFeatures.onAddItems = function (item) {
+    ftqFeatures.onAddItems = (item) => {
       item.order = state.settings.features.length;
       state.settings.features.push(item);
 
@@ -95,12 +96,12 @@ const settingPage = {
       changeActionItemsIcon();
     };
 
-    ftqFeatures.onDeleteItem = function (item, index) {
+    ftqFeatures.onDeleteItem = (item, index) => {
       state.settings.features.splice(index, 1);
       settingPage.saveSettingsWithDelay();
     };
 
-    ftqFeatures.onOrderChange = function (item, oldIndex, newIndex) {
+    ftqFeatures.onOrderChange = (item, oldIndex, newIndex) => {
       const items = state.settings.features;
 
       items[oldIndex].order = newIndex;
@@ -108,11 +109,11 @@ const settingPage = {
       const tmp = items[oldIndex];
 
       if (oldIndex < newIndex) {
-        for (var i = oldIndex + 1; i <= newIndex; i++) {
+        for (let i = oldIndex + 1; i <= newIndex; i++) {
           items[i - 1] = items[i];
         }
       } else {
-        for (var i = oldIndex - 1; i >= newIndex; i--) {
+        for (let i = oldIndex - 1; i >= newIndex; i--) {
           items[i + 1] = items[i];
         }
       }

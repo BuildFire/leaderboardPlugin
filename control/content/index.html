@@ -13,6 +13,7 @@
   <script src="../../../../scripts/sortable.min.js"></script>
   <script src="../../../../scripts/buildfire/components/carousel/carousel.js"></script>
 
+  <!-- build:bundleSharedJSFiles -->
   <script src="../../widget/global/services/BFGamifyComponent.js"></script>
   <script src="../../widget/global/services/AuthManager.js"></script>
   <script src="../../widget/global/services/AnalyticsManager.js"></script>
@@ -20,11 +21,21 @@
   <script src="../../widget/global/js/models/Wysiwyg.js"></script>
   <script src="../../widget/global/js/repositories/Carousels.js"></script>
   <script src="../../widget/global/js/repositories/Wysiwygs.js"></script>
+  <!-- endbuild -->
 
   <link href="../../../../styles/helper.css" rel="stylesheet" />
   <link href="../../../../styles/siteIcons.css" rel="stylesheet" />
   <link href="../../../../styles/control/bf-base.css" rel="stylesheet" />
+
+  <!-- build:bundleCSSFiles  -->
   <link href="./css/style.css" rel="stylesheet" />
+  <!-- endbuild -->
+
+  <!-- build:bundleJSFiles  -->
+  <script src="./js/state.js"></script>
+  <script src="./js/content.controller.js"></script>
+  <script src="./js/index.js"></script>
+  <!-- endbuild -->
 
 </head>
 
@@ -38,7 +49,4 @@
     <textarea id="wysiwygContent" name="content"></textarea>
   </section>
 </body>
-<script src="./js/state.js"></script>
-<script src="./js/content.controller.js"></script>
-<script src="./js/index.js"></script>
 </html>

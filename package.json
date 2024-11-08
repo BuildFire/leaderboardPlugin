@@ -34,6 +34,7 @@
     "gulp-prettier": "^4.0.0",
     "gulp-print": "^5.0.2",
     "gulp-terser": "^2.1.0",
+    "postcss": "^8.4.47",
     "rimraf": "^5.0.1"
   }
 }

@@ -1,5 +1,5 @@
 class Wysiwyg {
-	constructor(data = {}) {
-		this.content = data.content || '';
-	}
+  constructor(data = {}) {
+    this.content = data.content || '';
+  }
 }

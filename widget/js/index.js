@@ -105,6 +105,9 @@ const widget = {
     const closeScoreDialog = document.getElementById('closeScoreDialog');
     const submitScoreBtn = document.getElementById('submitScoreBtn');
 
+    const inputHolder = document.getElementById('addInputHolder');
+    const scoreInput = new mdc.textField.MDCTextField(inputHolder);
+
     if (dialogType === 'add') {
       addEditDialogTitle.innerHTML = 'Add Score';
       addEditDialogSubtitle.innerHTML = 'Dialog Subtitle';
@@ -167,8 +170,7 @@ const widget = {
               buildfire.navigation.navigateTo({
                 instanceId: result.instanceId,
               });
-            },
-          );
+            });
         }
       } else {
         this.openScoreDialog('add');
@@ -202,9 +204,11 @@ const widget = {
 
       this.appendCarouselItems();
       this.printWYSIWYGContent();
-
-      this.checkForNewPoints();
       scoreSwipeableDrawer.init();
+
+      if (authManager.currentUser) {
+        this.checkForNewPoints();
+      }
 
       this.handleCPSync();
 
