@@ -94,7 +94,7 @@ const scoreSwipeableDrawer = {
       widgetHelper.setDynamicExpressionContext(expressionContext);
 
       toastStringKey = 'scoreboard.rankedUserToast';
-    } else {
+    } else if (authManager.currentUser) {
       toastStringKey = 'scoreboard.nonRankedUserToast';
     }
 

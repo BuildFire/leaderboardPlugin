@@ -173,6 +173,10 @@ html[safe-area="true"] .content-container {
   height: 100%;
 }
 
+.speed-dial-container {
+	z-index: 1000 !important;
+}
+
 @-webkit-keyframes toast-fade-in {
   from {
     bottom: 0;

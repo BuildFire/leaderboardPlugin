@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../../../styles/components/swipeableDrawer/swipeableDrawer.css" />
   <link rel="stylesheet" href="../../../styles/appStyle.css" />
   <link rel="stylesheet" href="../../../styles/components/skeleton.css" />
+  <link rel="stylesheet" href="../../../styles/components/fabSpeedDial/fabSpeedDial.css" />
 
   <script src="../../../scripts/buildfire.js"></script>
   <script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
@@ -21,6 +22,7 @@
 
   <script src="../../../scripts/buildfire/components/swipeableDrawer/swipeableDrawer.js"></script>
   <script src="../../../scripts/buildfire/components/skeleton/skeleton.js"></script>
+  <script src="../../../scripts/buildfire/components/fabSpeedDial/fabSpeedDial.js"></script>
 
   <!-- build:bundleWidgetSharedJSFiles -->
   <script src="./global/js/constants/index.js"></script>
@@ -56,8 +58,6 @@
 
 <body>
   <div id="main_container" class="hidden">
-    <button onclick="widget.showAddScoreView()" class="add_btn mdc-theme--primary-bg mdc-button"
-      id="add_btn"></button>
     <div id="contentContainer" class="content-container">
       <div id="carousel"></div>
       <div id="my_container_div"></div>
@@ -97,7 +97,9 @@
         <div class="mdc-dialog__scrim"></div>
       </div>
     </div>
-  </div>
+
+</div>
+<div id="fabSpeedDialContainer"></div>
 </body>
 
 </html>

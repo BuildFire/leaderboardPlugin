@@ -153,7 +153,7 @@ const resourcesTask = () => gulpSrc([
  * Images Task
  * @description Process plugin images directory
  */
-const imagesTask = () => gulpSrc(['**/.images/**'], { base: '.' })
+const imagesTask = () => gulpSrc(['**/.images/**', '**/images/**'], { base: '.' })
   .pipe(print())
   .pipe(imagemin())
   .pipe(gulpDest(destinationPath));
