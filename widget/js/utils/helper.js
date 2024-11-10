@@ -25,17 +25,6 @@ const widgetHelper = {
           width = 64;
           height = 64;
         }
-
-        let isElementCropped = false;
-        element.onload = () => {
-          if (element.src.indexOf('avatar.png') < 0 && !isElementCropped) {
-            isElementCropped = true;
-            element.src = buildfire.imageLib.cropImage(imageSource, { width, height });
-          }
-        };
-        element.onerror = () => {
-          element.src = './images/avatar.png';
-        };
       }
     }
     if (Array.isArray(classNameArray)) {
@@ -43,6 +32,36 @@ const widgetHelper = {
     }
     if (appendTo) appendTo.appendChild(element);
     return element;
+  },
+
+  validateImage(imageUrl) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = () => {
+        resolve(true);
+      };
+      img.onerror = () => {
+        resolve(false);
+      };
+    });
+  },
+
+  getDefaultUserAvatar() {
+    return 'https://app.buildfire.com/app/media/avatar.png';
+  },
+
+  setDynamicExpressionContext(expressionContext) {
+    buildfire.dynamic.expressions.getContext = (options, callback) => {
+      const context = {
+        plugin: expressionContext,
+      };
+      callback(null, context);
+    };
+  },
+
+  evaluateDynamicExpression(options, callback) {
+    buildfire.dynamic.expressions.evaluate(options, callback);
   },
 
 };

@@ -38,35 +38,39 @@ const scoreSwipeableDrawer = {
         leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
         rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
         rank = widgetHelper.ui('img', rankContainer, null, ['score-icon'], './images/number-one.svg');
-        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
-        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'first'], score.displayPictureUrl, 'profile', 0);
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container', 'loading-image'], null);
+        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'first'], widgetHelper.getDefaultUserAvatar(), 'profile', 0);
       } else if (index === 1) {
         row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row', 'second'], null);
         leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
         rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
         rank = widgetHelper.ui('img', rankContainer, null, ['score-icon'], './images/number-two.svg');
-        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
-        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'second'], score.displayPictureUrl, 'profile', 1);
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container', 'loading-image'], null);
+        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'second'], widgetHelper.getDefaultUserAvatar(), 'profile', 1);
       } else if (index === 2) {
         row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row', 'third'], null);
         leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
         rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
         rank = widgetHelper.ui('img', rankContainer, null, ['score-icon'], './images/number-three.svg');
-        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
-        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'third'], score.displayPictureUrl, 'profile', 2);
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container', 'loading-image'], null);
+        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'third'], widgetHelper.getDefaultUserAvatar(), 'profile', 2);
       } else {
         row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row'], null);
         leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
         rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
         rank = widgetHelper.ui('h5', rankContainer, `#${index + 1}`, ['score-rank']);
-        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
-        image = widgetHelper.ui('img', imageContainer, null, ['score-image'], score.displayPictureUrl, 'profile');
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container', 'loading-image'], null);
+        image = widgetHelper.ui('img', imageContainer, null, ['score-image'], widgetHelper.getDefaultUserAvatar(), 'profile');
       }
+      imageContainer.id = `profilePictureContainer_${index}`;
+      image.id = `profilePicture_${index}`;
+      this.validateUserImage(score, index);
+
       const scoreDiv = widgetHelper.ui('div', row, null, ['score-row-right']);
       const name = widgetHelper.ui('p', scoreDiv, score.displayName, ['score-name']);
       const scoreP = widgetHelper.ui('p', scoreDiv, score.currentScore || '0', ['score-score']);
 
-      if (score.userId === authManager.currentUser.userId) {
+      if (authManager.currentUser && score.userId === authManager.currentUser.userId) {
         currentUserScore = { ...score, rank: index + 1 };
         if (state.settings.userEarnPoints === enums.EARN_POINTS.HONOR_SYSTEM && state.activeTab === enums.Keys.daily) {
           const editIcon = widgetHelper.ui('span', scoreP, null, ['edit-score-icon']);
@@ -81,21 +85,45 @@ const scoreSwipeableDrawer = {
       }
     });
 
-    if (currentUserScore && Number(currentUserScore.currentScore) > 0) {
-      if (currentUserScore.rank <= 3) {
-        buildfire.dialog.toast({
-          message: `You are ranked #${currentUserScore.rank} with ${currentUserScore.currentScore} points`,
-          hideDismissButton: true,
-          duration: 5000,
-        });
-      } else {
-        buildfire.dialog.toast({
-          message: 'You are not ranked in top 100',
-          hideDismissButton: true,
-          duration: 5000,
-        });
-      }
+    let toastStringKey;
+    if (currentUserScore) {
+      const expressionContext = {
+        userRank: currentUserScore.rank,
+        userScore: currentUserScore.currentScore,
+      };
+      widgetHelper.setDynamicExpressionContext(expressionContext);
+
+      toastStringKey = 'scoreboard.rankedUserToast';
+    } else {
+      toastStringKey = 'scoreboard.nonRankedUserToast';
     }
+
+    if (toastStringKey) {
+      getStringValue(toastStringKey).then((toastMEssage) => {
+        buildfire.dialog.toast({
+          message: toastMEssage,
+          hideDismissButton: true,
+          duration: 5000,
+        });
+      });
+    }
+  },
+
+  validateUserImage(userScoreObj, index) {
+    widgetHelper.validateImage(userScoreObj.displayPictureUrl).then((isValid) => {
+      let updatedImage;
+      if (isValid) {
+        updatedImage = buildfire.imageLib.cropImage(userScoreObj.displayPictureUrl, { size: 'm', aspect: '1:1' });
+      } else {
+        updatedImage = widgetHelper.getDefaultUserAvatar();
+      }
+
+      const imageContainer = document.getElementById(`profilePictureContainer_${index}`);
+      const image = document.getElementById(`profilePicture_${index}`);
+
+      image.src = updatedImage;
+      imageContainer.classList.remove('loading-image');
+    });
   },
 
   switchTab(newTab) {
@@ -198,7 +226,7 @@ const scoreSwipeableDrawer = {
       };
     });
 
-    const drawerScoresContainer = document.getElementById('drawerScoresContainer');
+    const drawerScoresContainer = document.querySelector('.swipeable-drawer-content');
 
     drawerScoresContainer.onmousedown = this.handleTouchStart.bind(this);
     drawerScoresContainer.onmouseup = this.handleTouchEnd.bind(this);
@@ -209,6 +237,7 @@ const scoreSwipeableDrawer = {
   prepareDrawerOptions() {
     const drawerHeader = document.createElement('div');
     drawerHeader.id = 'drawerHeader';
+    drawerHeader.className = 'drawer-header';
 
     const drawerMenu = document.createElement('div');
     drawerMenu.className = 'drawer-menu';

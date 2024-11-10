@@ -1,9 +1,9 @@
 /* eslint-disable no-restricted-globals */
 class Scores {
   /**
-     * Searches scoreboard for a previous score of the user
-     * @param {String} userID id of the user
-     * @param {Object} scoreBoard the scoreboard to search in
+  * Searches scoreboard for a previous score of the user
+  * @param {String} userID id of the user
+  * @param {Object} scoreBoard the scoreboard to search in
     */
   static getUserPreviousScore(userId, scoreBoard) {
     let prevScore = 0;
@@ -94,9 +94,9 @@ class Scores {
   }
 
   /**
-     * Returns the scoreboard with a specific time option
-     * @param {Object} data object containing the settings and string to identify which date scoreboard to return
-     * @param {Function} callback callback for handling response
+  * Returns the scoreboard with a specific time option
+  * @param {Object} data object containing the settings and string to identify which date scoreboard to return
+  * @param {Function} callback callback for handling response
     */
   static getScores(data, callback) {
     const scores = [];
@@ -146,17 +146,17 @@ class Scores {
   }
 
   /**
-     * Tranforms date specified to a different timezone
-     * @param {Date} date The date to switch to a standard timezone
-     * @param {String} tzString String to specify the timezone
+  * Tranforms date specified to a different timezone
+  * @param {Date} date The date to switch to a standard timezone
+  * @param {String} tzString String to specify the timezone
     */
   static getStandardDate(date, tzString) {
     return new Date((typeof date === 'string' ? new Date(date) : date).toLocaleString('en-US', { timeZone: tzString }));
   }
 
   /**
-     * Returns a string of the date of the local current day
-     * @param {Date} date the date of today
+  * Returns a string of the date of the local current day
+  * @param {Date} date the date of today
     */
   static getDailyTag(date) {
     // include daily_ with the tag to distinguish it from weekly tag
@@ -164,9 +164,9 @@ class Scores {
   }
 
   /**
-     * Returns a string with the number of the week in the month and year
-     * @param {Date} date the date of today
-    */
+   * Returns a string with the number of the week in the month and year
+   * @param {Date} date the date of today
+   */
   static getWeeklyTag(date) {
     const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
     const firstDayOfWeek = firstDayOfMonth.getDay();
@@ -179,17 +179,17 @@ class Scores {
   }
 
   /**
-     * Returns a string of the date of the current month and year
-     * @param {Date} date the date of today
-    */
+  * Returns a string of the date of the current month and year
+  * @param {Date} date the date of today
+  */
   static getMonthlyTag(date) {
     return `${date.getMonth() + 1}${date.getFullYear()}`;
   }
 
   /**
-     * Returns a string of the date of the current year
-     * @param {Date} date the date of today
-    */
+  * Returns a string of the date of the current year
+  * @param {Date} date the date of today
+  */
   static getYearlyTag(date) {
     return `${date.getFullYear()}`;
   }
@@ -224,8 +224,6 @@ class Scores {
     let rankedAt = -1;
 
     // Get the boards using their tags
-    // TODO make the size config
-
     const dailyBoard = new buildfire.gamify.Scoreboard(dailyTag, 100, {
       autoSubscribeToPushNotification: data.settings.isSubscribedToPN,
       overrideRecords: true,
@@ -366,9 +364,9 @@ class Scores {
   }
 
   /**
-    * Resets the data on all boards
-    * @param {Function} callback callback for handling response
-    */
+  * Resets the data on all boards
+  * @param {Function} callback callback for handling response
+  */
   static reset(settings, callback) {
     // Get each scoreboard tag
     const date = this.getStandardDate(new Date(), 'America/Los_Angeles');

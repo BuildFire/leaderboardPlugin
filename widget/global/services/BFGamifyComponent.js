@@ -1,3 +1,5 @@
+/* eslint-disable one-var-declaration-per-line */
+/* eslint-disable one-var */
 /* eslint-disable no-throw-literal */
 /**
  * Created by danielhindi on 1/18/18.
@@ -213,24 +215,40 @@ buildfire.gamify.Scoreboard.prototype = {
             };
 
             if (t._PNEnabled() && isNotifyingUser) {
+              let notificationMessageKey, notificationTitle, expressionContext;
               if (rankedAt === 0) {
-                console.log('send message', `${obj.userDisplayName} is now at first place in the ${boardName} board! Can you take over?`);
-                buildfire.notifications.pushNotification.schedule({
-                  title: 'New HighScore!',
-                  text: `${obj.userDisplayName} is now at first place in the ${boardName} board! Can you take over?`,
-                  groupName: t.pushGroupName,
-                  sendToSelf: false,
-                }, (e) => { if (e) console.error(e); });
+                notificationMessageKey = 'notifications.topRankNotificationMessage';
+                notificationTitle = getLanguage('notifications.topRankNotificationTitle');
+
+                expressionContext = {
+                  userName: obj.userDisplayName,
+                  boardName,
+                };
               } else if (obj.bumpedOff && obj.bumpedOff.user.email !== user.email) {
-                console.log('sent message', `${obj.userDisplayName} took over ${bumpedOff.position} place from ${obj.bumpedDisplayName}`);
-                // send notification
-                buildfire.notifications.pushNotification.schedule({
-                  title: 'Things are heating at the top!',
-                  text: `${obj.userDisplayName} took over ${bumpedOff.position} place from ${obj.bumpedDisplayName} In the ${boardName} board!`,
-                  // , at: new Date()
-                  groupName: t.pushGroupName,
-                  sendToSelf: false,
-                }, (e) => { if (e) console.error(e); });
+                notificationMessageKey = 'notifications.lowerRankNotificationMessage';
+                notificationTitle = getLanguage('notifications.lowerRankNotificationTitle');
+
+                expressionContext = {
+                  userName: obj.userDisplayName,
+                  boardName,
+                  rank: bumpedOff.position,
+                  oldPositionUser: obj.bumpedDisplayName,
+                };
+              }
+
+              if (expressionContext && notificationMessageKey) {
+                widgetHelper.setDynamicExpressionContext(expressionContext);
+
+                getStringValue(notificationMessageKey).then((notificationMessage) => {
+                  // send notification
+                  buildfire.notifications.pushNotification.schedule({
+                    title: notificationTitle,
+                    text: notificationMessage,
+                    // , at: new Date()
+                    groupName: t.pushGroupName,
+                    sendToSelf: false,
+                  }, (e) => { if (e) console.error(e); });
+                });
               }
             }
 
