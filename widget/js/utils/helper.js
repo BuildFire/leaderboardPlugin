@@ -7,25 +7,6 @@ const widgetHelper = {
     if (innerHTML) element.innerHTML = innerHTML;
     if (elementType === 'img') {
       element.src = imageSource;
-      if (imageType === 'profile') {
-        let width = 40;
-        let height = 40;
-
-        if (rank === 0) {
-          width = 80;
-          height = 80;
-        }
-
-        if (rank === 1) {
-          width = 64;
-          height = 64;
-        }
-
-        if (rank === 2) {
-          width = 64;
-          height = 64;
-        }
-      }
     }
     if (Array.isArray(classNameArray)) {
       classNameArray.forEach((_class) => element.classList.add(_class));
@@ -52,9 +33,13 @@ const widgetHelper = {
   },
 
   setDynamicExpressionContext(expressionContext) {
+    state.currentDynamicExpression = {
+      ...state.currentDynamicExpression,
+      ...expressionContext,
+    };
     buildfire.dynamic.expressions.getContext = (options, callback) => {
       const context = {
-        plugin: expressionContext,
+        plugin: state.currentDynamicExpression,
       };
       callback(null, context);
     };

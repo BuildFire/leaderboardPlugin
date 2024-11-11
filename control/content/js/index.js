@@ -87,6 +87,8 @@ const contentPage = {
       this.initCarousel();
       this.initWysiwyg();
       this.checkAnalytics();
+
+      document.getElementById('contentContainer').classList.remove('hidden');
     }).catch((err) => {
       console.error(err);
     });

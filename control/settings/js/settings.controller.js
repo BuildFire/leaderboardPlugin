@@ -32,19 +32,14 @@ const settingsController = {
         if (err) console.error(err);
 
         if (isConfirmed) {
-          UserSettings.get((error, settings) => {
-            if (error) return console.error(error);
-            if (settings && settings.isSubscribedToPN) {
-              Scores.reset({ isSubscribedToPN: settings.isSubscribedToPN }, (e, res) => {
-                if (e) return console.error(e);
-                settingPage.syncWithWidget('reset');
+          Scores.reset({ }, (e, res) => {
+            if (e) return console.error(e);
+            settingPage.syncWithWidget('reset');
 
-                buildfire.dialog.toast({
-                  type: 'success',
-                  message: 'Leaderboard has been successfully reset!',
-                });
-              });
-            }
+            buildfire.dialog.toast({
+              type: 'success',
+              message: 'Leaderboard has been successfully reset!',
+            });
           });
         }
       },

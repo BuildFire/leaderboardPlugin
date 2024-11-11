@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable max-len */
 const widgetController = {
   addEditUserScore(options) {
@@ -54,6 +55,69 @@ const widgetController = {
         Promise.all(logScores).then((results) => resolve([userDailyScore, userWeeklyScore, userMonthlyScore, userYearlyScore])).catch(reject);
       }).catch(reject);
     });
+  },
+
+  checkForNewPoints() {
+    const pointsPromises = [];
+    if (state.settings.calculateLoyaltyPoints) {
+      pointsPromises.push(this.getNewLoyaltyPoints());
+    }
+
+    if (state.settings.userEarnPoints === enums.EARN_POINTS.FROM_FTQ) {
+      pointsPromises.push(this.getNewFTQPoints());
+    }
+
+    if (pointsPromises.length) {
+      Promise.all(pointsPromises).then((results) => {
+        let loyaltyPoints;
+        let ftqPoints;
+        let additionalPoints = 0;
+
+        if (state.settings.calculateLoyaltyPoints) {
+          loyaltyPoints = results[0];
+          if (state.settings.userEarnPoints === enums.EARN_POINTS.FROM_FTQ) {
+            ftqPoints = results[1];
+          }
+        } else {
+          ftqPoints = results[0];
+        }
+
+        // Loyalty points are being calculated like below
+        // user loyalty record is a single record and all not calculated points will be stored in this record
+        if (loyaltyPoints && loyaltyPoints[0] && loyaltyPoints[0].data && loyaltyPoints[0].data.newPoints) {
+          additionalPoints += loyaltyPoints[0].data.newPoints;
+        }
+
+        if (ftqPoints && ftqPoints.length) {
+          ftqPoints.forEach((submission) => {
+            if (submission && submission.length) {
+              submission[0].data.answers.forEach((answer) => {
+                if (answer && answer.score) {
+                  additionalPoints += answer.score;
+                }
+              });
+            }
+          });
+        }
+
+        if (additionalPoints > 0) {
+          const options = { newScore: additionalPoints, logType: 'add' };
+          this.addEditUserScore(options).then(() => {
+            Promise.all([
+              this.resetLoyaltyPoint(),
+              this.resetFTQPoints(),
+            ]).then(() => {
+              scoreSwipeableDrawer.toggleDrawer();
+              scoreSwipeableDrawer.switchTab(state.activeTab);
+            }).catch((err) => {
+              console.error(err);
+            });
+          }).catch((err) => {
+            console.error(err);
+          });
+        }
+      });
+    }
   },
 
   getNewFTQPoints() {

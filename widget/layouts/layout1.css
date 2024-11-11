@@ -241,6 +241,16 @@
     box-shadow: 0px 0px 8px #BB6B1B;
 }
 
+.score-container .score-image-container .score-image .user-image {
+    width: 100% !important;
+    height: 100% !important;
+    border: 0 !important;
+}
+
+.score-container .score-rank {
+	color: var(--bf-theme-body-text);
+}
+
 .score-row-right {
     display: flex;
     flex-direction: column;

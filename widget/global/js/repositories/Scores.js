@@ -140,7 +140,6 @@ class Scores {
           }));
         });
       }
-      console.log('scoressss', scores);
       callback(null, scores);
     });
   }
@@ -377,25 +376,25 @@ class Scores {
 
     // Get the boards using their tags
     const dailyBoard = new buildfire.gamify.Scoreboard(dailyTag, 100, {
-      autoSubscribeToPushNotification: settings.isSubscribedToPN,
+      autoSubscribeToPushNotification: true,
       overrideRecords: true,
       sortAscending: false,
     });
 
     const weeklyBoard = new buildfire.gamify.Scoreboard(weeklyTag, 100, {
-      autoSubscribeToPushNotification: settings.isSubscribedToPN,
+      autoSubscribeToPushNotification: true,
       overrideRecords: true,
       sortAscending: false,
     });
 
     const monthlyBoard = new buildfire.gamify.Scoreboard(monthlyTag, 100, {
-      autoSubscribeToPushNotification: settings.isSubscribedToPN,
+      autoSubscribeToPushNotification: true,
       overrideRecords: true,
       sortAscending: false,
     });
 
     const yearlyBoard = new buildfire.gamify.Scoreboard(yearlyTag, 100, {
-      autoSubscribeToPushNotification: settings.isSubscribedToPN,
+      autoSubscribeToPushNotification: true,
       overrideRecords: true,
       sortAscending: false,
     });
@@ -404,18 +403,14 @@ class Scores {
     dailyBoard.reset((error, result) => {
       if (error) return callback('Error Resetting the boards');
       // Reset weekly board
-      console.log('Reset daily board');
       weeklyBoard.reset((err) => {
         if (err) return callback('Error Resetting the boards');
-        console.log('Reset weekly board');
         // Reset monthly board
         monthlyBoard.reset((_err) => {
           if (_err) return callback('Error Resetting the boards');
-          console.log('Reset monthly board');
           // Reset yearly board
           yearlyBoard.reset((e) => {
             if (e) return callback('Error Resetting the boards');
-            console.log('Reset yearly board');
             return callback(null, 'Successfully reset all boards');
           });
         });

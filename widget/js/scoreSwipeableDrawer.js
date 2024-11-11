@@ -32,37 +32,42 @@ const scoreSwipeableDrawer = {
       let leftContainer = null;
       let imageContainer = null;
       let rankContainer = null;
+      let imageSkeletonContainer = null;
       let image = null;
       if (index === 0) {
         row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row', 'first'], null);
         leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
         rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
         rank = widgetHelper.ui('img', rankContainer, null, ['score-icon'], './images/number-one.svg');
-        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container', 'loading-image'], null);
-        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'first'], widgetHelper.getDefaultUserAvatar(), 'profile', 0);
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
+        imageSkeletonContainer = widgetHelper.ui('div', imageContainer, null, ['score-image', 'loading-image', 'first'], widgetHelper.getDefaultUserAvatar(), 'profile', 0);
+        image = widgetHelper.ui('img', imageSkeletonContainer, null, ['score-image', 'first', 'user-image'], widgetHelper.getDefaultUserAvatar(), 'profile', 0);
       } else if (index === 1) {
         row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row', 'second'], null);
         leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
         rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
         rank = widgetHelper.ui('img', rankContainer, null, ['score-icon'], './images/number-two.svg');
-        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container', 'loading-image'], null);
-        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'second'], widgetHelper.getDefaultUserAvatar(), 'profile', 1);
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
+        imageSkeletonContainer = widgetHelper.ui('div', imageContainer, null, ['score-image', 'loading-image', 'second'], widgetHelper.getDefaultUserAvatar(), 'profile', 0);
+        image = widgetHelper.ui('img', imageSkeletonContainer, null, ['score-image', 'second', 'user-image'], widgetHelper.getDefaultUserAvatar(), 'profile', 1);
       } else if (index === 2) {
         row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row', 'third'], null);
         leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
         rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
         rank = widgetHelper.ui('img', rankContainer, null, ['score-icon'], './images/number-three.svg');
-        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container', 'loading-image'], null);
-        image = widgetHelper.ui('img', imageContainer, null, ['score-image', 'third'], widgetHelper.getDefaultUserAvatar(), 'profile', 2);
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
+        imageSkeletonContainer = widgetHelper.ui('div', imageContainer, null, ['score-image', 'loading-image', 'third'], widgetHelper.getDefaultUserAvatar(), 'profile', 0);
+        image = widgetHelper.ui('img', imageSkeletonContainer, null, ['score-image', 'third', 'user-image'], widgetHelper.getDefaultUserAvatar(), 'profile', 2);
       } else {
         row = widgetHelper.ui('div', drawerScoresContainer, null, ['score-row'], null);
         leftContainer = widgetHelper.ui('div', row, null, ['score-row-left'], null);
         rankContainer = widgetHelper.ui('div', leftContainer, null, ['rank-container'], null);
         rank = widgetHelper.ui('h5', rankContainer, `#${index + 1}`, ['score-rank']);
-        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container', 'loading-image'], null);
-        image = widgetHelper.ui('img', imageContainer, null, ['score-image'], widgetHelper.getDefaultUserAvatar(), 'profile');
+        imageContainer = widgetHelper.ui('div', leftContainer, null, ['score-image-container'], null);
+        imageSkeletonContainer = widgetHelper.ui('div', imageContainer, null, ['score-image', 'loading-image'], widgetHelper.getDefaultUserAvatar(), 'profile', 0);
+        image = widgetHelper.ui('img', imageSkeletonContainer, null, ['score-image', 'user-image'], widgetHelper.getDefaultUserAvatar(), 'profile');
       }
-      imageContainer.id = `profilePictureContainer_${index}`;
+      imageSkeletonContainer.id = `profilePictureContainer_${index}`;
       image.id = `profilePicture_${index}`;
       this.validateUserImage(score, index);
 
@@ -79,7 +84,7 @@ const scoreSwipeableDrawer = {
                                 </svg>`;
 
           editIcon.onclick = () => {
-            widget.openScoreDialog('edit');
+            homePage.openScoreDialog('edit');
           };
         }
       }
@@ -272,7 +277,7 @@ const scoreSwipeableDrawer = {
       startingStep: 'mid',
       content: drawerContainer.outerHTML,
       mode: 'steps',
-      transitionDuration: 500,
+      transitionDuration: 150,
     };
   },
 

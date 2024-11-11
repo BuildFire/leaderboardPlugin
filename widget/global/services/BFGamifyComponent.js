@@ -80,8 +80,6 @@ buildfire.gamify.Scoreboard.prototype = {
         }
       }
 
-      console.log('previousTopThree', previousTopThree);
-
       const newRec = { user, score, createdOn: ts };
 
       let data = {
@@ -131,9 +129,6 @@ buildfire.gamify.Scoreboard.prototype = {
           } else {
             newTopThree = data.topScores;
           }
-
-          console.log('previousTopThree', previousTopThree);
-          console.log('newTopThree', newTopThree);
 
           // Check if the new score is in top 3
           if (user.id === newTopThree[0].user.id || user.id === newTopThree[1].user.id || user.id === newTopThree[2].user.id) {
@@ -192,8 +187,6 @@ buildfire.gamify.Scoreboard.prototype = {
                 }
               }
             }
-
-            console.log('bumpedOff', bumpedOff);
           }
 
           data.gamesPlayed++;
@@ -241,10 +234,13 @@ buildfire.gamify.Scoreboard.prototype = {
 
                 getStringValue(notificationMessageKey).then((notificationMessage) => {
                   // send notification
+                  const boardNames = Object.values(enums.boardNames);
+                  boardNames.forEach((name) => {
+                    notificationMessage = notificationMessage.replace(name, boardName);
+                  });
                   buildfire.notifications.pushNotification.schedule({
                     title: notificationTitle,
                     text: notificationMessage,
-                    // , at: new Date()
                     groupName: t.pushGroupName,
                     sendToSelf: false,
                   }, (e) => { if (e) console.error(e); });
