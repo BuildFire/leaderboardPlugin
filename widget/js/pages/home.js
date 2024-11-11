@@ -10,6 +10,8 @@ const homePage = {
   },
 
   openScoreDialog(dialogType = 'add') {
+    buildfire.components.swipeableDrawer.setStep('min');
+
     const addEditDialogTitle = document.getElementById('addEditDialogTitle');
     const addEditDialogSubtitle = document.getElementById('addEditDialogSubtitle');
     const addEditScoreInput = document.getElementById('addEditScoreInput');
