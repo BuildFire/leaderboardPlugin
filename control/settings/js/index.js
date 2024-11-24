@@ -53,7 +53,7 @@ const settingPage = {
         state.settings.notificationsFrequency = state.settings.notificationsFrequency
           .filter((frequency) => frequency !== enums.NOTIFICATION_FREQUENCIES.allTimeChange);
       }
-      // todo: here to save
+      this.saveSettingsWithDelay();
     };
 
     this.uiElements.honorSystemRadioBtn.oninput = (event) => {
