@@ -224,9 +224,13 @@ const scoreSwipeableDrawer = {
   },
 
   initDrawerListeners() {
-    const tabs = document.querySelectorAll('.drawer-header-title');
-    tabs.forEach((tab) => {
+    const tabsElements = this.tabs.map((tab) => document.getElementById(tab.id));
+
+    tabsElements.forEach((tab) => {
       tab.onclick = () => {
+        this.switchTab(tab.id);
+      };
+      tab.ontouchend = () => {
         this.switchTab(tab.id);
       };
     });
@@ -270,11 +274,11 @@ const scoreSwipeableDrawer = {
 
     const drawerContainer = document.createElement('div');
     drawerContainer.id = 'drawerContainer';
-    drawerContainer.appendChild(drawerHeader);
     drawerContainer.appendChild(drawerContent);
 
     return {
       startingStep: 'mid',
+      header: drawerHeader.outerHTML,
       content: drawerContainer.outerHTML,
       mode: 'steps',
       transitionDuration: 150,
