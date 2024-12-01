@@ -11,6 +11,7 @@ const stringKeys = {
   'scoreboard.day': '',
   'scoreboard.week': '',
   'scoreboard.month': '',
+  'scoreboard.unknownUser': '',
   'notifications.topRankNotificationTitle': '',
   'notifications.lowerRankNotificationTitle': '',
 };

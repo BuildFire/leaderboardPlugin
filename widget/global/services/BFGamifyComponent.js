@@ -203,8 +203,8 @@ buildfire.gamify.Scoreboard.prototype = {
             const obj = {
               bumpedOff,
               rankedAt,
-              userDisplayName: user.displayName || user.firstName + user.lastName || user.firstName || 'someone',
-              bumpedDisplayName: bumpedOff ? bumpedOff.user.displayName || bumpedOff.user.firstName + bumpedOff.user.lastName || bumpedOff.user.firstName || 'someone' : null,
+              userDisplayName: user.displayName || user.firstName + user.lastName || user.firstName || getLanguage('scoreboard.unknownUser'),
+              bumpedDisplayName: bumpedOff ? bumpedOff.user.displayName || bumpedOff.user.firstName + bumpedOff.user.lastName || bumpedOff.user.firstName || getLanguage('scoreboard.unknownUser') : null,
             };
 
             if (t._PNEnabled() && isNotifyingUser) {

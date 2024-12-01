@@ -91,6 +91,12 @@
           "defaultValue": "You are not ranked in top 100",
           "maxLength": 100,
           "placeholder": "You are not ranked in top 100"
+        },
+        "unknownUser": {
+          "title": "Unknown User",
+          "defaultValue": "Someone",
+          "maxLength": 25,
+          "placeholder": "Someone"
         }
       }
     },

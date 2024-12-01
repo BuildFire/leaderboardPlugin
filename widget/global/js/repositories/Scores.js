@@ -134,7 +134,7 @@ class Scores {
             createdOn: element.createdOn,
             lastUpdatedOn: element.user.lastUpdated,
             userId: element.user._id,
-            displayName: element.user.displayName || element.user.firstName + element.user.lastName || element.user.firstName || 'someone',
+            displayName: element.user.displayName || element.user.firstName + element.user.lastName || element.user.firstName || getLanguage('scoreboard.unknownUser'),
             currentScore: element.score,
             displayPictureUrl: imgURL,
           }));
