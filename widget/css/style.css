@@ -170,7 +170,13 @@
 }
 
 .speed-dial-container {
-	z-index: 1000 !important;
+  z-index: 1000 !important;
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 @-webkit-keyframes toast-fade-in {

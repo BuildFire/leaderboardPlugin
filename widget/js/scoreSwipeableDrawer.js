@@ -72,7 +72,7 @@ const scoreSwipeableDrawer = {
       this.validateUserImage(score, index);
 
       const scoreDiv = widgetHelper.ui('div', row, null, ['score-row-right']);
-      const name = widgetHelper.ui('p', scoreDiv, score.displayName, ['score-name']);
+      const name = widgetHelper.ui('p', scoreDiv, score.displayName, ['score-name', 'ellipsis']);
       const scoreP = widgetHelper.ui('p', scoreDiv, score.currentScore || '0', ['score-score']);
 
       if (authManager.currentUser && score.userId === authManager.currentUser.userId) {

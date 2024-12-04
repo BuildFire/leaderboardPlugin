@@ -32,7 +32,7 @@
     "customTabs": [
       {
         "title": "Tests",
-        "url": "tests/index.html"
+        "url": "tests/index.html?random=false&stopOnSpecFailure=false"
       }
     ]
   },
