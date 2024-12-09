@@ -1,5 +1,5 @@
 {
-  "author": "BuildFire",
+  "author": "Buildfire",
   "pluginName": "Leaderboard",
   "pluginDescription": "Easily add a leaderboard to your mobile app, creating a fun and engaging experience for your users.",
   "supportEmail": "support@buildfire.com",
@@ -32,7 +32,7 @@
     "customTabs": [
       {
         "title": "Tests",
-        "url": "tests/index.html"
+        "url": "tests/index.html?random=false&stopOnSpecFailure=false"
       }
     ]
   },
@@ -42,15 +42,15 @@
     "en"
   ],
   "keywords": "leaderboard, compete, competititon, score, scoring, trackable, challenges, rankings, timeframe",
-	"media": [
-		{ "type": "image-resource", "path": "1-Plugin.png" },
-		{ "type": "image-resource", "path": "2-Benefits.png" },
-		{ "type": "image-resource", "path": "3-Use-Cases.png" },
-		{ "type": "image-resource", "path": "4-Content-Tab.png" },
-		{ "type": "image-resource", "path": "5-Analytics-Tab.png" },
+  "media": [
+    { "type": "image-resource", "path": "1-Plugin.png" },
+    { "type": "image-resource", "path": "2-Benefits.png" },
+    { "type": "image-resource", "path": "3-Use-Cases.png" },
+    { "type": "image-resource", "path": "4-Content-Tab.png" },
+    { "type": "image-resource", "path": "5-Analytics-Tab.png" },
     {
       "type": "youtube-video",
       "path": "https://www.youtube.com/watch?v=HudhZTMpY5c"
     }
-	]
+  ]
 }

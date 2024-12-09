@@ -1,0 +1,40 @@
+{
+  "name": "leaderboardPlugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "gulp && cd ../ && rm -rf leaderboardPlugin.zip && zip -r leaderboardPlugin.zip leaderboardPlugin_release && rm -rf leaderboardPlugin_release",
+    "lint": "eslint --fix ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BuildFire/leaderboardPlugin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "autoprefixer": "^10.4.14",
+    "cssnano": "^6.0.1",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "fancy-log": "^2.0.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-eslint": "^6.0.0",
+    "gulp-html-replace": "^1.6.2",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-imagemin": "^3.3.0",
+    "gulp-postcss": "^9.0.1",
+    "gulp-prettier": "^4.0.0",
+    "gulp-print": "^5.0.2",
+    "gulp-terser": "^2.1.0",
+    "postcss": "^8.4.47",
+    "rimraf": "^5.0.1"
+  }
+}

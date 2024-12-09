@@ -1,0 +1,65 @@
+.tox-tinymce {
+  margin-top: 50px;
+}
+
+#contentCarousel .item.clearfix .col-md-3 {
+  width: calc(100% / 3);
+}
+
+#contentCarousel .item.clearfix .col-md-9 {
+  width: calc(100% / 3*2);
+  padding-left: 0;
+}
+
+#contentCarousel .item.clearfix .col-md-9 .clearfix {
+  width: 25%;
+  margin-left: auto;
+}
+
+#contentCarousel .item.clearfix .col-md-9 .btn {
+  float: right !important;
+  color: #05acf0 !important;
+  background-color: transparent !important;
+  border: 1px solid var(--c-primary);
+  padding: 6px 12px 6px 20px !important;
+  width: 100%;
+}
+
+#contentCarousel .item.clearfix .col-md-9 .btn:hover {
+  background-color: #f2f2f2 !important;
+}
+
+#contentCarousel .item.clearfix .col-md-9 .btn::before,
+#contentCarousel .item.clearfix .col-md-9 .btn::after {
+  background-color: var(--c-primary) !important;
+  left: unset;
+  right: 72%;
+}
+
+.draggable-list-view.carousel-items .d-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.draggable-list-view.carousel-items .copy {
+  top: unset;
+}
+
+.draggable-list-view.carousel-items .d-item .icon.icon-menu {
+  margin: 0;
+}
+
+.draggable-list-view.carousel-items .d-item span.title {
+  width: 50%;
+  max-width: 50%;
+  margin-right: 0;
+}
+
+.draggable-list-view.carousel-items .d-item span.icon {
+  top: unset;
+}
+
+.tox.tox-tinymce {
+  margin-top: 0.5rem !important;
+}

@@ -1,86 +1,133 @@
 {
-    "sections": {
-        "score": {
-            "title": "Score Input",
-            "labels": {
-                "add": {
-                    "title": "Add Score",
-                    "defaultValue": "Add Score",
-                    "maxLength": 30,
-                    "placeholder": "Add Score"
-                },
-                "addSubtitle": {
-                    "title": "Add Score Enter Your Score Here. You May Add More Than One Score in a Day!",
-                    "defaultValue": "Add score enter your score here. You may add more than one score in a day!",
-                    "maxLength": 100,
-                    "placeholder": "Add score enter your score here. You may add more than one score in a day!"
-                },
-                "edit": {
-                    "title": "Edit Score",
-                    "defaultValue": "Edit Score",
-                    "maxLength": 30,
-                    "placeholder": "Edit Score"
-                },
-                "editSubtitle": {
-                    "title": "Enter Your Score Here. You May Edit Only Today’s Score!",
-                    "defaultValue": "Enter your score here. You may edit only today's score!",
-                    "maxLength": 60,
-                    "placeholder": "Enter your score here. You may edit only today's score!"
-                },
-                "yourScore": {
-                    "title": "Your Score",
-                    "defaultValue": "Your Score",
-                    "maxLength": 30,
-                    "placeholder": "Your Score"
-                },
-                "requiredMessage": {
-                    "title": "This Field Is Required",
-                    "defaultValue": "This field is required",
-                    "maxLength": 50,
-                    "placeholder": "This field is required"
-                },
-                "dialogSave": {
-                    "title": "Save",
-                    "defaultValue": "Save",
-                    "maxLength": 10,
-                    "placeholder": "Save"
-                },
-                "dialogCancel": {
-                    "title": "Cancel",
-                    "defaultValue": "Cancel",
-                    "maxLength": 10,
-                    "placeholder": "Cancel"
-                }
-            }
+  "sections": {
+    "score": {
+      "title": "Score Input",
+      "labels": {
+        "add": {
+          "title": "Add Score Title",
+          "defaultValue": "Add Score",
+          "maxLength": 30,
+          "placeholder": "Add Score"
         },
-        "scoreboard": {
-            "title": "Scoreboard",
-            "labels": {
-                "overall": {
-                    "title": "Overall",
-                    "defaultValue": "Overall",
-                    "maxLength": 10,
-                    "placeholder": "Overall"
-                },
-                "day": {
-                    "title": "Day",
-                    "defaultValue": "Day",
-                    "maxLength": 10,
-                    "placeholder": "Day"
-                },
-                "week": {
-                    "title": "Week",
-                    "defaultValue": "Week",
-                    "maxLength": 10,
-                    "placeholder": "Week"
-                },
-                "month": {
-                    "title": "Month",
-                    "defaultValue": "Month",
-                    "maxLength": 10,
-                    "placeholder": "Month"
-                }
-            }
+        "addSubtitle": {
+          "title": "Add Score Info Message",
+          "defaultValue": "Add score enter your score here. You may add more than one score in a day!",
+          "maxLength": 100,
+          "placeholder": "Add score enter your score here. You may add more than one score in a day!"
+        },
+        "edit": {
+          "title": "Edit Score Title",
+          "defaultValue": "Edit Score",
+          "maxLength": 30,
+          "placeholder": "Edit Score"
+        },
+        "editSubtitle": {
+          "title": "Edit Score Info Message",
+          "defaultValue": "Enter your score here. You may edit only today's score!",
+          "maxLength": 60,
+          "placeholder": "Enter your score here. You may edit only today's score!"
+        },
+        "yourScore": {
+          "title": "Your Score",
+          "defaultValue": "Your Score",
+          "maxLength": 30,
+          "placeholder": "Your Score"
+        },
+        "requiredMessage": {
+          "title": "Score Input Error Message",
+          "defaultValue": "This field is required",
+          "maxLength": 50,
+          "placeholder": "This field is required"
+        },
+        "dialogSave": {
+          "title": "Save",
+          "defaultValue": "Save",
+          "maxLength": 10,
+          "placeholder": "Save"
+        },
+        "dialogCancel": {
+          "title": "Cancel",
+          "defaultValue": "Cancel",
+          "maxLength": 10,
+          "placeholder": "Cancel"
         }
+      }
+    },
+    "scoreboard": {
+      "title": "Scoreboard",
+      "labels": {
+        "overall": {
+          "title": "Overall",
+          "defaultValue": "Overall",
+          "maxLength": 10,
+          "placeholder": "Overall"
+        },
+        "day": {
+          "title": "Day",
+          "defaultValue": "Day",
+          "maxLength": 10,
+          "placeholder": "Day"
+        },
+        "week": {
+          "title": "Week",
+          "defaultValue": "Week",
+          "maxLength": 10,
+          "placeholder": "Week"
+        },
+        "month": {
+          "title": "Month",
+          "defaultValue": "Month",
+          "maxLength": 10,
+          "placeholder": "Month"
+        },
+        "rankedUserToast": {
+          "title": "Ranked User Toast",
+          "defaultValue": "You are ranked #${context.plugin.userRank} with ${context.plugin.userScore} points",
+          "maxLength": 100,
+          "placeholder": "You are ranked #${context.plugin.userRank} with ${context.plugin.userScore} points"
+        },
+        "nonRankedUserToast": {
+          "title": "Non Ranked User Toast",
+          "defaultValue": "You are not ranked in top 100",
+          "maxLength": 100,
+          "placeholder": "You are not ranked in top 100"
+        },
+        "unknownUser": {
+          "title": "Unknown User",
+          "defaultValue": "Someone",
+          "maxLength": 25,
+          "placeholder": "Someone"
+        }
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "labels": {
+        "topRankNotificationTitle": {
+          "title": "Top Rank Notification Title",
+          "defaultValue": "New HighScore!",
+          "maxLength": 30,
+          "placeholder": "New HighScore!"
+        },
+        "topRankNotificationMessage": {
+          "title": "Top Rank Notification Message",
+          "defaultValue": "${context.plugin.userName} is now at first place in the ${context.plugin.boardName} board! Can you take over?",
+          "maxLength": 150,
+          "placeholder": "${context.plugin.userName} is now at first place in the ${context.plugin.boardName} board! Can you take over?"
+        },
+        "lowerRankNotificationTitle": {
+          "title": "Lower Rank Notification Title",
+          "defaultValue": "Things are heating at the top!",
+          "maxLength": 30,
+          "placeholder": "Things are heating at the top!"
+        },
+        "lowerRankNotificationMessage": {
+          "title": "Top Rank Notification Message",
+          "defaultValue": "${context.plugin.userName} is now at ${context.plugin.rank} place from ${context.plugin.oldPositionUser} in the ${context.plugin.boardName} board! Can you take over?",
+          "maxLength": 150,
+          "placeholder": "${context.plugin.userName} is now at ${context.plugin.rank} place from ${context.plugin.oldPositionUser} in the ${context.plugin.boardName} board! Can you take over?"
+        }
+      }
     }
+  }
 }
