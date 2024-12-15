@@ -181,7 +181,7 @@ const widgetController = {
           '$json.user._id': { $eq: authManager.currentUser.userId },
           '$json.isEarnedPoints': { $exists: false },
         }, {
-          isEarnedPoints: true,
+          $set: { isEarnedPoints: true },
         }, `freeTextQuestionnaireSubmissions_${instance.instanceId}`, (err, res) => {
           if (err) return _reject(err);
           return _resolve(res);
