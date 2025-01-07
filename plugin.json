@@ -1,7 +1,7 @@
 {
   "author": "Buildfire",
   "pluginName": "Leaderboard",
-  "pluginDescription": "Easily add a leaderboard to your mobile app, creating a fun and engaging experience for your users.",
+  "pluginDescription": "Add a leaderboard to your mobile app, creating a fun and competitive experience that engages users and motivates them to interact and improve their rankings.",
   "supportEmail": "support@buildfire.com",
   "supportSite": "https://learn.appdocumentation.com/en/articles/8524929-leaderboard-plugin-overview",
   "control": {
