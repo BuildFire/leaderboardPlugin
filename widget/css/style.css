@@ -1,6 +1,6 @@
 
 .content-container {
-  height: calc(100vh - 100px);
+  height: calc(100vh - 100px - var(--bf-safe-area-inset-bottom));
   overflow-y: scroll;
 }
 
