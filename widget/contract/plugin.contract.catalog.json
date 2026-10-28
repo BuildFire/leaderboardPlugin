@@ -1,0 +1,290 @@
+{
+  "operations": [
+    {
+      "name": "listScores",
+      "displayName": "List scores",
+      "type": "function",
+      "crudMode": "read",
+      "flags": [
+        "immutable",
+        "safe",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "listScores",
+        "hosts": [
+          "widgetBackground",
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Shows the leaderboard for today, this week, this month or overall, highest score first.",
+      "parameters": [
+        "period",
+        "user"
+      ],
+      "definitionPath": "operations/listScores.json"
+    },
+    {
+      "name": "updateUserScore",
+      "displayName": "Add points",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "dangerous",
+        "throttable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "updateUserScore",
+        "hosts": [
+          "widgetBackground",
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Adds points to a person's score for today, this week, this month and overall, on behalf of the app.",
+      "parameters": [
+        "user",
+        "points"
+      ],
+      "definitionPath": "operations/updateUserScore.json"
+    },
+    {
+      "name": "updateUserScoresAdvanced",
+      "displayName": "Add points for several people",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "dangerous",
+        "throttable"
+      ],
+      "usage": "advanced",
+      "availableFor": [
+        "API"
+      ],
+      "context": {
+        "functionName": "updateUserScoresAdvanced",
+        "hosts": [
+          "widgetBackground",
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Adds points to several people's scores at once, up to 50.",
+      "parameters": [
+        "scores"
+      ],
+      "definitionPath": "operations/updateUserScoresAdvanced.json"
+    },
+    {
+      "name": "updateUserDailyScore",
+      "displayName": "Edit today's score",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "dangerous",
+        "throttable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "updateUserDailyScore",
+        "hosts": [
+          "widgetBackground",
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Changes a person's score for today, moving their week, month and overall scores by the same amount, on behalf of the app.",
+      "parameters": [
+        "user",
+        "newScore"
+      ],
+      "definitionPath": "operations/updateUserDailyScore.json"
+    },
+    {
+      "name": "updateUserDailyScoresAdvanced",
+      "displayName": "Edit today's scores",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "dangerous",
+        "throttable"
+      ],
+      "usage": "advanced",
+      "availableFor": [
+        "API"
+      ],
+      "context": {
+        "functionName": "updateUserDailyScoresAdvanced",
+        "hosts": [
+          "widgetBackground",
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Changes several people's scores for today at once, up to 50.",
+      "parameters": [
+        "scores"
+      ],
+      "definitionPath": "operations/updateUserDailyScoresAdvanced.json"
+    },
+    {
+      "name": "resetLeaderboard",
+      "displayName": "Reset leaderboard",
+      "type": "function",
+      "crudMode": "delete",
+      "flags": [
+        "mutable",
+        "dangerous",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "resetLeaderboard",
+        "hosts": [
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Permanently clears every score from today's, this week's, this month's and the overall leaderboard.",
+      "parameters": [],
+      "definitionPath": "operations/resetLeaderboard.json"
+    },
+    {
+      "name": "getSettings",
+      "displayName": "Get settings",
+      "type": "function",
+      "crudMode": "read",
+      "flags": [
+        "immutable",
+        "safe",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "getSettings",
+        "hosts": [
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Shows how people earn points and when rank change notifications go out.",
+      "parameters": [],
+      "definitionPath": "operations/getSettings.json"
+    },
+    {
+      "name": "updateSettings",
+      "displayName": "Update settings",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "safe",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API"
+      ],
+      "context": {
+        "functionName": "updateSettings",
+        "hosts": [
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Changes how people earn points and when rank change notifications go out.",
+      "parameters": [
+        "notifyOnDailyChange",
+        "notifyOnWeeklyChange",
+        "notifyOnMonthlyChange",
+        "notifyOnOverallChange",
+        "userEarnPoints",
+        "questionnaires",
+        "calculateLoyaltyPoints"
+      ],
+      "definitionPath": "operations/updateSettings.json"
+    },
+    {
+      "name": "getIntroduction",
+      "displayName": "Get introduction",
+      "type": "function",
+      "crudMode": "read",
+      "flags": [
+        "immutable",
+        "safe",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "getIntroduction",
+        "hosts": [
+          "widgetBackground",
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Shows the pictures and the text shown behind the leaderboard.",
+      "parameters": [],
+      "definitionPath": "operations/getIntroduction.json"
+    },
+    {
+      "name": "updateIntroduction",
+      "displayName": "Update introduction",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "safe",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API"
+      ],
+      "context": {
+        "functionName": "updateIntroduction",
+        "hosts": [
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Changes the pictures and the text shown behind the leaderboard.",
+      "parameters": [
+        "carouselItems",
+        "description"
+      ],
+      "definitionPath": "operations/updateIntroduction.json"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "updateUserScore",
+  "displayName": "Add points",
+  "type": "function",
+  "crudMode": "update",
+  "flags": [
+    "mutable",
+    "dangerous",
+    "throttable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API",
+    "form"
+  ],
+  "context": {
+    "functionName": "updateUserScore",
+    "hosts": [
+      "widgetBackground",
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Adds points to a person's score for today, this week, this month and overall, on behalf of the app.",
+  "parameters": {
+    "user": {
+      "type": "user",
+      "displayName": "Person",
+      "required": true,
+      "description": "The person to give the points to, by their user id or email.",
+      "sampleValue": "[user id]"
+    },
+    "points": {
+      "type": "number",
+      "displayName": "Points",
+      "required": true,
+      "minValue": 1,
+      "description": "How many points to add, as a whole number.",
+      "sampleValue": 10
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the points are added.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why no points were added, such as no person having that email, or points coming only from questionnaires."
+        },
+        "result": {
+          "type": "object",
+          "description": "The person's scores after the change.",
+          "properties": {
+            "userId": {
+              "type": "string",
+              "description": "The person's id."
+            },
+            "displayName": {
+              "type": "string",
+              "description": "The person's name, as shown on the leaderboard."
+            },
+            "dailyScore": {
+              "type": "number",
+              "description": "Their score for today."
+            },
+            "weeklyScore": {
+              "type": "number",
+              "description": "Their score for this week."
+            },
+            "monthlyScore": {
+              "type": "number",
+              "description": "Their score for this month."
+            },
+            "overallScore": {
+              "type": "number",
+              "description": "Their overall score."
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "name": "updateIntroduction",
+  "displayName": "Update introduction",
+  "type": "function",
+  "crudMode": "update",
+  "flags": [
+    "mutable",
+    "safe",
+    "unthrottable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API"
+  ],
+  "context": {
+    "functionName": "updateIntroduction",
+    "hosts": [
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Changes the pictures and the text shown behind the leaderboard.",
+  "parameters": {
+    "carouselItems": {
+      "type": "action",
+      "displayName": "Pictures",
+      "required": false,
+      "nullable": true,
+      "minValue": 0,
+      "description": "The pictures shown at the top, in order, each with what happens when someone taps it. Replaces the current pictures; leave it out to keep them, or leave it empty to remove them all.",
+      "sampleValue": [
+        {
+          "title": "Welcome",
+          "iconUrl": "[image url]",
+          "action": "noAction"
+        }
+      ]
+    },
+    "description": {
+      "type": "wysiwyg",
+      "displayName": "Description",
+      "required": false,
+      "nullable": true,
+      "description": "The formatted text shown below the pictures. Leave it out to keep the current text, or leave it empty to remove it.",
+      "sampleValue": "<p>[introduction text]</p>"
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the introduction is saved.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it wasn't saved, such as a picture without an image or nothing to change."
+        },
+        "result": {
+          "type": "object",
+          "description": "The introduction as it is now.",
+          "properties": {
+            "carouselItems": {
+              "type": "array",
+              "description": "The pictures shown at the top, in order.",
+              "items": {
+                "type": "object",
+                "description": "One picture.",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "The picture's name."
+                  },
+                  "iconUrl": {
+                    "type": "string",
+                    "description": "The picture."
+                  },
+                  "action": {
+                    "type": "string",
+                    "description": "What happens when someone taps it."
+                  }
+                }
+              }
+            },
+            "description": {
+              "type": "string",
+              "description": "The formatted text shown below the pictures."
+            }
+          }
+        }
+      }
+    }
+  }
+}

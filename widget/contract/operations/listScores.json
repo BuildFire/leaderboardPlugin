@@ -1,0 +1,115 @@
+{
+  "name": "listScores",
+  "displayName": "List scores",
+  "type": "function",
+  "crudMode": "read",
+  "flags": [
+    "immutable",
+    "safe",
+    "unthrottable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API",
+    "form"
+  ],
+  "context": {
+    "functionName": "listScores",
+    "hosts": [
+      "widgetBackground",
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Shows the leaderboard for today, this week, this month or overall, highest score first.",
+  "parameters": {
+    "period": {
+      "type": "select",
+      "displayName": "Leaderboard",
+      "required": false,
+      "description": "Which leaderboard to show. Leave it out to show the overall one.",
+      "enums": [
+        {
+          "label": "Overall",
+          "value": "overall"
+        },
+        {
+          "label": "Month",
+          "value": "monthly"
+        },
+        {
+          "label": "Week",
+          "value": "weekly"
+        },
+        {
+          "label": "Day",
+          "value": "daily"
+        }
+      ],
+      "allowEnumCustomOption": false,
+      "sampleValue": "overall"
+    },
+    "user": {
+      "type": "user",
+      "displayName": "Person",
+      "required": false,
+      "description": "Only show this person's place, by their user id or email. Leave it out to show everyone.",
+      "sampleValue": "[user id]"
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the leaderboard is ready.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it didn't work, such as a leaderboard that doesn't exist."
+        },
+        "result": {
+          "type": "object",
+          "description": "The leaderboard that was shown.",
+          "properties": {
+            "period": {
+              "type": "string",
+              "description": "Which leaderboard this is: daily, weekly, monthly or overall."
+            },
+            "scores": {
+              "type": "array",
+              "description": "The people on the leaderboard, highest score first.",
+              "items": {
+                "type": "object",
+                "description": "One person's place.",
+                "properties": {
+                  "rank": {
+                    "type": "number",
+                    "description": "Their place on the leaderboard, starting at 1."
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "The person's id."
+                  },
+                  "displayName": {
+                    "type": "string",
+                    "description": "The person's name, as shown on the leaderboard."
+                  },
+                  "currentScore": {
+                    "type": "number",
+                    "description": "Their score."
+                  },
+                  "displayPictureUrl": {
+                    "type": "string",
+                    "description": "The person's profile picture."
+                  },
+                  "createdOn": {
+                    "type": "string",
+                    "description": "When their score last changed."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "name": "updateUserDailyScore",
+  "displayName": "Edit today's score",
+  "type": "function",
+  "crudMode": "update",
+  "flags": [
+    "mutable",
+    "dangerous",
+    "throttable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API",
+    "form"
+  ],
+  "context": {
+    "functionName": "updateUserDailyScore",
+    "hosts": [
+      "widgetBackground",
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Changes a person's score for today, moving their week, month and overall scores by the same amount, on behalf of the app.",
+  "parameters": {
+    "user": {
+      "type": "user",
+      "displayName": "Person",
+      "required": true,
+      "description": "The person whose score for today changes, by their user id or email.",
+      "sampleValue": "[user id]"
+    },
+    "newScore": {
+      "type": "number",
+      "displayName": "Today's score",
+      "required": true,
+      "description": "The person's new score for today, as a whole number.",
+      "sampleValue": 25
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the score is changed.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why the score wasn't changed, such as no person having that email, or points coming only from questionnaires."
+        },
+        "result": {
+          "type": "object",
+          "description": "The person's scores after the change.",
+          "properties": {
+            "userId": {
+              "type": "string",
+              "description": "The person's id."
+            },
+            "displayName": {
+              "type": "string",
+              "description": "The person's name, as shown on the leaderboard."
+            },
+            "dailyScore": {
+              "type": "number",
+              "description": "Their score for today."
+            },
+            "weeklyScore": {
+              "type": "number",
+              "description": "Their score for this week."
+            },
+            "monthlyScore": {
+              "type": "number",
+              "description": "Their score for this month."
+            },
+            "overallScore": {
+              "type": "number",
+              "description": "Their overall score."
+            }
+          }
+        }
+      }
+    }
+  }
+}

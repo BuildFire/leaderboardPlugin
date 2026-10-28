@@ -1,0 +1,89 @@
+{
+  "name": "getSettings",
+  "displayName": "Get settings",
+  "type": "function",
+  "crudMode": "read",
+  "flags": [
+    "immutable",
+    "safe",
+    "unthrottable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API",
+    "form"
+  ],
+  "context": {
+    "functionName": "getSettings",
+    "hosts": [
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Shows how people earn points and when rank change notifications go out.",
+  "parameters": {
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the settings are ready.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it didn't work, if it didn't."
+        },
+        "result": {
+          "type": "object",
+          "description": "The current settings.",
+          "properties": {
+            "notificationsFrequency": {
+              "type": "array",
+              "description": "Which leaderboards send a notification when the top three change.",
+              "items": {
+                "type": "string",
+                "description": "One of dailyChange, weeklyChange, monthlyChange or allTimeChange."
+              }
+            },
+            "userEarnPoints": {
+              "type": "string",
+              "description": "How people earn points: HONOR_SYSTEM when they enter their own, SCORE_FROM_FREE_TEXT_QUESTIONNAIRE when points come from questionnaires."
+            },
+            "features": {
+              "type": "array",
+              "description": "The questionnaires that give points, in order.",
+              "items": {
+                "type": "object",
+                "description": "One questionnaire.",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "The questionnaire's name."
+                  },
+                  "action": {
+                    "type": "string",
+                    "description": "The kind of link, usually to another feature of the app."
+                  },
+                  "instanceId": {
+                    "type": "string",
+                    "description": "The questionnaire feature it links to."
+                  },
+                  "iconUrl": {
+                    "type": "string",
+                    "description": "The questionnaire's icon."
+                  },
+                  "order": {
+                    "type": "number",
+                    "description": "Its place in the list, counting from 0."
+                  }
+                }
+              }
+            },
+            "calculateLoyaltyPoints": {
+              "type": "boolean",
+              "description": "Whether points from the loyalty feature are added to people's scores."
+            }
+          }
+        }
+      }
+    }
+  }
+}

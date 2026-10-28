@@ -1,0 +1,585 @@
+{
+  "description": "A leaderboard where app users collect points and see who ranks first today, this week, this month and overall.",
+  "events": [
+    {
+      "name": "scoreUpdated",
+      "displayName": "Score Updated",
+      "description": "Someone's score on the leaderboard changed.",
+      "data": {
+        "user": {
+          "type": "object",
+          "displayName": "Person",
+          "description": "Whose score changed.",
+          "properties": {
+            "userId": { "type": "string", "displayName": "User ID", "description": "Their id." },
+            "displayName": { "type": "string", "displayName": "Name", "description": "Their name." },
+            "email": { "type": "string", "displayName": "Email", "description": "Their email." }
+          }
+        },
+        "changeType": { "type": "string", "displayName": "Change", "description": "How the score changed: add when points were added, edit when today's score was changed." },
+        "points": { "type": "number", "displayName": "Points", "description": "The points added, or the new score for today." },
+        "dailyScore": { "type": "number", "displayName": "Today's Score", "description": "Their score for today." },
+        "weeklyScore": { "type": "number", "displayName": "This Week's Score", "description": "Their score for this week." },
+        "monthlyScore": { "type": "number", "displayName": "This Month's Score", "description": "Their score for this month." },
+        "overallScore": { "type": "number", "displayName": "Overall Score", "description": "Their overall score." }
+      }
+    }
+  ],
+  "operations": [
+    {
+      "name": "listScores",
+      "displayName": "List scores",
+      "type": "function",
+      "crudMode": "read",
+      "flags": ["immutable", "safe", "unthrottable"],
+      "usage": "basic",
+      "availableFor": ["API", "form"],
+      "context": { "functionName": "listScores", "hosts": ["widgetBackground", "controlBackground", "headlessSdk"] },
+      "description": "Shows the leaderboard for today, this week, this month or overall, highest score first.",
+      "parameters": {
+        "period": {
+          "type": "select",
+          "displayName": "Leaderboard",
+          "required": false,
+          "description": "Which leaderboard to show. Leave it out to show the overall one.",
+          "enums": [
+            { "label": "Overall", "value": "overall" },
+            { "label": "Month", "value": "monthly" },
+            { "label": "Week", "value": "weekly" },
+            { "label": "Day", "value": "daily" }
+          ],
+          "allowEnumCustomOption": false,
+          "sampleValue": "overall"
+        },
+        "user": {
+          "type": "user",
+          "displayName": "Person",
+          "required": false,
+          "description": "Only show this person's place, by their user id or email. Leave it out to show everyone.",
+          "sampleValue": "[user id]"
+        },
+        "callback": {
+          "type": "function",
+          "required": true,
+          "description": "Runs when the leaderboard is ready.",
+          "parameters": {
+            "error": { "type": "object|string", "description": "Why it didn't work, such as a leaderboard that doesn't exist." },
+            "result": {
+              "type": "object",
+              "description": "The leaderboard that was shown.",
+              "properties": {
+                "period": { "type": "string", "description": "Which leaderboard this is: daily, weekly, monthly or overall." },
+                "scores": {
+                  "type": "array",
+                  "description": "The people on the leaderboard, highest score first.",
+                  "items": {
+                    "type": "object",
+                    "description": "One person's place.",
+                    "properties": {
+                      "rank": { "type": "number", "description": "Their place on the leaderboard, starting at 1." },
+                      "userId": { "type": "string", "description": "The person's id." },
+                      "displayName": { "type": "string", "description": "The person's name, as shown on the leaderboard." },
+                      "currentScore": { "type": "number", "description": "Their score." },
+                      "displayPictureUrl": { "type": "string", "description": "The person's profile picture." },
+                      "createdOn": { "type": "string", "description": "When their score last changed." }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "updateUserScore",
+      "displayName": "Add points",
+      "type": "function",
+      "crudMode": "update",
+      "flags": ["mutable", "dangerous", "throttable"],
+      "usage": "basic",
+      "availableFor": ["API", "form"],
+      "context": { "functionName": "updateUserScore", "hosts": ["widgetBackground", "controlBackground", "headlessSdk"] },
+      "description": "Adds points to a person's score for today, this week, this month and overall, on behalf of the app.",
+      "parameters": {
+        "user": {
+          "type": "user",
+          "displayName": "Person",
+          "required": true,
+          "description": "The person to give the points to, by their user id or email.",
+          "sampleValue": "[user id]"
+        },
+        "points": {
+          "type": "number",
+          "displayName": "Points",
+          "required": true,
+          "minValue": 1,
+          "description": "How many points to add, as a whole number.",
+          "sampleValue": 10
+        },
+        "callback": {
+          "type": "function",
+          "required": true,
+          "description": "Runs when the points are added.",
+          "parameters": {
+            "error": { "type": "object|string", "description": "Why no points were added, such as no person having that email, or points coming only from questionnaires." },
+            "result": {
+              "type": "object",
+              "description": "The person's scores after the change.",
+              "properties": {
+                "userId": { "type": "string", "description": "The person's id." },
+                "displayName": { "type": "string", "description": "The person's name, as shown on the leaderboard." },
+                "dailyScore": { "type": "number", "description": "Their score for today." },
+                "weeklyScore": { "type": "number", "description": "Their score for this week." },
+                "monthlyScore": { "type": "number", "description": "Their score for this month." },
+                "overallScore": { "type": "number", "description": "Their overall score." }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "updateUserScoresAdvanced",
+      "displayName": "Add points for several people",
+      "type": "function",
+      "crudMode": "update",
+      "flags": ["mutable", "dangerous", "throttable"],
+      "usage": "advanced",
+      "availableFor": ["API"],
+      "context": { "functionName": "updateUserScoresAdvanced", "hosts": ["widgetBackground", "controlBackground", "headlessSdk"] },
+      "description": "Adds points to several people's scores at once, up to 50.",
+      "parameters": {
+        "scores": {
+          "type": "list",
+          "displayName": "Points to add",
+          "required": true,
+          "minValue": 1,
+          "maxValue": 50,
+          "description": "Who gets how many points, up to 50 people at a time.",
+          "items": {
+            "user": { "type": "user", "displayName": "Person", "required": true, "description": "The person to give the points to, by their user id or email." },
+            "points": { "type": "number", "displayName": "Points", "required": true, "minValue": 1, "description": "How many points to add, as a whole number." }
+          },
+          "sampleValue": [{ "user": "[user id]", "points": 10 }, { "user": "[user id]", "points": 5 }]
+        },
+        "callback": {
+          "type": "function",
+          "required": true,
+          "description": "Runs when everyone's points are done.",
+          "parameters": {
+            "error": { "type": "object|string", "description": "Why no points were added, such as an entry missing its points or the same person listed twice." },
+            "result": {
+              "type": "object",
+              "description": "How each entry went.",
+              "properties": {
+                "scores": {
+                  "type": "array",
+                  "description": "One result per entry, in the order they were given.",
+                  "items": {
+                    "type": "object",
+                    "description": "How one entry went.",
+                    "properties": {
+                      "index": { "type": "number", "description": "Which entry this is, counting from 0." },
+                      "id": { "type": "string", "description": "The person's id, if their points were added." },
+                      "error": { "type": "string", "description": "Why their points weren't added, if they weren't." }
+                    }
+                  }
+                },
+                "succeeded": { "type": "number", "description": "How many entries were added." },
+                "failed": { "type": "number", "description": "How many entries weren't added." }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "updateUserDailyScore",
+      "displayName": "Edit today's score",
+      "type": "function",
+      "crudMode": "update",
+      "flags": ["mutable", "dangerous", "throttable"],
+      "usage": "basic",
+      "availableFor": ["API", "form"],
+      "context": { "functionName": "updateUserDailyScore", "hosts": ["widgetBackground", "controlBackground", "headlessSdk"] },
+      "description": "Changes a person's score for today, moving their week, month and overall scores by the same amount, on behalf of the app.",
+      "parameters": {
+        "user": {
+          "type": "user",
+          "displayName": "Person",
+          "required": true,
+          "description": "The person whose score for today changes, by their user id or email.",
+          "sampleValue": "[user id]"
+        },
+        "newScore": {
+          "type": "number",
+          "displayName": "Today's score",
+          "required": true,
+          "description": "The person's new score for today, as a whole number.",
+          "sampleValue": 25
+        },
+        "callback": {
+          "type": "function",
+          "required": true,
+          "description": "Runs when the score is changed.",
+          "parameters": {
+            "error": { "type": "object|string", "description": "Why the score wasn't changed, such as no person having that email, or points coming only from questionnaires." },
+            "result": {
+              "type": "object",
+              "description": "The person's scores after the change.",
+              "properties": {
+                "userId": { "type": "string", "description": "The person's id." },
+                "displayName": { "type": "string", "description": "The person's name, as shown on the leaderboard." },
+                "dailyScore": { "type": "number", "description": "Their score for today." },
+                "weeklyScore": { "type": "number", "description": "Their score for this week." },
+                "monthlyScore": { "type": "number", "description": "Their score for this month." },
+                "overallScore": { "type": "number", "description": "Their overall score." }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "updateUserDailyScoresAdvanced",
+      "displayName": "Edit today's scores",
+      "type": "function",
+      "crudMode": "update",
+      "flags": ["mutable", "dangerous", "throttable"],
+      "usage": "advanced",
+      "availableFor": ["API"],
+      "context": { "functionName": "updateUserDailyScoresAdvanced", "hosts": ["widgetBackground", "controlBackground", "headlessSdk"] },
+      "description": "Changes several people's scores for today at once, up to 50.",
+      "parameters": {
+        "scores": {
+          "type": "list",
+          "displayName": "Scores for today",
+          "required": true,
+          "minValue": 1,
+          "maxValue": 50,
+          "description": "Who gets which score for today, up to 50 people at a time.",
+          "items": {
+            "user": { "type": "user", "displayName": "Person", "required": true, "description": "The person whose score for today changes, by their user id or email." },
+            "newScore": { "type": "number", "displayName": "Today's score", "required": true, "description": "The person's new score for today, as a whole number." }
+          },
+          "sampleValue": [{ "user": "[user id]", "newScore": 25 }, { "user": "[user id]", "newScore": 12 }]
+        },
+        "callback": {
+          "type": "function",
+          "required": true,
+          "description": "Runs when everyone's scores are done.",
+          "parameters": {
+            "error": { "type": "object|string", "description": "Why no scores were changed, such as an entry missing its score or the same person listed twice." },
+            "result": {
+              "type": "object",
+              "description": "How each entry went.",
+              "properties": {
+                "scores": {
+                  "type": "array",
+                  "description": "One result per entry, in the order they were given.",
+                  "items": {
+                    "type": "object",
+                    "description": "How one entry went.",
+                    "properties": {
+                      "index": { "type": "number", "description": "Which entry this is, counting from 0." },
+                      "id": { "type": "string", "description": "The person's id, if their score was changed." },
+                      "error": { "type": "string", "description": "Why their score wasn't changed, if it wasn't." }
+                    }
+                  }
+                },
+                "succeeded": { "type": "number", "description": "How many scores were changed." },
+                "failed": { "type": "number", "description": "How many scores weren't changed." }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "resetLeaderboard",
+      "displayName": "Reset leaderboard",
+      "type": "function",
+      "crudMode": "delete",
+      "flags": ["mutable", "dangerous", "unthrottable"],
+      "usage": "basic",
+      "availableFor": ["API", "form"],
+      "context": { "functionName": "resetLeaderboard", "hosts": ["controlBackground", "headlessSdk"] },
+      "description": "Permanently clears every score from today's, this week's, this month's and the overall leaderboard.",
+      "parameters": {
+        "callback": {
+          "type": "function",
+          "required": true,
+          "description": "Runs when the leaderboard is cleared.",
+          "parameters": {
+            "error": { "type": "object|string", "description": "Why it didn't work, if it didn't." },
+            "result": {
+              "type": "object",
+              "description": "What was cleared.",
+              "properties": {
+                "periods": {
+                  "type": "array",
+                  "description": "The leaderboards that were cleared.",
+                  "items": { "type": "string", "description": "One leaderboard: daily, weekly, monthly or overall." }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "getSettings",
+      "displayName": "Get settings",
+      "type": "function",
+      "crudMode": "read",
+      "flags": ["immutable", "safe", "unthrottable"],
+      "usage": "basic",
+      "availableFor": ["API", "form"],
+      "context": { "functionName": "getSettings", "hosts": ["controlBackground", "headlessSdk"] },
+      "description": "Shows how people earn points and when rank change notifications go out.",
+      "parameters": {
+        "callback": {
+          "type": "function",
+          "required": true,
+          "description": "Runs when the settings are ready.",
+          "parameters": {
+            "error": { "type": "object|string", "description": "Why it didn't work, if it didn't." },
+            "result": {
+              "type": "object",
+              "description": "The current settings.",
+              "properties": {
+                "notificationsFrequency": {
+                  "type": "array",
+                  "description": "Which leaderboards send a notification when the top three change.",
+                  "items": { "type": "string", "description": "One of dailyChange, weeklyChange, monthlyChange or allTimeChange." }
+                },
+                "userEarnPoints": { "type": "string", "description": "How people earn points: HONOR_SYSTEM when they enter their own, SCORE_FROM_FREE_TEXT_QUESTIONNAIRE when points come from questionnaires." },
+                "features": {
+                  "type": "array",
+                  "description": "The questionnaires that give points, in order.",
+                  "items": {
+                    "type": "object",
+                    "description": "One questionnaire.",
+                    "properties": {
+                      "title": { "type": "string", "description": "The questionnaire's name." },
+                      "action": { "type": "string", "description": "The kind of link, usually to another feature of the app." },
+                      "instanceId": { "type": "string", "description": "The questionnaire feature it links to." },
+                      "iconUrl": { "type": "string", "description": "The questionnaire's icon." },
+                      "order": { "type": "number", "description": "Its place in the list, counting from 0." }
+                    }
+                  }
+                },
+                "calculateLoyaltyPoints": { "type": "boolean", "description": "Whether points from the loyalty feature are added to people's scores." }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "updateSettings",
+      "displayName": "Update settings",
+      "type": "function",
+      "crudMode": "update",
+      "flags": ["mutable", "safe", "unthrottable"],
+      "usage": "basic",
+      "availableFor": ["API"],
+      "context": { "functionName": "updateSettings", "hosts": ["controlBackground", "headlessSdk"] },
+      "description": "Changes how people earn points and when rank change notifications go out.",
+      "parameters": {
+        "notifyOnDailyChange": {
+          "type": "boolean",
+          "displayName": "Daily change",
+          "required": false,
+          "description": "Whether a notification goes out when the top three of today's leaderboard change. Leave it out to keep the current choice.",
+          "sampleValue": true
+        },
+        "notifyOnWeeklyChange": {
+          "type": "boolean",
+          "displayName": "Weekly change",
+          "required": false,
+          "description": "Whether a notification goes out when the top three of this week's leaderboard change. Leave it out to keep the current choice.",
+          "sampleValue": false
+        },
+        "notifyOnMonthlyChange": {
+          "type": "boolean",
+          "displayName": "Monthly change",
+          "required": false,
+          "description": "Whether a notification goes out when the top three of this month's leaderboard change. Leave it out to keep the current choice.",
+          "sampleValue": false
+        },
+        "notifyOnOverallChange": {
+          "type": "boolean",
+          "displayName": "Overall change",
+          "required": false,
+          "description": "Whether a notification goes out when the top three of the overall leaderboard change. Leave it out to keep the current choice.",
+          "sampleValue": true
+        },
+        "userEarnPoints": {
+          "type": "select",
+          "displayName": "How users earn points",
+          "required": false,
+          "description": "Whether people enter their own points or get them from questionnaires. Leave it out to keep the current choice.",
+          "enums": [
+            { "label": "Honor System", "value": "HONOR_SYSTEM" },
+            { "label": "Score from Questionnaire", "value": "SCORE_FROM_FREE_TEXT_QUESTIONNAIRE" }
+          ],
+          "allowEnumCustomOption": false,
+          "sampleValue": "HONOR_SYSTEM"
+        },
+        "questionnaires": {
+          "type": "action",
+          "displayName": "Questionnaire",
+          "required": false,
+          "nullable": true,
+          "minValue": 0,
+          "description": "The questionnaires that give points, each a link to a questionnaire feature of the app, in order. Replaces the current list; leave it out to keep it, or leave it empty to remove them all.",
+          "sampleValue": [{ "title": "Weekly quiz", "action": "linkToApp", "instanceId": "[questionnaire instance id]" }]
+        },
+        "calculateLoyaltyPoints": {
+          "type": "boolean",
+          "displayName": "Calculate loyalty points",
+          "required": false,
+          "description": "Whether points from the loyalty feature are added to people's scores. Leave it out to keep the current choice.",
+          "sampleValue": false
+        },
+        "callback": {
+          "type": "function",
+          "required": true,
+          "description": "Runs when the settings are saved.",
+          "parameters": {
+            "error": { "type": "object|string", "description": "Why the settings weren't saved, such as a choice that isn't offered or nothing to change." },
+            "result": {
+              "type": "object",
+              "description": "The settings as they are now.",
+              "properties": {
+                "notificationsFrequency": {
+                  "type": "array",
+                  "description": "Which leaderboards send a notification when the top three change.",
+                  "items": { "type": "string", "description": "One of dailyChange, weeklyChange, monthlyChange or allTimeChange." }
+                },
+                "userEarnPoints": { "type": "string", "description": "How people earn points: HONOR_SYSTEM when they enter their own, SCORE_FROM_FREE_TEXT_QUESTIONNAIRE when points come from questionnaires." },
+                "features": {
+                  "type": "array",
+                  "description": "The questionnaires that give points, in order.",
+                  "items": {
+                    "type": "object",
+                    "description": "One questionnaire.",
+                    "properties": {
+                      "title": { "type": "string", "description": "The questionnaire's name." },
+                      "action": { "type": "string", "description": "The kind of link, usually to another feature of the app." },
+                      "instanceId": { "type": "string", "description": "The questionnaire feature it links to." },
+                      "iconUrl": { "type": "string", "description": "The questionnaire's icon." },
+                      "order": { "type": "number", "description": "Its place in the list, counting from 0." }
+                    }
+                  }
+                },
+                "calculateLoyaltyPoints": { "type": "boolean", "description": "Whether points from the loyalty feature are added to people's scores." }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "getIntroduction",
+      "displayName": "Get introduction",
+      "type": "function",
+      "crudMode": "read",
+      "flags": ["immutable", "safe", "unthrottable"],
+      "usage": "basic",
+      "availableFor": ["API", "form"],
+      "context": { "functionName": "getIntroduction", "hosts": ["widgetBackground", "controlBackground", "headlessSdk"] },
+      "description": "Shows the pictures and the text shown behind the leaderboard.",
+      "parameters": {
+        "callback": {
+          "type": "function",
+          "required": true,
+          "description": "Runs when the introduction is ready.",
+          "parameters": {
+            "error": { "type": "object|string", "description": "Why it didn't work, if it didn't." },
+            "result": {
+              "type": "object",
+              "description": "The introduction.",
+              "properties": {
+                "carouselItems": {
+                  "type": "array",
+                  "description": "The pictures shown at the top, in order.",
+                  "items": {
+                    "type": "object",
+                    "description": "One picture.",
+                    "properties": {
+                      "title": { "type": "string", "description": "The picture's name." },
+                      "iconUrl": { "type": "string", "description": "The picture." },
+                      "action": { "type": "string", "description": "What happens when someone taps it." }
+                    }
+                  }
+                },
+                "description": { "type": "string", "description": "The formatted text shown below the pictures." }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "updateIntroduction",
+      "displayName": "Update introduction",
+      "type": "function",
+      "crudMode": "update",
+      "flags": ["mutable", "safe", "unthrottable"],
+      "usage": "basic",
+      "availableFor": ["API"],
+      "context": { "functionName": "updateIntroduction", "hosts": ["controlBackground", "headlessSdk"] },
+      "description": "Changes the pictures and the text shown behind the leaderboard.",
+      "parameters": {
+        "carouselItems": {
+          "type": "action",
+          "displayName": "Pictures",
+          "required": false,
+          "nullable": true,
+          "minValue": 0,
+          "description": "The pictures shown at the top, in order, each with what happens when someone taps it. Replaces the current pictures; leave it out to keep them, or leave it empty to remove them all.",
+          "sampleValue": [{ "title": "Welcome", "iconUrl": "[image url]", "action": "noAction" }]
+        },
+        "description": {
+          "type": "wysiwyg",
+          "displayName": "Description",
+          "required": false,
+          "nullable": true,
+          "description": "The formatted text shown below the pictures. Leave it out to keep the current text, or leave it empty to remove it.",
+          "sampleValue": "<p>[introduction text]</p>"
+        },
+        "callback": {
+          "type": "function",
+          "required": true,
+          "description": "Runs when the introduction is saved.",
+          "parameters": {
+            "error": { "type": "object|string", "description": "Why it wasn't saved, such as a picture without an image or nothing to change." },
+            "result": {
+              "type": "object",
+              "description": "The introduction as it is now.",
+              "properties": {
+                "carouselItems": {
+                  "type": "array",
+                  "description": "The pictures shown at the top, in order.",
+                  "items": {
+                    "type": "object",
+                    "description": "One picture.",
+                    "properties": {
+                      "title": { "type": "string", "description": "The picture's name." },
+                      "iconUrl": { "type": "string", "description": "The picture." },
+                      "action": { "type": "string", "description": "What happens when someone taps it." }
+                    }
+                  }
+                },
+                "description": { "type": "string", "description": "The formatted text shown below the pictures." }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

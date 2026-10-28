@@ -150,6 +150,14 @@ const resourcesTask = () => gulpSrc([
   .pipe(gulpDest(destinationPath));
 
 /**
+ * Contract Task
+ * @description Copy the plugin contract (manifest, catalog, events, operations and implementation) as is
+ */
+const contractTask = () => gulpSrc(['widget/contract/**/*'], { base: '.' })
+  .pipe(print())
+  .pipe(gulpDest(destinationPath));
+
+/**
  * Images Task
  * @description Process plugin images directory
  */
@@ -173,6 +181,7 @@ exports.default = series(
     controlTestsJS,
     htmlTask,
     resourcesTask,
+    contractTask,
     imagesTask,
   ),
 );

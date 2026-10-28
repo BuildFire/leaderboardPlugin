@@ -1,0 +1,70 @@
+{
+  "name": "getIntroduction",
+  "displayName": "Get introduction",
+  "type": "function",
+  "crudMode": "read",
+  "flags": [
+    "immutable",
+    "safe",
+    "unthrottable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API",
+    "form"
+  ],
+  "context": {
+    "functionName": "getIntroduction",
+    "hosts": [
+      "widgetBackground",
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Shows the pictures and the text shown behind the leaderboard.",
+  "parameters": {
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the introduction is ready.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it didn't work, if it didn't."
+        },
+        "result": {
+          "type": "object",
+          "description": "The introduction.",
+          "properties": {
+            "carouselItems": {
+              "type": "array",
+              "description": "The pictures shown at the top, in order.",
+              "items": {
+                "type": "object",
+                "description": "One picture.",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "The picture's name."
+                  },
+                  "iconUrl": {
+                    "type": "string",
+                    "description": "The picture."
+                  },
+                  "action": {
+                    "type": "string",
+                    "description": "What happens when someone taps it."
+                  }
+                }
+              }
+            },
+            "description": {
+              "type": "string",
+              "description": "The formatted text shown below the pictures."
+            }
+          }
+        }
+      }
+    }
+  }
+}

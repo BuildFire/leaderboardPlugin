@@ -1,0 +1,105 @@
+{
+  "name": "updateUserDailyScoresAdvanced",
+  "displayName": "Edit today's scores",
+  "type": "function",
+  "crudMode": "update",
+  "flags": [
+    "mutable",
+    "dangerous",
+    "throttable"
+  ],
+  "usage": "advanced",
+  "availableFor": [
+    "API"
+  ],
+  "context": {
+    "functionName": "updateUserDailyScoresAdvanced",
+    "hosts": [
+      "widgetBackground",
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Changes several people's scores for today at once, up to 50.",
+  "parameters": {
+    "scores": {
+      "type": "list",
+      "displayName": "Scores for today",
+      "required": true,
+      "minValue": 1,
+      "maxValue": 50,
+      "description": "Who gets which score for today, up to 50 people at a time.",
+      "items": {
+        "user": {
+          "type": "user",
+          "displayName": "Person",
+          "required": true,
+          "description": "The person whose score for today changes, by their user id or email."
+        },
+        "newScore": {
+          "type": "number",
+          "displayName": "Today's score",
+          "required": true,
+          "description": "The person's new score for today, as a whole number."
+        }
+      },
+      "sampleValue": [
+        {
+          "user": "[user id]",
+          "newScore": 25
+        },
+        {
+          "user": "[user id]",
+          "newScore": 12
+        }
+      ]
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when everyone's scores are done.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why no scores were changed, such as an entry missing its score or the same person listed twice."
+        },
+        "result": {
+          "type": "object",
+          "description": "How each entry went.",
+          "properties": {
+            "scores": {
+              "type": "array",
+              "description": "One result per entry, in the order they were given.",
+              "items": {
+                "type": "object",
+                "description": "How one entry went.",
+                "properties": {
+                  "index": {
+                    "type": "number",
+                    "description": "Which entry this is, counting from 0."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "The person's id, if their score was changed."
+                  },
+                  "error": {
+                    "type": "string",
+                    "description": "Why their score wasn't changed, if it wasn't."
+                  }
+                }
+              }
+            },
+            "succeeded": {
+              "type": "number",
+              "description": "How many scores were changed."
+            },
+            "failed": {
+              "type": "number",
+              "description": "How many scores weren't changed."
+            }
+          }
+        }
+      }
+    }
+  }
+}

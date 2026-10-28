@@ -1,0 +1,106 @@
+{
+  "name": "updateUserScoresAdvanced",
+  "displayName": "Add points for several people",
+  "type": "function",
+  "crudMode": "update",
+  "flags": [
+    "mutable",
+    "dangerous",
+    "throttable"
+  ],
+  "usage": "advanced",
+  "availableFor": [
+    "API"
+  ],
+  "context": {
+    "functionName": "updateUserScoresAdvanced",
+    "hosts": [
+      "widgetBackground",
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Adds points to several people's scores at once, up to 50.",
+  "parameters": {
+    "scores": {
+      "type": "list",
+      "displayName": "Points to add",
+      "required": true,
+      "minValue": 1,
+      "maxValue": 50,
+      "description": "Who gets how many points, up to 50 people at a time.",
+      "items": {
+        "user": {
+          "type": "user",
+          "displayName": "Person",
+          "required": true,
+          "description": "The person to give the points to, by their user id or email."
+        },
+        "points": {
+          "type": "number",
+          "displayName": "Points",
+          "required": true,
+          "minValue": 1,
+          "description": "How many points to add, as a whole number."
+        }
+      },
+      "sampleValue": [
+        {
+          "user": "[user id]",
+          "points": 10
+        },
+        {
+          "user": "[user id]",
+          "points": 5
+        }
+      ]
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when everyone's points are done.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why no points were added, such as an entry missing its points or the same person listed twice."
+        },
+        "result": {
+          "type": "object",
+          "description": "How each entry went.",
+          "properties": {
+            "scores": {
+              "type": "array",
+              "description": "One result per entry, in the order they were given.",
+              "items": {
+                "type": "object",
+                "description": "How one entry went.",
+                "properties": {
+                  "index": {
+                    "type": "number",
+                    "description": "Which entry this is, counting from 0."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "The person's id, if their points were added."
+                  },
+                  "error": {
+                    "type": "string",
+                    "description": "Why their points weren't added, if they weren't."
+                  }
+                }
+              }
+            },
+            "succeeded": {
+              "type": "number",
+              "description": "How many entries were added."
+            },
+            "failed": {
+              "type": "number",
+              "description": "How many entries weren't added."
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "events": [
+    {
+      "name": "scoreUpdated",
+      "displayName": "Score Updated",
+      "description": "Someone's score on the leaderboard changed.",
+      "data": {
+        "user": {
+          "type": "object",
+          "displayName": "Person",
+          "description": "Whose score changed.",
+          "properties": {
+            "userId": {
+              "type": "string",
+              "displayName": "User ID",
+              "description": "Their id."
+            },
+            "displayName": {
+              "type": "string",
+              "displayName": "Name",
+              "description": "Their name."
+            },
+            "email": {
+              "type": "string",
+              "displayName": "Email",
+              "description": "Their email."
+            }
+          }
+        },
+        "changeType": {
+          "type": "string",
+          "displayName": "Change",
+          "description": "How the score changed: add when points were added, edit when today's score was changed."
+        },
+        "points": {
+          "type": "number",
+          "displayName": "Points",
+          "description": "The points added, or the new score for today."
+        },
+        "dailyScore": {
+          "type": "number",
+          "displayName": "Today's Score",
+          "description": "Their score for today."
+        },
+        "weeklyScore": {
+          "type": "number",
+          "displayName": "This Week's Score",
+          "description": "Their score for this week."
+        },
+        "monthlyScore": {
+          "type": "number",
+          "displayName": "This Month's Score",
+          "description": "Their score for this month."
+        },
+        "overallScore": {
+          "type": "number",
+          "displayName": "Overall Score",
+          "description": "Their overall score."
+        }
+      }
+    }
+  ]
+}
