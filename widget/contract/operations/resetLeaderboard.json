@@ -1,0 +1,51 @@
+{
+  "name": "resetLeaderboard",
+  "displayName": "Reset leaderboard",
+  "type": "function",
+  "crudMode": "delete",
+  "flags": [
+    "mutable",
+    "dangerous",
+    "unthrottable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API",
+    "form"
+  ],
+  "context": {
+    "functionName": "resetLeaderboard",
+    "hosts": [
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Permanently clears every score on today's, this week's, this month's and the overall board.",
+  "parameters": {
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the leaderboard is cleared.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it didn't work, if it didn't."
+        },
+        "result": {
+          "type": "object",
+          "description": "What was cleared.",
+          "properties": {
+            "cleared": {
+              "type": "array",
+              "description": "The boards that were cleared.",
+              "items": {
+                "type": "string",
+                "description": "One board: daily, weekly, monthly or overall."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "name": "getSettings",
+  "displayName": "Get settings",
+  "type": "function",
+  "crudMode": "read",
+  "flags": [
+    "immutable",
+    "safe",
+    "unthrottable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API",
+    "form"
+  ],
+  "context": {
+    "functionName": "getSettings",
+    "hosts": [
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Shows how people earn points and which rank changes send notifications.",
+  "parameters": {
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the settings are ready.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it didn't work, if it didn't."
+        },
+        "result": {
+          "type": "object",
+          "description": "The current settings.",
+          "properties": {
+            "notificationsFrequency": {
+              "type": "array",
+              "description": "The boards whose top places send a notification when they change.",
+              "items": {
+                "type": "string",
+                "description": "One board: daily, weekly, monthly or overall change."
+              }
+            },
+            "userEarnPoints": {
+              "type": "string",
+              "description": "How people earn points: entering them on their honor, or from questionnaires."
+            },
+            "calculateLoyaltyPoints": {
+              "type": "boolean",
+              "description": "Whether points from the loyalty feature are added."
+            },
+            "features": {
+              "type": "array",
+              "description": "The questionnaires people earn points from, in order.",
+              "items": {
+                "type": "object",
+                "description": "One questionnaire.",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "The questionnaire's title."
+                  },
+                  "action": {
+                    "type": "string",
+                    "description": "What tapping it does."
+                  },
+                  "instanceId": {
+                    "type": "string",
+                    "description": "The questionnaire's id in the app."
+                  },
+                  "iconUrl": {
+                    "type": "string",
+                    "description": "The questionnaire's icon."
+                  },
+                  "order": {
+                    "type": "number",
+                    "description": "Its place in the list, counting from 0."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
