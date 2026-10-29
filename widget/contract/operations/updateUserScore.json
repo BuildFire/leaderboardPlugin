@@ -1,0 +1,100 @@
+{
+  "name": "updateUserScore",
+  "displayName": "Update user score",
+  "type": "function",
+  "crudMode": "update",
+  "flags": [
+    "mutable",
+    "dangerous",
+    "throttable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API",
+    "form"
+  ],
+  "context": {
+    "functionName": "updateUserScore",
+    "hosts": [
+      "widgetBackground",
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Adds points to a person's score, or sets their score for today, on behalf of the app.",
+  "parameters": {
+    "userId": {
+      "type": "user",
+      "displayName": "User",
+      "required": true,
+      "description": "The person whose score changes, by their id or email.",
+      "sampleValue": "[user id]"
+    },
+    "score": {
+      "type": "number",
+      "displayName": "Score",
+      "required": true,
+      "description": "The points to add, or the new score for today when editing.",
+      "sampleValue": 10
+    },
+    "logType": {
+      "type": "select",
+      "displayName": "Change",
+      "required": false,
+      "description": "Whether the points are added to the score or become today's score. Leave it out to add them.",
+      "enums": [
+        {
+          "label": "Add Score",
+          "value": "add"
+        },
+        {
+          "label": "Edit Score",
+          "value": "edit"
+        }
+      ],
+      "allowEnumCustomOption": false,
+      "sampleValue": "add"
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the score is saved.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it didn't work, such as no user having that id or email."
+        },
+        "result": {
+          "type": "object",
+          "description": "The person's new scores.",
+          "properties": {
+            "userId": {
+              "type": "string",
+              "description": "The person's id."
+            },
+            "displayName": {
+              "type": "string",
+              "description": "The person's name, as the leaderboard shows it."
+            },
+            "dailyScore": {
+              "type": "number",
+              "description": "Their score for today."
+            },
+            "weeklyScore": {
+              "type": "number",
+              "description": "Their score for this week."
+            },
+            "monthlyScore": {
+              "type": "number",
+              "description": "Their score for this month."
+            },
+            "overallScore": {
+              "type": "number",
+              "description": "Their overall score."
+            }
+          }
+        }
+      }
+    }
+  }
+}

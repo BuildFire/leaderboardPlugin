@@ -52,7 +52,19 @@ const widgetController = {
           return _resolve(result);
         })));
 
-        Promise.all(logScores).then((results) => resolve([userDailyScore, userWeeklyScore, userMonthlyScore, userYearlyScore])).catch(reject);
+        Promise.all(logScores).then((results) => {
+          const user = authManager.currentUser;
+          buildfire.services.contract.events.send('scoreUpdated', {
+            user: { userId: user._id, displayName: user.displayName || null, email: user.email || null },
+            change: logType === 'edit' ? 'Edited' : 'Added',
+            points: newScore,
+            dailyScore: userDailyScore,
+            weeklyScore: userWeeklyScore,
+            monthlyScore: userMonthlyScore,
+            overallScore: userYearlyScore,
+          });
+          resolve([userDailyScore, userWeeklyScore, userMonthlyScore, userYearlyScore]);
+        }).catch(reject);
       }).catch(reject);
     });
   },

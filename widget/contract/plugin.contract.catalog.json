@@ -1,0 +1,260 @@
+{
+  "operations": [
+    {
+      "name": "listScores",
+      "displayName": "List scores",
+      "type": "function",
+      "crudMode": "read",
+      "flags": [
+        "immutable",
+        "safe",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "listScores",
+        "hosts": [
+          "widgetBackground",
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Shows the leaderboard for today, this week, this month or overall, best score first.",
+      "parameters": [
+        "period",
+        "userId"
+      ],
+      "definitionPath": "operations/listScores.json"
+    },
+    {
+      "name": "updateUserScore",
+      "displayName": "Update user score",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "dangerous",
+        "throttable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "updateUserScore",
+        "hosts": [
+          "widgetBackground",
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Adds points to a person's score, or sets their score for today, on behalf of the app.",
+      "parameters": [
+        "userId",
+        "score",
+        "logType"
+      ],
+      "definitionPath": "operations/updateUserScore.json"
+    },
+    {
+      "name": "updateUserScoresAdvanced",
+      "displayName": "Update users' scores",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "dangerous",
+        "throttable"
+      ],
+      "usage": "advanced",
+      "availableFor": [
+        "API"
+      ],
+      "context": {
+        "functionName": "updateUserScoresAdvanced",
+        "hosts": [
+          "widgetBackground",
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Changes the scores of several people at once.",
+      "parameters": [
+        "scores"
+      ],
+      "definitionPath": "operations/updateUserScoresAdvanced.json"
+    },
+    {
+      "name": "resetLeaderboard",
+      "displayName": "Reset leaderboard",
+      "type": "function",
+      "crudMode": "delete",
+      "flags": [
+        "mutable",
+        "dangerous",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "resetLeaderboard",
+        "hosts": [
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Permanently clears every score on today's, this week's, this month's and the overall board.",
+      "parameters": [],
+      "definitionPath": "operations/resetLeaderboard.json"
+    },
+    {
+      "name": "getSettings",
+      "displayName": "Get settings",
+      "type": "function",
+      "crudMode": "read",
+      "flags": [
+        "immutable",
+        "safe",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "getSettings",
+        "hosts": [
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Shows how people earn points and which rank changes send notifications.",
+      "parameters": [],
+      "definitionPath": "operations/getSettings.json"
+    },
+    {
+      "name": "updateSettings",
+      "displayName": "Update settings",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "safe",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API"
+      ],
+      "context": {
+        "functionName": "updateSettings",
+        "hosts": [
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Changes how people earn points and which rank changes send notifications.",
+      "parameters": [
+        "notifyOnDailyChange",
+        "notifyOnWeeklyChange",
+        "notifyOnMonthlyChange",
+        "notifyOnOverallChange",
+        "userEarnPoints",
+        "calculateLoyaltyPoints",
+        "features"
+      ],
+      "definitionPath": "operations/updateSettings.json"
+    },
+    {
+      "name": "getIntroduction",
+      "displayName": "Get introduction",
+      "type": "function",
+      "crudMode": "read",
+      "flags": [
+        "immutable",
+        "safe",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "getIntroduction",
+        "hosts": [
+          "widgetBackground",
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Shows the carousel and the description displayed behind the leaderboard.",
+      "parameters": [],
+      "definitionPath": "operations/getIntroduction.json"
+    },
+    {
+      "name": "updateCarousel",
+      "displayName": "Update carousel",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "dangerous",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API"
+      ],
+      "context": {
+        "functionName": "updateCarousel",
+        "hosts": [
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Replaces the images of the carousel shown behind the leaderboard.",
+      "parameters": [
+        "carouselItems"
+      ],
+      "definitionPath": "operations/updateCarousel.json"
+    },
+    {
+      "name": "updateDescription",
+      "displayName": "Update description",
+      "type": "function",
+      "crudMode": "update",
+      "flags": [
+        "mutable",
+        "dangerous",
+        "unthrottable"
+      ],
+      "usage": "basic",
+      "availableFor": [
+        "API",
+        "form"
+      ],
+      "context": {
+        "functionName": "updateDescription",
+        "hosts": [
+          "controlBackground",
+          "headlessSdk"
+        ]
+      },
+      "description": "Replaces the description shown behind the leaderboard.",
+      "parameters": [
+        "description"
+      ],
+      "definitionPath": "operations/updateDescription.json"
+    }
+  ]
+}
