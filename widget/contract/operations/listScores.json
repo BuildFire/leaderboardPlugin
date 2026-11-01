@@ -1,0 +1,111 @@
+{
+  "name": "listScores",
+  "displayName": "List scores",
+  "type": "function",
+  "crudMode": "read",
+  "flags": [
+    "immutable",
+    "safe",
+    "unthrottable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API",
+    "form"
+  ],
+  "context": {
+    "functionName": "listScores",
+    "hosts": [
+      "widgetBackground",
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Shows the leaderboard for today, this week, this month or overall, best score first.",
+  "parameters": {
+    "period": {
+      "type": "select",
+      "displayName": "Board",
+      "required": false,
+      "description": "Which board to show. Leave it out to show the overall board.",
+      "enums": [
+        {
+          "label": "Overall",
+          "value": "overall"
+        },
+        {
+          "label": "Month",
+          "value": "monthly"
+        },
+        {
+          "label": "Week",
+          "value": "weekly"
+        },
+        {
+          "label": "Day",
+          "value": "daily"
+        }
+      ],
+      "allowEnumCustomOption": false,
+      "sampleValue": "overall"
+    },
+    "userId": {
+      "type": "user",
+      "displayName": "User",
+      "required": false,
+      "description": "Only show this person's place, by their id or email. Leave it out to show everyone.",
+      "sampleValue": "[user id]"
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the board is ready.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it didn't work, such as no user having that email."
+        },
+        "result": {
+          "type": "object",
+          "description": "The board that was found.",
+          "properties": {
+            "scores": {
+              "type": "array",
+              "description": "Everyone on the board, best score first.",
+              "items": {
+                "type": "object",
+                "description": "One person's place.",
+                "properties": {
+                  "rank": {
+                    "type": "number",
+                    "description": "Their place on the board, starting at 1."
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "Their id."
+                  },
+                  "displayName": {
+                    "type": "string",
+                    "description": "Their name."
+                  },
+                  "score": {
+                    "type": "number",
+                    "description": "Their points."
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "Their profile picture."
+                  },
+                  "createdOn": {
+                    "type": "datetime",
+                    "description": "When their score last changed."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

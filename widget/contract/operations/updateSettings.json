@@ -1,0 +1,157 @@
+{
+  "name": "updateSettings",
+  "displayName": "Update settings",
+  "type": "function",
+  "crudMode": "update",
+  "flags": [
+    "mutable",
+    "safe",
+    "unthrottable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API"
+  ],
+  "context": {
+    "functionName": "updateSettings",
+    "hosts": [
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Changes how people earn points and which rank changes send notifications.",
+  "parameters": {
+    "notifyOnDailyChange": {
+      "type": "boolean",
+      "displayName": "Daily change",
+      "required": false,
+      "description": "Whether a change in the top three of today's board sends a notification. Leave it out to keep the current choice.",
+      "sampleValue": true
+    },
+    "notifyOnWeeklyChange": {
+      "type": "boolean",
+      "displayName": "Weekly change",
+      "required": false,
+      "description": "Whether a change in the top three of this week's board sends a notification. Leave it out to keep the current choice.",
+      "sampleValue": true
+    },
+    "notifyOnMonthlyChange": {
+      "type": "boolean",
+      "displayName": "Monthly change",
+      "required": false,
+      "description": "Whether a change in the top three of this month's board sends a notification. Leave it out to keep the current choice.",
+      "sampleValue": true
+    },
+    "notifyOnOverallChange": {
+      "type": "boolean",
+      "displayName": "Overall change",
+      "required": false,
+      "description": "Whether a change in the top three of the overall board sends a notification. Leave it out to keep the current choice.",
+      "sampleValue": true
+    },
+    "userEarnPoints": {
+      "type": "select",
+      "displayName": "How users earn points",
+      "required": false,
+      "description": "Whether people enter their own points or earn them from questionnaires. Leave it out to keep the current choice.",
+      "enums": [
+        {
+          "label": "Honor System",
+          "value": "HONOR_SYSTEM"
+        },
+        {
+          "label": "Score from Questionnaire",
+          "value": "SCORE_FROM_FREE_TEXT_QUESTIONNAIRE"
+        }
+      ],
+      "allowEnumCustomOption": false,
+      "sampleValue": "HONOR_SYSTEM"
+    },
+    "calculateLoyaltyPoints": {
+      "type": "boolean",
+      "displayName": "Calculate loyalty points",
+      "required": false,
+      "description": "Whether points from the loyalty feature are added. Leave it out to keep the current choice.",
+      "sampleValue": false
+    },
+    "features": {
+      "type": "action",
+      "displayName": "Questionnaires",
+      "required": false,
+      "nullable": true,
+      "minValue": 0,
+      "description": "The questionnaires people earn points from, in order, each opening that questionnaire. Replaces the current list; leave it out to keep it, or leave it empty to remove them all.",
+      "sampleValue": [
+        {
+          "title": "[questionnaire title]",
+          "action": "linkToApp",
+          "instanceId": "[questionnaire id]",
+          "iconUrl": "[image url]"
+        }
+      ]
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the settings are saved.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it didn't work, such as a choice the settings don't offer."
+        },
+        "result": {
+          "type": "object",
+          "description": "The settings as they are now.",
+          "properties": {
+            "notificationsFrequency": {
+              "type": "array",
+              "description": "The boards whose top places send a notification when they change.",
+              "items": {
+                "type": "string",
+                "description": "One board: daily, weekly, monthly or overall change."
+              }
+            },
+            "userEarnPoints": {
+              "type": "string",
+              "description": "How people earn points: entering them on their honor, or from questionnaires."
+            },
+            "calculateLoyaltyPoints": {
+              "type": "boolean",
+              "description": "Whether points from the loyalty feature are added."
+            },
+            "features": {
+              "type": "array",
+              "description": "The questionnaires people earn points from, in order.",
+              "items": {
+                "type": "object",
+                "description": "One questionnaire.",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "The questionnaire's title."
+                  },
+                  "action": {
+                    "type": "string",
+                    "description": "What tapping it does."
+                  },
+                  "instanceId": {
+                    "type": "string",
+                    "description": "The questionnaire's id in the app."
+                  },
+                  "iconUrl": {
+                    "type": "string",
+                    "description": "The questionnaire's icon."
+                  },
+                  "order": {
+                    "type": "number",
+                    "description": "Its place in the list, counting from 0."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

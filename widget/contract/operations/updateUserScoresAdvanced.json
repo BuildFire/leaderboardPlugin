@@ -1,0 +1,127 @@
+{
+  "name": "updateUserScoresAdvanced",
+  "displayName": "Update users' scores",
+  "type": "function",
+  "crudMode": "update",
+  "flags": [
+    "mutable",
+    "dangerous",
+    "throttable"
+  ],
+  "usage": "advanced",
+  "availableFor": [
+    "API"
+  ],
+  "context": {
+    "functionName": "updateUserScoresAdvanced",
+    "hosts": [
+      "widgetBackground",
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Changes the scores of several people at once.",
+  "parameters": {
+    "scores": {
+      "type": "list",
+      "displayName": "Scores",
+      "required": true,
+      "minValue": 1,
+      "maxValue": 50,
+      "description": "The score changes to make, up to 50 at a time, each for a different person.",
+      "items": {
+        "userId": {
+          "type": "user",
+          "displayName": "User",
+          "required": true,
+          "description": "The person whose score changes, by their id or email.",
+          "sampleValue": "[user id]"
+        },
+        "score": {
+          "type": "number",
+          "displayName": "Score",
+          "required": true,
+          "description": "The points to add, or the new score for today when editing.",
+          "sampleValue": 10
+        },
+        "logType": {
+          "type": "select",
+          "displayName": "Change",
+          "required": false,
+          "description": "Whether the points are added to the score or become today's score. Leave it out to add them.",
+          "enums": [
+            {
+              "label": "Add Score",
+              "value": "add"
+            },
+            {
+              "label": "Edit Score",
+              "value": "edit"
+            }
+          ],
+          "allowEnumCustomOption": false,
+          "sampleValue": "add"
+        }
+      },
+      "sampleValue": [
+        {
+          "userId": "[user id]",
+          "score": 10,
+          "logType": "add"
+        },
+        {
+          "userId": "[user id]",
+          "score": 25,
+          "logType": "edit"
+        }
+      ]
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when every score is done.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why nothing was changed, such as a score missing its person."
+        },
+        "result": {
+          "type": "object",
+          "description": "How each score change went.",
+          "properties": {
+            "scores": {
+              "type": "array",
+              "description": "One result per score change, in the order they were given.",
+              "items": {
+                "type": "object",
+                "description": "How one score change went.",
+                "properties": {
+                  "index": {
+                    "type": "number",
+                    "description": "Which score change this is, counting from 0."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "The person's id, if their score changed."
+                  },
+                  "error": {
+                    "type": "string",
+                    "description": "Why it didn't change, if it didn't."
+                  }
+                }
+              }
+            },
+            "succeeded": {
+              "type": "number",
+              "description": "How many scores changed."
+            },
+            "failed": {
+              "type": "number",
+              "description": "How many scores didn't change."
+            }
+          }
+        }
+      }
+    }
+  }
+}

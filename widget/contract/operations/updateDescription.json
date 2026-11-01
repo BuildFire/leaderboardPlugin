@@ -1,0 +1,55 @@
+{
+  "name": "updateDescription",
+  "displayName": "Update description",
+  "type": "function",
+  "crudMode": "update",
+  "flags": [
+    "mutable",
+    "dangerous",
+    "unthrottable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API",
+    "form"
+  ],
+  "context": {
+    "functionName": "updateDescription",
+    "hosts": [
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Replaces the description shown behind the leaderboard.",
+  "parameters": {
+    "description": {
+      "type": "wysiwyg",
+      "displayName": "Description",
+      "required": true,
+      "nullable": true,
+      "description": "The new description, with its formatting. Leave it empty to remove it.",
+      "sampleValue": "<p>[introduction text]</p>"
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the description is saved.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it didn't work, if it didn't."
+        },
+        "result": {
+          "type": "object",
+          "description": "The description as it is now.",
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "The description, with its formatting."
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "name": "updateCarousel",
+  "displayName": "Update carousel",
+  "type": "function",
+  "crudMode": "update",
+  "flags": [
+    "mutable",
+    "dangerous",
+    "unthrottable"
+  ],
+  "usage": "basic",
+  "availableFor": [
+    "API"
+  ],
+  "context": {
+    "functionName": "updateCarousel",
+    "hosts": [
+      "controlBackground",
+      "headlessSdk"
+    ]
+  },
+  "description": "Replaces the images of the carousel shown behind the leaderboard.",
+  "parameters": {
+    "carouselItems": {
+      "type": "action",
+      "displayName": "Carousel images",
+      "required": true,
+      "nullable": true,
+      "minValue": 0,
+      "description": "The carousel's images, in order, each with its picture and what tapping it does. Replaces the current images; leave it empty to remove them all.",
+      "sampleValue": [
+        {
+          "title": "[image title]",
+          "iconUrl": "[image url]",
+          "action": "noAction"
+        }
+      ]
+    },
+    "callback": {
+      "type": "function",
+      "required": true,
+      "description": "Runs when the carousel is saved.",
+      "parameters": {
+        "error": {
+          "type": "object|string",
+          "description": "Why it didn't work, such as an image without its picture."
+        },
+        "result": {
+          "type": "object",
+          "description": "The carousel as it is now.",
+          "properties": {
+            "carouselItems": {
+              "type": "array",
+              "description": "The carousel's images, in order.",
+              "items": {
+                "type": "object",
+                "description": "One image and what tapping it does.",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Its title."
+                  },
+                  "action": {
+                    "type": "string",
+                    "description": "What tapping it does."
+                  },
+                  "iconUrl": {
+                    "type": "string",
+                    "description": "Its picture."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
